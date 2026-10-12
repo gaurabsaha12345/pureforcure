@@ -1687,6 +1687,26 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return;
     }
+
+    // 5. Bank Account Detail Copy Buttons (.bank-copy-btn)
+    const copyBtn = e.target.closest('.bank-copy-btn');
+    if (copyBtn) {
+      const textToCopy = copyBtn.getAttribute('data-copy');
+      if (textToCopy) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalHTML = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<i class="fa-solid fa-check" style="color:#1A8C4E;"></i> Copied!';
+          copyBtn.classList.add('copied');
+          setTimeout(() => {
+            copyBtn.innerHTML = originalHTML;
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Clipboard copy failed:', err);
+        });
+      }
+      return;
+    }
   });
 
   // =============================================================

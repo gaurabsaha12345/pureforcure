@@ -7125,3 +7125,564 @@ input[type="submit"] {
 .metric-card-meal-cost:hover .metric-number {
   color: #22C55E !important;
 }
+
+/* ==========================================================================
+   DONATE.HTML DEDICATED ENHANCEMENTS: 3-COLUMNS CARDS, DONATION FORM & BANK BOX
+   ========================================================================== */
+
+/* 1. 3 Cards Per Row Grid for donate.html */
+.donate-campaigns-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 2rem !important;
+}
+
+@media (max-width: 1024px) {
+  .donate-campaigns-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .donate-campaigns-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+}
+
+/* Campaign Cards in donate-campaigns-grid */
+.donate-campaigns-grid .product-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.donate-campaigns-grid .product-card:hover {
+  transform: translateY(-8px);
+  border-color: #1A8C4E;
+  box-shadow: 0 16px 36px rgba(26, 140, 78, 0.16);
+}
+
+.donate-campaigns-grid .product-card-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.donate-campaigns-grid .product-card:hover .product-card-img {
+  transform: scale(1.04);
+}
+
+.donate-campaigns-grid .product-card-body {
+  padding: 1.5rem 1.6rem 1.6rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.donate-campaigns-grid .product-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #F0FDF4;
+  color: #1A8C4E;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.32rem 0.85rem;
+  border-radius: 20px;
+  margin-bottom: 0.65rem;
+  border: 1px solid #DCFCE7;
+  white-space: nowrap;
+}
+
+.donate-campaigns-grid .product-title {
+  font-size: 1.22rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--dark);
+  margin-bottom: 0.6rem;
+}
+
+.donate-campaigns-grid .product-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+}
+
+.donate-campaigns-grid .product-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-top: 1px solid #F1F5F9;
+  border-bottom: 1px solid #F1F5F9;
+  font-size: 0.88rem;
+  margin-bottom: 1.25rem;
+}
+
+.donate-campaigns-grid .product-action-row .btn {
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 0.8rem 1.25rem;
+}
+
+/* 2. Main Two-Column Layout for General Donation & Bank Box */
+.donate-main-columns-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 2.75rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .donate-main-columns-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* 3. Direct Bank Transfer Card Styling */
+.donate-bank-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1.5px solid #E2E8F0;
+  box-shadow: 0 16px 45px rgba(17, 42, 29, 0.08);
+  padding: 2.25rem 2rem;
+  margin-bottom: 1.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.donate-bank-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #1A8C4E, #34D399, #10B981);
+}
+
+@media (max-width: 640px) {
+  .donate-bank-card {
+    padding: 1.6rem 1.25rem;
+  }
+}
+
+.bank-card-header {
+  display: flex;
+  gap: 1.15rem;
+  align-items: flex-start;
+  margin-bottom: 1.6rem;
+}
+
+.bank-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #ECFDF5;
+  border: 1.5px solid #A7F3D0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.bank-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+  padding: 0.22rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.45rem;
+}
+
+.bank-card-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 0.35rem;
+  line-height: 1.3;
+}
+
+.bank-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Bank Details List */
+.bank-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.bank-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.15rem;
+  background: #F8FAFC;
+  border: 1.5px solid #EEF2F6;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+@media (max-width: 540px) {
+  .bank-detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+}
+
+.bank-detail-item:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+.bank-detail-item.highlight-green {
+  background: #F0FDF4;
+  border-color: #BBF7D0;
+}
+
+.bank-detail-item.highlight-green:hover {
+  background: #DCFCE7;
+  border-color: #86EFAC;
+}
+
+.bank-detail-item.highlight-amber {
+  background: #FFFDF5;
+  border-color: #FDE68A;
+}
+
+.bank-detail-item.highlight-amber:hover {
+  background: #FEF3C7;
+  border-color: #FCD34D;
+}
+
+.bank-detail-label {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748B;
+  flex-shrink: 0;
+}
+
+.bank-detail-label i {
+  color: #64748B;
+  font-size: 0.9rem;
+}
+
+.bank-detail-item.highlight-green .bank-detail-label i {
+  color: #1A8C4E;
+}
+
+.bank-detail-item.highlight-amber .bank-detail-label i {
+  color: #D97706;
+}
+
+.bank-detail-value {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: right;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 540px) {
+  .bank-detail-value {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.bank-detail-value strong {
+  font-size: 0.95rem;
+  color: var(--dark);
+  font-weight: 700;
+}
+
+.bank-detail-value .val-mono {
+  font-family: 'Consolas', 'Courier New', monospace;
+  letter-spacing: 0.05em;
+  font-size: 1.08rem;
+}
+
+.bank-detail-value .val-green {
+  color: #15803D !important;
+  font-weight: 800;
+}
+
+.bank-detail-value .val-amber {
+  color: #B45309 !important;
+  font-weight: 800;
+}
+
+/* Copy Button */
+.bank-copy-btn {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.bank-copy-btn:hover {
+  background: #1A8C4E;
+  color: #FFFFFF;
+  border-color: #1A8C4E;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(26, 140, 78, 0.25);
+}
+
+.bank-copy-btn.copied {
+  background: #ECFDF5;
+  color: #065F46;
+  border-color: #86EFAC;
+}
+
+/* Bank Receipt Notice */
+.bank-receipt-notice {
+  background: #EFF6FF;
+  border: 1.5px solid #BFDBFE;
+  border-radius: 12px;
+  padding: 0.95rem 1.15rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  font-size: 0.84rem;
+  color: #1E40AF;
+  line-height: 1.5;
+}
+
+.bank-receipt-notice i {
+  color: #2563EB;
+  font-size: 1.05rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.bank-receipt-notice a {
+  color: #1D4ED8;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.bank-receipt-notice a:hover {
+  color: #1E3A8A;
+}
+
+/* 4. Section 80G Tax Exemption Card */
+.tax-exemption-badge-card {
+  background: linear-gradient(145deg, #FFFDF5 0%, #FEF9C3 100%);
+  border: 1.5px solid #FDE68A;
+  border-radius: 20px;
+  padding: 1.75rem 1.85rem;
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .tax-exemption-badge-card {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+.tax-card-inner {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 540px) {
+  .tax-card-inner {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+}
+
+.tax-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #FEF3C7;
+  border: 1.5px solid #FCD34D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: #D97706;
+  flex-shrink: 0;
+}
+
+.tax-pill-badge {
+  display: inline-block;
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.tax-card-heading {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #78350F;
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+
+.tax-card-text {
+  font-size: 0.88rem;
+  color: #78350F;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.tax-features-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.15rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #92400E;
+}
+
+.tax-features-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tax-features-row i {
+  color: #D97706;
+}
+
+/* 5. General Donation Form Polish */
+.donate-main-columns-grid .donation-interactive-card {
+  padding: 2.25rem 2rem;
+  border-radius: 20px;
+  border: 1.5px solid #E2E8F0;
+  box-shadow: 0 16px 45px rgba(17, 42, 29, 0.08);
+}
+
+@media (max-width: 640px) {
+  .donate-main-columns-grid .donation-interactive-card {
+    padding: 1.6rem 1.25rem;
+  }
+}
+
+.donate-main-columns-grid .donation-input {
+  border-radius: 10px;
+  border: 1.5px solid #CBD5E1;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.donate-main-columns-grid .donation-input:focus {
+  border-color: #1A8C4E;
+  box-shadow: 0 0 0 3px rgba(26, 140, 78, 0.15);
+}
+
+.donate-main-columns-grid .preset-btn {
+  border-radius: 12px;
+  border: 1.5px solid #E2E8F0;
+  background: #F8FAFC;
+  padding: 0.95rem 0.75rem;
+}
+
+.donate-main-columns-grid .preset-btn:hover {
+  border-color: #1A8C4E;
+  background: #F0FDF4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 140, 78, 0.12);
+}
+
+.donate-main-columns-grid .preset-btn.active {
+  border-color: #1A8C4E;
+  background: #F0FDF4;
+  box-shadow: 0 4px 14px rgba(26, 140, 78, 0.18);
+  outline: 2px solid #1A8C4E;
+  outline-offset: -1px;
+}
+
+.donate-main-columns-grid .gateway-option {
+  border-radius: 10px;
+  border: 1.5px solid #CBD5E1;
+  padding: 0.85rem 0.6rem;
+  transition: all 0.2s ease;
+}
+
+.donate-main-columns-grid .gateway-option:hover {
+  border-color: #1A8C4E;
+  background: #F0FDF4;
+  color: #1A8C4E;
+}
+
+.donate-main-columns-grid .gateway-option.active {
+  border-color: #1A8C4E;
+  background: #F0FDF4;
+  color: #1A8C4E;
+  box-shadow: 0 2px 8px rgba(26, 140, 78, 0.12);
+  outline: 1.5px solid #1A8C4E;
+}
+
+.donate-main-columns-grid button[type="submit"] {
+  border-radius: 12px;
+  padding: 1.15rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1A8C4E 0%, #15803D 100%);
+  box-shadow: 0 8px 24px rgba(26, 140, 78, 0.3);
+  transition: all 0.25s ease;
+}
+
+.donate-main-columns-grid button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(26, 140, 78, 0.4);
+}
