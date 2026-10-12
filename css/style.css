@@ -7686,3 +7686,128 @@ input[type="submit"] {
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(26, 140, 78, 0.4);
 }
+
+/* ==========================================================================
+   CSR PAGE SPONSORS RUNNING LOGO STRIP & GRATITUDE SECTION
+   ========================================================================== */
+.csr-sponsors-strip-section {
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  padding: 4.5rem 0 3.75rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.csr-marquee-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 1.25rem 0 1.5rem;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.csr-marquee-container:hover .csr-marquee-track {
+  animation-play-state: paused;
+}
+
+.csr-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1.75rem;
+  animation: csrLogoMarquee 35s linear infinite;
+  will-change: transform;
+}
+
+@keyframes csrLogoMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.csr-sponsor-logo-card {
+  flex-shrink: 0;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1rem 1.6rem;
+  min-width: 220px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.csr-sponsor-logo-card:hover {
+  transform: translateY(-6px);
+  border-color: #1A8C4E;
+  box-shadow: 0 12px 28px rgba(26, 140, 78, 0.14);
+}
+
+.csr-sponsor-logo-img {
+  max-height: 52px;
+  max-width: 155px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.csr-sponsor-logo-card:hover .csr-sponsor-logo-img {
+  transform: scale(1.05);
+}
+
+.csr-sponsor-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.csr-appreciation-banner {
+  margin-top: 2.75rem;
+  background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 50%, #FFFBEB 100%);
+  border: 1.5px solid #A7F3D0;
+  border-radius: 20px;
+  padding: 2.25rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+  box-shadow: 0 8px 30px rgba(16, 185, 129, 0.08);
+}
+
+@media (max-width: 768px) {
+  .csr-sponsors-strip-section {
+    padding: 3.25rem 0 2.5rem;
+  }
+
+  .csr-sponsor-logo-card {
+    min-width: 190px;
+    height: 100px;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .csr-sponsor-logo-img {
+    max-height: 46px;
+    max-width: 135px;
+  }
+
+  .csr-appreciation-banner {
+    padding: 1.6rem 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
