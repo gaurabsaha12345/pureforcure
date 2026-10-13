@@ -7811,3 +7811,138 @@ input[type="submit"] {
     align-items: flex-start;
   }
 }
+
+/* ============================================================
+   GALLERY TAGS & DATA STAT TAGS - HIGH VISIBILITY (WHITE BG)
+   ============================================================ */
+
+/* 1. Gallery Pill Tags (Top of Hero Sections across all gallery pages) */
+.gp-tag,
+.gallery-hero-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  background: #FFFFFF !important;
+  color: #1A8C4E !important;
+  padding: 0.45rem 1.15rem !important;
+  border-radius: 25px !important;
+  font-size: 0.88rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 1rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14) !important;
+  letter-spacing: 0.02em !important;
+}
+
+.gp-tag i,
+.gallery-hero-tag i {
+  color: #1A8C4E !important;
+}
+
+/* 2. Photo Card Badges in Gallery Grids */
+.gallery-badge {
+  display: inline-block !important;
+  background: #FFFFFF !important;
+  color: #1A8C4E !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  padding: 0.35rem 0.85rem !important;
+  border-radius: 20px !important;
+  margin-bottom: 0.5rem !important;
+  align-self: flex-start !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16) !important;
+}
+
+/* 3. Hero Data Tags / Live Stats Boxes */
+.gp-stat-item {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  border-radius: 14px !important;
+  padding: 0.85rem 1.6rem !important;
+  text-align: center !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.gp-stat-item:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+.gp-stat-num {
+  font-size: 1.9rem !important;
+  font-weight: 800 !important;
+  color: #1A8C4E !important; /* Emerald Green */
+  display: block !important;
+  line-height: 1.1 !important;
+  font-family: var(--font-heading, inherit) !important;
+}
+
+.gp-stat-lbl {
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #C2410C !important; /* Rich Saffron */
+  font-weight: 800 !important;
+  margin-top: 0.3rem !important;
+  display: block !important;
+}
+
+/* Alternating Saffron and Green on Data Tag Cards for Rich Visual Contrast */
+.gp-stats-flex .gp-stat-item:nth-child(1) .gp-stat-num {
+  color: #1A8C4E !important; /* Green */
+}
+.gp-stats-flex .gp-stat-item:nth-child(1) .gp-stat-lbl {
+  color: #C2410C !important; /* Saffron */
+}
+.gp-stats-flex .gp-stat-item:nth-child(2) .gp-stat-num {
+  color: #D97706 !important; /* Saffron */
+}
+.gp-stats-flex .gp-stat-item:nth-child(2) .gp-stat-lbl {
+  color: #166534 !important; /* Green */
+}
+.gp-stats-flex .gp-stat-item:nth-child(3) .gp-stat-num {
+  color: #1A8C4E !important; /* Green */
+}
+.gp-stats-flex .gp-stat-item:nth-child(3) .gp-stat-lbl {
+  color: #C2410C !important; /* Saffron */
+}
+
+/* 4. Donor Card Detail Tags (Sanctified Meals & Date Tags) */
+.donor-tag-meal {
+  background: #FFFFFF !important;
+  color: #1A8C4E !important;
+  border: 1px solid #BBF7D0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+.donor-tag-meal i {
+  color: #1A8C4E !important;
+}
+
+.donor-tag-date {
+  background: #FFFFFF !important;
+  color: #D97706 !important;
+  border: 1px solid #FED7AA !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+.donor-tag-date i {
+  color: #D97706 !important;
+}
+

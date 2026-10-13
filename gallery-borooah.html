@@ -121,14 +121,18 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(255,255,255,0.12);
-      color: var(--primary);
-      padding: 0.4rem 1rem;
+      background: #FFFFFF !important;
+      color: #1A8C4E !important;
+      padding: 0.45rem 1.15rem;
       border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-size: 0.88rem;
+      font-weight: 800;
       margin-bottom: 1rem;
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.9);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+    .gp-tag i {
+      color: #1A8C4E !important;
     }
     .gp-stats-flex {
       display: flex;
@@ -138,16 +142,17 @@
       flex-wrap: wrap;
     }
     .gp-stat-item {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
+      background: #FFFFFF !important;
+      border: 1px solid rgba(255,255,255,0.9);
       border-radius: 12px;
       padding: 0.75rem 1.5rem;
       text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
     }
     .gp-stat-num {
-      font-size: 1.8rem;
+      font-size: 1.85rem;
       font-weight: 800;
-      color: var(--primary);
+      color: #1A8C4E; /* Green */
       display: block;
       line-height: 1.1;
     }
@@ -155,8 +160,21 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: rgba(255,255,255,0.8);
-      margin-top: 0.2rem;
+      color: #C2410C; /* Saffron */
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+    .gp-stats-flex .gp-stat-item:nth-child(2) .gp-stat-num {
+      color: #D97706; /* Saffron */
+    }
+    .gp-stats-flex .gp-stat-item:nth-child(2) .gp-stat-lbl {
+      color: #166534; /* Green */
+    }
+    .gp-stats-flex .gp-stat-item:nth-child(3) .gp-stat-num {
+      color: #1A8C4E; /* Green */
+    }
+    .gp-stats-flex .gp-stat-item:nth-child(3) .gp-stat-lbl {
+      color: #C2410C; /* Saffron */
     }
     .cal-bar-wrap {
       background: #F8FAFC;
@@ -628,9 +646,9 @@
         <div class="footer-part-acharya">
           <div class="acharya-portrait-wrap">
             <img src="images/prabhupada/prabhupada.png"
-              alt="His Divine Grace VishwaGURU A.C. Bhaktivedanta Swami Prabhupada" class="acharya-img" loading="lazy">
+              alt="His Divine Grace Vishwaguru A.C. Bhaktivedanta Swami Prabhupada" class="acharya-img" loading="lazy">
             <div>
-              <p class="acharya-title">His Divine Grace <b>VishwaGURU A.C. Bhaktivedanta Swami Prabhupada</b></p>
+              <p class="acharya-title">His Divine Grace <b>Vishwaguru A.C. Bhaktivedanta Swami Prabhupada</b></p>
               <p class="acharya-subtitle">Founder-Acharya of the Worldwide Hare Krishna Movement</p>
             </div>
           </div>
@@ -823,7 +841,7 @@
               </div>
             </div>
             <div style="display:flex; align-items:center; gap:0.6rem;">
-              <span style="background:#FEF3C7; color:#B45309; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:20px;">
+              <span style="background:#FFFFFF; color:#D97706; border:1px solid #FED7AA; box-shadow:0 2px 6px rgba(0,0,0,0.04); font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:20px;">
                 <i class="fa-solid fa-calendar-check"></i> ${d.date}
               </span>
             </div>

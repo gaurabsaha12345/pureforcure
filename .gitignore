@@ -4,4 +4,5 @@ Thumbs.db
 node_modules/
 images/gallery/bbci_gallery/BBCI Inauguration.mp4
 scratch/
+*.zip
 
