@@ -1077,6 +1077,7 @@ function _renderContributorsHtml(container, donations, causeKey) {
   donations.forEach((d, idx) => {
     const initial = (d.name || 'D').charAt(0).toUpperCase();
     const isVeryRecent = d.timeAgo === 'Just now';
+    const showCause = causeKey === 'all';
     html += `
       <div class="contributor-row" style="${isVeryRecent ? 'background:#F0FDF4; border-left:4px solid #16A34A;' : ''}">
         <div>
@@ -1089,9 +1090,7 @@ function _renderContributorsHtml(container, donations, causeKey) {
             ${isVeryRecent ? '<span style="background:#DCFCE7; color:#15803D; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #86EFAC;"><i class="fa-solid fa-sparkles"></i> New Seva</span>' : ''}
           </div>
           <div class="contrib-time">
-            <i class="fa-regular fa-clock"></i> ${d.timeAgo || 'Recent'} &bull; 
-            <span style="color:#1A8C4E; font-weight:700;">${d.causeName || 'Hospital Food Distribution'}</span>
-            ${d.paymentMode ? ` &bull; <span style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">${d.paymentMode}</span>` : ''}
+            <i class="fa-regular fa-clock"></i> ${d.timeAgo || 'Recent'}${showCause && d.causeName ? ` &bull; <span style="color:#1A8C4E; font-weight:700;">${d.causeName}</span>` : ''}${d.paymentMode ? ` &bull; <span style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">${d.paymentMode}</span>` : ''}
             <span style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
           </div>
         </div>
