@@ -1,7 +1,7 @@
 -- ==============================================================================
 -- PURE FOR CURE (HARE KRISHNA MANDIR GUWAHATI)
 -- SUPABASE SCHEMA & AUTOMATION FOR NEWSLETTER & BLOG POST NOTIFICATIONS
--- Project URL: https://icadpdzapgkxqbvqldzy.supabase.co
+-- Project URL: https://jhlxeyegakyvxtxqvrsz.supabase.co
 -- ==============================================================================
 
 -- 1. Create Newsletter Subscribers Table

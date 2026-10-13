@@ -32,8 +32,8 @@ const RAZORPAY_ENGINE = {
 // SUPABASE BACKEND CONNECTOR & STORAGE (OFFICIAL PURE FOR CURE)
 // =============================================================
 const SUPABASE_BACKEND = {
-  DEFAULT_URL: 'https://icadpdzapgkxqbvqldzy.supabase.co',
-  DEFAULT_KEY: 'sb_publishable_ixhOWTq03Zm4gP6eChBhDg_0RYsmO7_',
+  DEFAULT_URL: 'https://jhlxeyegakyvxtxqvrsz.supabase.co',
+  DEFAULT_KEY: 'sb_publishable_o25ZPIgjLnQupz-mR52nLQ_n6d3PpN5',
   getUrl: function() {
     let raw = localStorage.getItem('pfc_supabase_url') || this.DEFAULT_URL;
     return raw.trim().replace(/\/+$/, '').replace(/\/rest\/v1\/?$/, '');
@@ -63,6 +63,28 @@ const SUPABASE_BACKEND = {
   },
   isConfigured: function() {
     return Boolean(this.getUrl());
+  },
+  checkConnection: async function() {
+    const url = this.getUrl();
+    const key = this.getKey();
+    if (!url || !key) return { connected: false, error: 'Missing Supabase URL or Anon Key' };
+    const startTime = Date.now();
+    try {
+      const resp = await fetch(`${url}/rest/v1/donations?select=id&limit=1`, {
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`,
+          'Accept': 'application/json'
+        }
+      });
+      const latencyMs = Date.now() - startTime;
+      if (resp.ok) {
+        return { connected: true, status: resp.status, latencyMs };
+      }
+      return { connected: false, status: resp.status, error: resp.statusText };
+    } catch (e) {
+      return { connected: false, error: e.message };
+    }
   },
   getRecords: async function(table, queryParams = '') {
     const url = this.getUrl();
@@ -120,10 +142,11 @@ const SUPABASE_BACKEND = {
         email: data.email || '',
         phone: data.phone || '',
         amount: Number(data.amount) || 0,
-        location: data.location || '',
+        location: (data.location || '').toLowerCase().trim(),
         method: data.method || 'Razorpay',
         status: data.status || 'Success',
         txn_id: data.txn_id || data.payment_id || '',
+        date: data.date || new Date().toISOString().split('T')[0],
         notes: data.notes || ''
       };
     } else if (table === 'newsletter_subscribers' || table === 'subscribers') {
@@ -221,6 +244,7 @@ const NEWSLETTER_AUTOMATION = {
       try {
         if (typeof window !== 'undefined' && window.emailjs && EMAILJS_CONFIG.serviceId) {
           await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+            donor_email: sub.email,
             to_email: sub.email,
             to_name: sub.name || 'Pure for Cure Supporter',
             donor_name: sub.name || 'Pure for Cure Supporter',
@@ -347,6 +371,7 @@ function initFooterNewsletter() {
       if (typeof window !== 'undefined' && window.emailjs && EMAILJS_CONFIG.serviceId) {
         try {
           window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+            donor_email: subscriberRecord.email,
             to_email: subscriberRecord.email,
             to_name: subscriberRecord.name,
             donor_name: subscriberRecord.name,
@@ -461,7 +486,7 @@ function updateRzpKeyDisplay() {
 
 // Location and cause mapping helpers
 function mapCauseKeyToLocation(causeKey) {
-  if (!causeKey) return '';
+  if (!causeKey) return 'general';
   const k = causeKey.toLowerCase().trim();
   if (k === 'aiims') return 'aiims';
   if (k === 'gmch') return 'gmch';
@@ -471,7 +496,13 @@ function mapCauseKeyToLocation(causeKey) {
   if (k === 'vehicle') return 'vehicle';
   if (k === 'kitchen') return 'kitchen';
   if (k === 'birthday') return 'birthday';
-  return '';
+  if (k === 'vessels' || k === 'vessel') return 'vessels';
+  if (k === 'programs') return 'programs';
+  if (k === 'stories') return 'stories';
+  if (k === 'volunteer') return 'volunteer';
+  if (k === 'faq') return 'faq';
+  if (k === 'general' || k === 'all') return 'general';
+  return k;
 }
 
 function getCauseNameFromLocation(loc) {
@@ -483,27 +514,31 @@ function getCauseNameFromLocation(loc) {
   if (l === 'assam-flood-relief' || l === 'flood') return 'Assam Flood Relief Seva';
   if (l === 'kiosk') return 'Hospital Kiosk Partnership';
   if (l === 'vehicle') return 'Distribution Vehicle Seva';
-  if (l === 'kitchen') return 'Kitchen Groceries Seva';
+  if (l === 'kitchen') return 'Kitchen Groceries & Vegetables Seva';
   if (l === 'birthday') return 'Birthday / Anniversary Seva';
+  if (l === 'vessels' || l === 'vessel') return 'Food Serving Vessels & Utensils';
+  if (l === 'programs') return 'Programs & Mega Distribution Seva';
+  if (l === 'stories') return 'Caregiver Meals Distribution';
+  if (l === 'volunteer') return 'Volunteer Food Relief Seva';
+  if (l === 'faq') return 'Hospital Food Distribution';
+  if (l === 'general' || l === 'all') return 'Hospital Caregiver Food Distribution';
   return 'Hospital Food Distribution';
 }
 
 function matchesCauseLocation(recordLocation, pageCauseKey) {
-  if (!pageCauseKey || pageCauseKey === 'all' || pageCauseKey === 'general') {
-    return true; // show all on general pages
+  if (!pageCauseKey || pageCauseKey === 'all') {
+    return true; // show all on general all-donations page (donate.html)
   }
   const pageK = pageCauseKey.toLowerCase().trim();
   const recLoc = (recordLocation || '').toLowerCase().trim();
 
-  if (pageK === 'aiims') return recLoc === 'aiims';
-  if (pageK === 'gmch') return recLoc === 'gmch';
-  if (pageK === 'bbci' || pageK === 'borooah') return recLoc === 'bbci' || recLoc === 'borooah';
-  if (pageK === 'flood' || pageK === 'assam-flood-relief') return recLoc === 'flood' || recLoc === 'assam-flood-relief';
-  if (pageK === 'kiosk') return recLoc === 'kiosk';
-  if (pageK === 'vehicle') return recLoc === 'vehicle';
-  if (pageK === 'kitchen') return recLoc === 'kitchen';
-  if (pageK === 'birthday') return recLoc === 'birthday';
-  return recLoc === pageK;
+  // If looking for a specific cause, legacy records without location do not match
+  if (!recLoc) return false;
+
+  const normPage = mapCauseKeyToLocation(pageK);
+  const normRec = mapCauseKeyToLocation(recLoc);
+
+  return normPage === normRec;
 }
 
 function formatRelativeDate(isoOrDateStr) {
@@ -513,8 +548,13 @@ function formatRelativeDate(isoOrDateStr) {
     if (isNaN(d.getTime())) return String(isoOrDateStr);
     const now = new Date();
     const diffMs = now.getTime() - d.getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    if (diffDays <= 0) return 'Today';
+    if (diffMinutes < 5) return 'Just now';
+    if (diffMinutes < 60) return `${diffMinutes}m ago`;
+    if (diffHours < 24 && d.getDate() === now.getDate()) return `${diffHours}h ago`;
+    if (diffDays <= 0 || (diffDays === 1 && d.getDate() === now.getDate())) return 'Today';
     if (diffDays === 1) return 'Yesterday';
     if (diffDays < 7) return `${diffDays} days ago`;
     return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -697,26 +737,77 @@ async function sendEmailReceipt(donor, meta, receiptUrl) {
   }
   try {
     const formattedAmount = '₹' + Number(donor.amount).toLocaleString('en-IN');
+    const emailSubject = `Official 80G Tax Exemption Donation Receipt (${meta.refNo}) - Pure for Cure`;
+    const emailBody = [
+      `Hare Krishna, Respected ${donor.name}!`,
+      ``,
+      `Please accept our heartfelt gratitude and humble greetings from Pure for Cure (Hare Krishna Movement, Guwahati).`,
+      ``,
+      `We have gratefully received your kind contribution of ${formattedAmount} towards "${donor.causeName}". Your selfless support directly sponsors warm, wholesome, nutritious Sattvik meals for patients and their devoted attendants outside government hospitals across Assam.`,
+      ``,
+      `--------------------------------------------------`,
+      `OFFICIAL SECTION 80G DONATION RECEIPT SUMMARY`,
+      `--------------------------------------------------`,
+      `• Receipt Number: ${meta.refNo}`,
+      `• Receipt Date: ${meta.dateStr}`,
+      `• Contributor Name: ${donor.name}`,
+      `• Contributor Contact: ${donor.phone || 'N/A'}`,
+      `• Contributor Email: ${donor.email}`,
+      `• Contributor PAN: ${donor.pan || 'NOT_PROVIDED'}`,
+      `• Contribution Amount: ${formattedAmount}`,
+      `• Payment Gateway Txn ID: ${meta.txnId}`,
+      `• Seva Initiative: ${donor.causeName}`,
+      `• Tax Exemption: 50% Tax Exemption u/s 80G(5)(vi) of Income Tax Act`,
+      `• 80G Order No: 14/80G/CIT/GHY-II/2011-12/4701-05 DTD:29/02/2012`,
+      `• Institution PAN: AAATH8807J`,
+      `--------------------------------------------------`,
+      receiptUrl ? `📄 Official Signed 80G PDF Receipt Download:\n${receiptUrl}\n` : '',
+      `Your noble support brings critical nourishment and comfort to economically vulnerable caregivers staying day and night at hospital corridors of AIIMS Guwahati, GMCH, and Dr. B. Borooah Cancer Institute (BBCI).`,
+      ``,
+      `HELPLINE & SUPPORT DESK:`,
+      `📞 Phone: +91 7099039770 / +91 9678007302`,
+      `✉️ Email: info@pureforcure.org | info@hkmguwahati.org`,
+      `🏛️ Address: c/o Hare Krishna Movement, Ghorajan, Near IIT Guwahati, North Guwahati, Assam - 781031`,
+      ``,
+      `May Lord Sri Krishna shower His supreme blessings of health, joy, and peace upon you and your loved ones.`,
+      ``,
+      `With heartfelt gratitude & prayers,`,
+      `Janardan Dasa (President)`,
+      `Pure for Cure - Hare Krishna Movement Guwahati`,
+      `https://pureforcure.org`
+    ].filter(Boolean).join('\n');
+
     await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
-      name: donor.name,
-      donor_name: donor.name,
-      to_name: donor.name,
-      donor_email: donor.email,
+      donor_email: donor.email, // Required by EmailJS template recipient field
       to_email: donor.email,
       email: donor.email,
+      recipient_email: donor.email,
+      to_name: donor.name,
+      donor_name: donor.name,
+      name: donor.name,
       amount: formattedAmount,
       donation_amount: formattedAmount,
+      formatted_amount: formattedAmount,
+      receipt_no: meta.refNo,
+      ref_no: meta.refNo,
+      receipt_number: meta.refNo,
       txn_id: meta.txnId,
       payment_id: meta.txnId,
-      receipt_no: meta.refNo,
-      receipt_url: receiptUrl || 'https://pureforcure.org/donate.html',
-      pdf_url: receiptUrl || 'https://pureforcure.org/donate.html',
+      transaction_id: meta.txnId,
+      date: meta.dateStr,
+      receipt_date: meta.dateStr,
       cause: donor.causeName,
       cause_name: donor.causeName,
-      date: meta.dateStr,
       pan: donor.pan || 'NOT_PROVIDED',
+      donor_pan: donor.pan || 'NOT_PROVIDED',
       phone: donor.phone || '',
-      message: 'Hare Krishna! Thank you for your generous contribution to Pure for Cure.'
+      donor_phone: donor.phone || '',
+      receipt_url: receiptUrl || 'https://pureforcure.org/donate.html',
+      pdf_url: receiptUrl || 'https://pureforcure.org/donate.html',
+      download_link: receiptUrl || 'https://pureforcure.org/donate.html',
+      subject: emailSubject,
+      message: emailBody,
+      notes: `80G Donation Receipt issued on ${meta.dateStr} for ${donor.name}`
     });
     console.log('✓ Automated email receipt dispatched via EmailJS to:', donor.email, 'for donor:', donor.name, 'amount:', formattedAmount);
     return true;
@@ -788,10 +879,13 @@ async function completeSuccessfulDonation(paymentId) {
   const yearMonth = now.getFullYear().toString() + String(now.getMonth() + 1).padStart(2, '0');
   const rNum = 'PFC-DR-' + yearMonth + '-' + Math.floor(100000 + Math.random() * 900000);
   const rDate = now.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  const locationCode = mapCauseKeyToLocation(currentDonationData ? currentDonationData.causeKey : '');
 
-  // Save to LocalStorage immediately
+  // 1. Save to LocalStorage immediately with normalized location
   saveDonation({
     ...currentDonationData,
+    location: locationCode,
+    causeKey: currentDonationData.causeKey,
     paymentId: paymentId,
     txn_id: paymentId,
     timeAgo: 'Just now',
@@ -800,7 +894,7 @@ async function completeSuccessfulDonation(paymentId) {
     dateStr: rDate
   });
 
-  // Populate & open 80G receipt modal
+  // 2. Populate & open 80G receipt modal
   if (document.getElementById('receipt-no')) document.getElementById('receipt-no').textContent = rNum;
   if (document.getElementById('receipt-date')) document.getElementById('receipt-date').textContent = rDate;
   if (document.getElementById('receipt-donor-name')) document.getElementById('receipt-donor-name').textContent = currentDonationData.name;
@@ -811,16 +905,21 @@ async function completeSuccessfulDonation(paymentId) {
 
   if (receiptModal) receiptModal.classList.add('active');
 
-  // Asynchronous background workflow: PDF Generation -> Supabase Storage Upload -> EmailJS Email Receipt -> Supabase DB Record
+  // 3. IMMEDIATELY refresh recent donations strictly below this particular form!
+  const contribEl = document.getElementById('dynamic-recent-contributors');
+  const targetCauseKey = contribEl ? (contribEl.getAttribute('data-cause-key') || currentDonationData.causeKey || 'all') : (currentDonationData.causeKey || 'all');
+  renderRecentDonations('dynamic-recent-contributors', targetCauseKey);
+  renderFooterRecentDonations();
+  updateMonthlyTargetTracker();
+
+  // 4. Asynchronous background workflow: PDF Generation -> Supabase Storage Upload -> EmailJS Email Receipt -> Supabase DB Record
   (async () => {
     let receiptUrl = '';
     let pdfBlob = null;
     try {
       pdfBlob = await generateReceiptPdfBlob(currentDonationData, { refNo: rNum, dateStr: rDate, txnId: paymentId });
       if (pdfBlob) {
-        receiptUrl = await uploadPdfReceiptToSupabase(pdfBlob, rNum) || '';
-        
-        // Wire up download button in modal
+        // Wire up download button in modal immediately
         const dlBtn = document.getElementById('receipt-download-pdf-btn');
         if (dlBtn) {
           dlBtn.onclick = () => {
@@ -833,33 +932,48 @@ async function completeSuccessfulDonation(paymentId) {
           };
           dlBtn.style.display = 'inline-flex';
         }
+
+        // Upload to Supabase Storage
+        receiptUrl = await uploadPdfReceiptToSupabase(pdfBlob, rNum) || '';
       }
     } catch (e) {
       console.warn('PDF generation/upload issue:', e);
     }
 
-    // Send Email Receipt automatically via EmailJS
-    sendEmailReceipt(currentDonationData, { refNo: rNum, dateStr: rDate, txnId: paymentId }, receiptUrl);
+    // Sync Record to Supabase Database (donations table)
+    try {
+      await SUPABASE_BACKEND.insertRecord('donations', {
+        name: currentDonationData.name,
+        email: currentDonationData.email,
+        phone: currentDonationData.phone,
+        amount: parseInt(currentDonationData.amount),
+        location: locationCode,
+        method: currentDonationData.paymentMode || 'Razorpay',
+        status: 'Success',
+        txn_id: paymentId,
+        date: new Date().toISOString().split('T')[0],
+        notes: `PAN: ${currentDonationData.pan || 'N/A'} | Cause: ${currentDonationData.causeName} | Ref: ${rNum}${receiptUrl ? ' | Receipt: ' + receiptUrl : ''}`
+      });
+    } catch (dbErr) {
+      console.warn('Supabase DB insert warning:', dbErr);
+    }
 
-    // Sync Record to Supabase Database (aligned with schema)
-    const locationCode = mapCauseKeyToLocation(currentDonationData.causeKey);
-    await SUPABASE_BACKEND.insertRecord('donations', {
-      name: currentDonationData.name,
-      email: currentDonationData.email,
-      phone: currentDonationData.phone,
-      amount: parseInt(currentDonationData.amount),
-      location: locationCode,
-      method: 'Razorpay',
-      status: 'Success',
-      txn_id: paymentId,
-      notes: `PAN: ${currentDonationData.pan || 'N/A'} | Cause: ${currentDonationData.causeName} | Ref: ${rNum}${receiptUrl ? ' | Receipt: ' + receiptUrl : ''}`
-    });
+    // Send Email Receipt automatically via EmailJS with suitable response template
+    try {
+      await sendEmailReceipt(currentDonationData, { refNo: rNum, dateStr: rDate, txnId: paymentId }, receiptUrl);
+    } catch (mailErr) {
+      console.warn('Email dispatch warning:', mailErr);
+    }
 
-    // Refresh live donations cache & re-render contributors strictly below this form
-    await fetchSupabaseDonations(true);
-    renderRecentDonations('dynamic-recent-contributors', currentDonationData.causeKey);
-    renderFooterRecentDonations();
-    updateMonthlyTargetTracker();
+    // Refresh live donations cache from Supabase & re-render contributors strictly below this form
+    try {
+      await fetchSupabaseDonations(true);
+      renderRecentDonations('dynamic-recent-contributors', targetCauseKey);
+      renderFooterRecentDonations();
+      updateMonthlyTargetTracker();
+    } catch (refreshErr) {
+      console.warn('Post-donation refresh warning:', refreshErr);
+    }
   })();
 }
 
@@ -891,9 +1005,11 @@ async function renderRecentDonations(containerId, causeKey) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
+  const effectiveCauseKey = causeKey || container.getAttribute('data-cause-key') || 'all';
+
   // 1. Render immediately from local session donations if present
-  const localDonations = getStoredDonations(causeKey);
-  _renderContributorsHtml(container, localDonations, causeKey);
+  const localDonations = getStoredDonations(effectiveCauseKey);
+  _renderContributorsHtml(container, localDonations, effectiveCauseKey);
 
   // 2. Fetch live from Supabase table `donations`
   try {
@@ -923,15 +1039,19 @@ async function renderRecentDonations(containerId, causeKey) {
       });
 
       remoteFormatted.forEach(r => {
-        if (!r.paymentId || !seenIds.has(r.paymentId)) {
-          if (r.paymentId) seenIds.add(r.paymentId);
+        const id = r.paymentId || r.txn_id;
+        if (!id || !seenIds.has(id)) {
+          if (id) seenIds.add(id);
           combined.push(r);
         }
       });
 
+      // Sort newest first
+      combined.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
       // Filter strictly for this particular causeKey!
-      const filtered = combined.filter(d => matchesCauseLocation(d.location || d.causeKey, causeKey));
-      _renderContributorsHtml(container, filtered, causeKey);
+      const filtered = combined.filter(d => matchesCauseLocation(d.location || d.causeKey, effectiveCauseKey));
+      _renderContributorsHtml(container, filtered, effectiveCauseKey);
     }
   } catch (err) {
     console.warn('Error fetching live donors:', err);
@@ -956,18 +1076,23 @@ function _renderContributorsHtml(container, donations, causeKey) {
   let html = '<div class="contributors-list">';
   donations.forEach((d, idx) => {
     const initial = (d.name || 'D').charAt(0).toUpperCase();
+    const isVeryRecent = d.timeAgo === 'Just now';
     html += `
-      <div class="contributor-row">
+      <div class="contributor-row" style="${isVeryRecent ? 'background:#F0FDF4; border-left:4px solid #16A34A;' : ''}">
         <div>
           <div class="contrib-initial">${initial}.</div>
           <div class="contrib-avatar">${initial}<span class="contrib-rank">${idx + 1}</span></div>
         </div>
         <div class="contrib-info">
-          <div class="contrib-name-line">${d.name} &nbsp;Donated <span class="contrib-amount">&#8377;${parseInt(d.amount).toLocaleString('en-IN')}.00</span></div>
+          <div class="contrib-name-line">
+            <strong>${d.name}</strong> &nbsp;Donated <span class="contrib-amount">&#8377;${parseInt(d.amount).toLocaleString('en-IN')}.00</span>
+            ${isVeryRecent ? '<span style="background:#DCFCE7; color:#15803D; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #86EFAC;"><i class="fa-solid fa-sparkles"></i> New Seva</span>' : ''}
+          </div>
           <div class="contrib-time">
             <i class="fa-regular fa-clock"></i> ${d.timeAgo || 'Recent'} &bull; 
             <span style="color:#1A8C4E; font-weight:700;">${d.causeName || 'Hospital Food Distribution'}</span>
             ${d.paymentMode ? ` &bull; <span style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">${d.paymentMode}</span>` : ''}
+            <span style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
           </div>
         </div>
       </div>
