@@ -1016,17 +1016,24 @@ async function renderRecentDonations(containerId, causeKey) {
     const remoteList = await fetchSupabaseDonations();
     if (remoteList && remoteList.length > 0) {
       // Map remote rows to contributor objects
-      const remoteFormatted = remoteList.map(r => ({
-        name: r.name,
-        amount: r.amount,
-        causeName: getCauseNameFromLocation(r.location),
-        location: r.location,
-        timeAgo: formatRelativeDate(r.date || r.created_at),
-        timestamp: r.created_at ? new Date(r.created_at).getTime() : 0,
-        paymentMode: r.method || 'Razorpay',
-        paymentId: r.txn_id,
-        causeKey: r.location
-      }));
+      const remoteFormatted = remoteList.map(r => {
+        let extractedCause = '';
+        if (r.notes && r.notes.includes('Cause: ')) {
+          const match = r.notes.match(/Cause:\s*([^|]+)/);
+          if (match && match[1]) extractedCause = match[1].trim();
+        }
+        return {
+          name: r.name,
+          amount: r.amount,
+          causeName: extractedCause || getCauseNameFromLocation(r.location),
+          location: r.location,
+          timeAgo: formatRelativeDate(r.date || r.created_at),
+          timestamp: r.created_at ? new Date(r.created_at).getTime() : 0,
+          paymentMode: r.method || 'Razorpay',
+          paymentId: r.txn_id,
+          causeKey: r.location
+        };
+      });
 
       // Deduplicate: merge local and remote by payment ID
       const seenIds = new Set();
@@ -2231,12 +2238,17 @@ document.addEventListener('DOMContentLoaded', () => {
                           form.querySelector('#home-calc-amount-hidden')?.value || 
                           (form.querySelector('#meal-count-input, .meal-count-input')?.value ? form.querySelector('#meal-count-input, .meal-count-input').value * COST_PER_MEAL : '2000');
       const progSelect = form.querySelector('#prog-initiative-select');
-      const causeName = (progSelect && progSelect.selectedOptions && progSelect.selectedOptions[0]) ?
+      const locationSelect = form.querySelector('#donation-location-select');
+      const causeName = (locationSelect && locationSelect.selectedOptions && locationSelect.selectedOptions[0]) ?
+                        locationSelect.selectedOptions[0].text :
+                        ((progSelect && progSelect.selectedOptions && progSelect.selectedOptions[0]) ?
                         progSelect.selectedOptions[0].text :
                         (form.querySelector('.cause-name-hidden')?.value || 
                         form.querySelector('#home-cause-select')?.value || 
-                        form.querySelector('#program-select')?.value || 'Hospital Caregiver Food Distribution');
-      const causeKeyVal = (progSelect && progSelect.value) ? progSelect.value : (form.querySelector('.cause-key-hidden')?.value || 'general');
+                        form.querySelector('#program-select')?.value || 'Hospital Caregiver Food Distribution'));
+      const causeKeyVal = (locationSelect && locationSelect.value) ? locationSelect.value :
+                          ((progSelect && progSelect.value) ? progSelect.value : 
+                          (form.querySelector('.cause-key-hidden')?.value || 'general'));
       const paymentMode = form.querySelector('.selected-gateway-mode')?.value || 'UPI';
 
       currentDonationData = {

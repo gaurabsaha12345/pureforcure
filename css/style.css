@@ -7946,3 +7946,201 @@ input[type="submit"] {
   color: #D97706 !important;
 }
 
+/* ============================================================
+   CSR PAGE: 4-TIER BRAND PARTNERS PYRAMID SHOWCASE
+   Aligned one above another in 4 steps forming a pyramid shape
+   ============================================================ */
+.csr-pyramid-showcase {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%);
+  border: 1.5px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 2.25rem 1.75rem;
+  box-shadow: 0 10px 32px rgba(15, 35, 24, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.csr-pyramid-showcase::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(26, 140, 78, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.csr-pyramid-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.csr-pyramid-tag {
+  background: #FEF3C7;
+  color: #92400E;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #FDE68A;
+  margin-bottom: 0.5rem;
+}
+
+.csr-pyramid-title {
+  font-size: 1.5rem;
+  color: #0F172A;
+  margin: 0.25rem 0 0.35rem 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
+}
+
+.csr-pyramid-desc {
+  font-size: 0.88rem;
+  color: #64748B;
+  margin: 0 auto;
+  max-width: 380px;
+  line-height: 1.5;
+}
+
+/* Pyramid Wrapper with visual triangular perspective */
+.csr-pyramid-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  position: relative;
+}
+
+/* Base Tier Styling */
+.csr-pyramid-tier {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+/* Tier Specific Widths to produce authentic Pyramid Silhouette */
+.csr-pyramid-tier-1 {
+  max-width: 220px; /* Step 1 Apex (Narrowest) */
+}
+
+.csr-pyramid-tier-2 {
+  max-width: 320px; /* Step 2 */
+}
+
+.csr-pyramid-tier-3 {
+  max-width: 400px; /* Step 3 */
+}
+
+.csr-pyramid-tier-4 {
+  max-width: 470px; /* Step 4 Base (Widest) */
+}
+
+/* Individual Brand Card Inside Tier */
+.csr-pyramid-card {
+  flex: 1 1 0;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 0.75rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 78px;
+  text-align: center;
+  position: relative;
+}
+
+.csr-pyramid-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: #1A8C4E;
+  box-shadow: 0 8px 22px rgba(26, 140, 78, 0.16);
+  z-index: 2;
+}
+
+/* Apex card special accent */
+.csr-pyramid-tier-1 .csr-pyramid-card {
+  border-color: #FBBF24;
+  background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 100%);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.12);
+}
+
+.csr-pyramid-card img {
+  max-height: 40px;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.csr-pyramid-tier-1 .csr-pyramid-card img {
+  max-height: 48px;
+}
+
+.csr-pyramid-card:hover img {
+  transform: scale(1.06);
+}
+
+.csr-pyramid-card-name {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #334155;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.csr-pyramid-tier-1 .csr-pyramid-card-name {
+  color: #92400E;
+  font-weight: 800;
+}
+
+/* Pyramid Step Badge */
+.csr-pyramid-step-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 1.25rem;
+  margin-top: 0.75rem;
+  border-top: 1px dashed #CBD5E1;
+  font-size: 0.8rem;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.csr-pyramid-step-label span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+@media (max-width: 992px) {
+  .csr-pyramid-tier-1,
+  .csr-pyramid-tier-2,
+  .csr-pyramid-tier-3,
+  .csr-pyramid-tier-4 {
+    max-width: 100%;
+  }
+}
+
+
