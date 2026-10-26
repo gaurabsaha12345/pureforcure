@@ -1,6 +1,7 @@
 /* Pure for Cure - Hare Krishna Movement Guwahati
- * Admin Dashboard Engine (v1.0)
+ * Admin Dashboard Engine (v2.0)
  * Real-time Supabase Data Sync, Razorpay Reconciliation, 80G Receipts & CSV/XLS Exports
+ * Added: Customer Section, Successful & Failed Payments, Bulk Actions, Search on all tables
  */
 
 const ADMIN_CONFIG = {
@@ -24,6 +25,8 @@ const AdminState = {
   searchQuery: '',
   locationFilter: 'all',
   statusFilter: 'all',
+  selectedDonationIds: new Set(),
+  customers: [],
   data: {
     donations: [],
     volunteers: [],
@@ -330,7 +333,13 @@ function handleRealtimeEvent(tableKey, payload) {
     // Format if donations
     if (tableKey === 'donations') {
       AdminState.data.donations.unshift(newRecord);
-      showToast(`🎉 New Donation Received: ₹${Number(newRecord.amount).toLocaleString('en-IN')} from ${newRecord.name}!`, 'donation');
+      const isSuccess = (newRecord.status || '').toLowerCase() === 'success';
+      if (isSuccess) {
+        showToast(`🎉 New Donation Received: ₹${Number(newRecord.amount).toLocaleString('en-IN')} from ${newRecord.name}!`, 'donation');
+      } else {
+        showToast(`⚠️ Payment Incomplete / Failed: ₹${Number(newRecord.amount).toLocaleString('en-IN')} (${newRecord.name})`, 'error');
+      }
+      buildCustomersData();
     } else if (tableKey === 'volunteers') {
       AdminState.data.volunteers.unshift(newRecord);
       showToast(`🤝 New Volunteer Application: ${newRecord.full_name}`, 'info');
@@ -353,11 +362,13 @@ function handleRealtimeEvent(tableKey, payload) {
     const idx = list.findIndex(item => item.id === payload.new.id);
     if (idx !== -1) {
       list[idx] = payload.new;
+      if (tableKey === 'donations') buildCustomersData();
       renderActiveTab();
       updateKPIs();
     }
   } else if (payload.eventType === 'DELETE') {
     AdminState.data[tableKey] = AdminState.data[tableKey].filter(item => item.id !== payload.old.id);
+    if (tableKey === 'donations') buildCustomersData();
     renderActiveTab();
     updateKPIs();
   }
@@ -421,6 +432,9 @@ async function loadAllDashboardData(silent = false) {
       AdminState.data.csr = csrRes.data;
     }
 
+    // Build Customers Data Aggregation
+    buildCustomersData();
+
     // Build Razorpay Reconciliation list
     buildRazorpayReconciliationData();
 
@@ -440,6 +454,62 @@ async function loadAllDashboardData(silent = false) {
   }
 }
 
+// ==============================================================================
+// CUSTOMER & DONOR DATA AGGREGATION
+// ==============================================================================
+function buildCustomersData() {
+  const map = new Map();
+
+  AdminState.data.donations.forEach(d => {
+    const rawEmail = (d.email || '').trim().toLowerCase();
+    const rawPhone = (d.phone || '').trim().replace(/[^0-9]/g, '');
+    const rawName = (d.name || 'Anonymous').trim();
+
+    const key = rawEmail || (rawPhone ? 'tel_' + rawPhone : 'name_' + rawName.toLowerCase());
+
+    if (!map.has(key)) {
+      map.set(key, {
+        key: key,
+        name: rawName,
+        email: d.email || 'N/A',
+        phone: d.phone || 'N/A',
+        pan: extractPanFromNotes(d.notes) || '',
+        address: cleanAddress(d.notes),
+        totalAmount: 0,
+        donationCount: 0,
+        successCount: 0,
+        failedCount: 0,
+        lastDonationDate: d.created_at || d.date,
+        payments: []
+      });
+    }
+
+    const customer = map.get(key);
+    if ((customer.name === 'Anonymous' || !customer.name) && rawName) customer.name = rawName;
+    if (!customer.pan) customer.pan = extractPanFromNotes(d.notes) || '';
+    if (!customer.address || customer.address === 'Guwahati, Assam, India') customer.address = cleanAddress(d.notes);
+
+    customer.payments.push(d);
+    customer.donationCount++;
+
+    const isSuccess = (d.status || '').toLowerCase() === 'success';
+    if (isSuccess) {
+      customer.successCount++;
+      customer.totalAmount += (Number(d.amount) || 0);
+    } else {
+      customer.failedCount++;
+    }
+
+    const currentDate = new Date(d.created_at || d.date);
+    if (!isNaN(currentDate.getTime()) && currentDate > new Date(customer.lastDonationDate)) {
+      customer.lastDonationDate = d.created_at || d.date;
+    }
+  });
+
+  // Sort customers by total contributed amount descending
+  AdminState.customers = Array.from(map.values()).sort((a, b) => b.totalAmount - a.totalAmount);
+}
+
 function buildRazorpayReconciliationData() {
   // Reconcile donations against Razorpay payment transactions
   AdminState.data.razorpay = AdminState.data.donations.map(d => {
@@ -453,7 +523,7 @@ function buildRazorpayReconciliationData() {
       email: d.email || 'N/A',
       contact: d.phone || 'N/A',
       hospital_location: d.location || 'General',
-      reconciled_with_db: Boolean(d.id && d.status === 'Success')
+      reconciled_with_db: Boolean(d.id && (d.status || '').toLowerCase() === 'success')
     };
   });
 }
@@ -462,10 +532,11 @@ function buildRazorpayReconciliationData() {
 // 4. KPI METRICS & REPORT COMPUTATIONS
 // ==============================================================================
 function updateKPIs() {
-  const donations = AdminState.data.donations.filter(d => (d.status || '').toLowerCase() === 'success');
-  const totalAmount = donations.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
-  const totalDonors = donations.length;
-  const avgDonation = totalDonors > 0 ? Math.round(totalAmount / totalDonors) : 0;
+  const successfulDonations = AdminState.data.donations.filter(d => (d.status || '').toLowerCase() === 'success');
+  const failedDonations = AdminState.data.donations.filter(d => (d.status || '').toLowerCase() === 'failed');
+  const totalAmount = successfulDonations.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+  const totalDonors = AdminState.customers.length;
+  const avgDonation = successfulDonations.length > 0 ? Math.round(totalAmount / successfulDonations.length) : 0;
   const mealsSponsored = Math.floor(totalAmount / ADMIN_CONFIG.MEAL_UNIT_COST);
 
   const pendingVolunteers = AdminState.data.volunteers.filter(v => (v.status || 'pending').toLowerCase() === 'pending').length;
@@ -483,6 +554,7 @@ function updateKPIs() {
 
   // Tab Badge Counters
   setText('badge-count-donations', AdminState.data.donations.length);
+  setText('badge-count-customers', AdminState.customers.length);
   setText('badge-count-volunteers', AdminState.data.volunteers.length);
   setText('badge-count-newsletter', AdminState.data.newsletter.length);
   setText('badge-count-contact', AdminState.data.contact.length);
@@ -655,6 +727,11 @@ function switchTab(tabKey) {
     locFilterWrap.style.display = (tabKey === 'donations' || tabKey === 'razorpay') ? 'block' : 'none';
   }
 
+  const statusFilterWrap = document.getElementById('filter-status-wrap');
+  if (statusFilterWrap) {
+    statusFilterWrap.style.display = (tabKey === 'donations' || tabKey === 'razorpay') ? 'block' : 'none';
+  }
+
   renderActiveTab();
 }
 
@@ -662,6 +739,9 @@ function renderActiveTab() {
   switch (AdminState.activeTab) {
     case 'donations':
       renderDonationsTable();
+      break;
+    case 'customers':
+      renderCustomersTable();
       break;
     case 'volunteers':
       renderVolunteersTable();
@@ -736,11 +816,22 @@ function applyFilters(records, dateField = 'created_at', textFields = []) {
     });
   }
 
+  // 4. Status Filter (Success / Failed / Pending)
+  if (AdminState.statusFilter !== 'all') {
+    filtered = filtered.filter(row => {
+      const st = (row.status || '').toLowerCase();
+      if (AdminState.statusFilter === 'success') return st === 'success';
+      if (AdminState.statusFilter === 'failed') return st === 'failed';
+      if (AdminState.statusFilter === 'pending') return st === 'pending';
+      return true;
+    });
+  }
+
   return filtered;
 }
 
 // ------------------------------------------------------------------------------
-// TABLE 1: DONATIONS TABLE
+// TABLE 1: DONATIONS & PAYMENTS TABLE (Successful & Failed, Bulk Actions)
 // ------------------------------------------------------------------------------
 function renderDonationsTable() {
   const tbody = document.getElementById('donations-table-body');
@@ -749,13 +840,13 @@ function renderDonationsTable() {
   const records = applyFilters(
     AdminState.data.donations,
     'created_at',
-    ['name', 'email', 'phone', 'txn_id', 'location', 'notes']
+    ['name', 'email', 'phone', 'txn_id', 'location', 'notes', 'status']
   );
 
   document.getElementById('donations-filtered-count').textContent = `${records.length} records`;
 
   if (records.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-state"><i class="fa-solid fa-folder-open"></i> No donation records match the selected filters.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="empty-state"><i class="fa-solid fa-folder-open"></i> No payment records match the selected filters.</td></tr>`;
     return;
   }
 
@@ -764,11 +855,23 @@ function renderDonationsTable() {
     const amountVal = Number(d.amount) || 0;
     const mealsVal = Math.floor(amountVal / ADMIN_CONFIG.MEAL_UNIT_COST);
     const pan = extractPanFromNotes(d.notes);
-    const refNo = extractRefFromNotes(d.notes) || (d.txn_id ? d.txn_id.replace(/^pay_/, 'DR-').toUpperCase() : `DR-${index + 1000}`);
-    const receiptUrl = extractReceiptUrlFromNotes(d.notes);
+    const refNo = formatReceiptRefNo(d);
+    const isSuccess = (d.status || '').toLowerCase() === 'success';
+    const isFailed = (d.status || '').toLowerCase() === 'failed';
+    const isChecked = AdminState.selectedDonationIds.has(d.id);
+
+    let statusBadge = `<span class="status-badge status-pending"><i class="fa-solid fa-clock"></i> ${escapeHtml(d.status || 'Pending')}</span>`;
+    if (isSuccess) {
+      statusBadge = `<span class="status-badge status-success"><i class="fa-solid fa-circle-check"></i> Success</span>`;
+    } else if (isFailed) {
+      statusBadge = `<span class="status-badge status-failed"><i class="fa-solid fa-circle-xmark"></i> Failed</span>`;
+    }
 
     return `
-      <tr class="table-row-animate">
+      <tr class="table-row-animate ${isChecked ? 'row-selected' : ''}">
+        <td style="width:38px; text-align:center;">
+          <input type="checkbox" class="donation-row-checkbox" value="${d.id}" ${isChecked ? 'checked' : ''} onchange="onDonationCheckboxChange('${d.id}', this.checked);">
+        </td>
         <td>
           <div style="font-weight:700; color:var(--dark); font-size:0.86rem;">${formattedDate}</div>
           <span class="badge-tag badge-ref">${escapeHtml(refNo)}</span>
@@ -784,7 +887,7 @@ function renderDonationsTable() {
           </span>
         </td>
         <td>
-          <div style="font-weight:800; color:var(--primary); font-size:1.05rem;">₹${amountVal.toLocaleString('en-IN')}</div>
+          <div style="font-weight:800; color:${isSuccess ? 'var(--primary)' : '#DC2626'}; font-size:1.05rem;">₹${amountVal.toLocaleString('en-IN')}</div>
           <div style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">~${mealsVal} Meals</div>
         </td>
         <td>
@@ -795,16 +898,94 @@ function renderDonationsTable() {
           <code class="txn-code">${escapeHtml(d.txn_id || 'N/A')}</code>
         </td>
         <td>
-          <span class="status-badge status-${(d.status || 'success').toLowerCase()}">
-            <i class="fa-solid fa-check-circle"></i> ${escapeHtml(d.status || 'Success')}
-          </span>
+          ${statusBadge}
         </td>
         <td style="text-align:right;">
-          <button class="btn-action-primary" onclick="downloadReceiptForDonation('${d.id}')" title="Download 80G Tax Exemption Receipt">
-            <i class="fa-solid fa-file-pdf"></i> Download 80G
-          </button>
-          <button class="btn-action-icon" onclick="viewDonationModal('${d.id}')" title="View Details">
+          ${isSuccess ? `
+            <button class="btn-action-primary" onclick="downloadReceiptForDonation('${d.id}')" title="Download Official 80G Tax Exemption Receipt">
+              <i class="fa-solid fa-file-pdf"></i> Download 80G
+            </button>
+          ` : `
+            <span class="badge-tag" style="background:#FEE2E2; color:#DC2626; font-size:0.74rem;">
+              <i class="fa-solid fa-ban"></i> Incomplete
+            </span>
+          `}
+          <button class="btn-action-icon" onclick="viewDonationModal('${d.id}')" title="View Full Payment Record">
             <i class="fa-solid fa-eye"></i>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  updateBulkToolbar();
+}
+
+// ------------------------------------------------------------------------------
+// TABLE 2: CUSTOMERS & DONORS TABLE (Payments received from particular customer)
+// ------------------------------------------------------------------------------
+function renderCustomersTable() {
+  const tbody = document.getElementById('customers-table-body');
+  if (!tbody) return;
+
+  let records = [...AdminState.customers];
+
+  // Apply search query
+  if (AdminState.searchQuery) {
+    const q = AdminState.searchQuery.toLowerCase();
+    records = records.filter(c => {
+      return (
+        c.name.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        c.phone.toLowerCase().includes(q) ||
+        c.pan.toLowerCase().includes(q) ||
+        c.address.toLowerCase().includes(q)
+      );
+    });
+  }
+
+  document.getElementById('customers-filtered-count').textContent = `${records.length} donors & customers`;
+
+  if (records.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-state"><i class="fa-solid fa-users-slash"></i> No donors found matching search query.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = records.map(c => {
+    const initials = c.name ? c.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() : 'CU';
+    return `
+      <tr class="table-row-animate">
+        <td>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="customer-avatar-badge">${initials}</div>
+            <div>
+              <div style="font-weight:700; color:var(--dark); font-size:0.92rem;">${escapeHtml(c.name)}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">${c.payments.length} total transaction${c.payments.length > 1 ? 's' : ''}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div><a href="mailto:${escapeHtml(c.email)}" style="color:var(--accent-blue); font-weight:600;">${escapeHtml(c.email)}</a></div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(c.phone)}</div>
+        </td>
+        <td><span class="pan-badge">${escapeHtml(c.pan || 'N/A')}</span></td>
+        <td>
+          <div style="font-weight:800; color:var(--primary); font-size:1.1rem;">₹${c.totalAmount.toLocaleString('en-IN')}</div>
+          <div style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">~${Math.floor(c.totalAmount / ADMIN_CONFIG.MEAL_UNIT_COST)} Meals Sponsored</div>
+        </td>
+        <td>
+          <span class="status-badge status-success">${c.successCount} Successful</span>
+          ${c.failedCount > 0 ? `<span class="status-badge status-failed" style="margin-left:4px;">${c.failedCount} Failed</span>` : ''}
+        </td>
+        <td>
+          <div style="font-weight:600; color:var(--dark); font-size:0.84rem;">${formatTimestamp(c.lastDonationDate)}</div>
+        </td>
+        <td style="text-align:right;">
+          <button class="btn-action-primary" onclick="viewCustomerHistoryModal('${escapeHtml(c.key)}')" title="View All Payments Received From Customer">
+            <i class="fa-solid fa-clock-rotate-left"></i> Payment History
+          </button>
+          <button class="btn-action-icon" onclick="exportCustomerStatement('${escapeHtml(c.key)}')" title="Export Customer Statement (.XLS)">
+            <i class="fa-solid fa-file-excel"></i>
           </button>
         </td>
       </tr>
@@ -812,8 +993,140 @@ function renderDonationsTable() {
   }).join('');
 }
 
+function viewCustomerHistoryModal(customerKey) {
+  const c = AdminState.customers.find(item => item.key === customerKey);
+  if (!c) return;
+
+  const content = `
+    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:1.25rem; margin-bottom:1.25rem;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="font-size:1.25rem; font-weight:800; color:var(--dark); margin-bottom:4px;">${escapeHtml(c.name)}</h2>
+          <div style="font-size:0.82rem; color:var(--text-muted);">
+            <span><i class="fa-solid fa-envelope"></i> ${escapeHtml(c.email)}</span> &nbsp;•&nbsp;
+            <span><i class="fa-solid fa-phone"></i> ${escapeHtml(c.phone)}</span> &nbsp;•&nbsp;
+            <span><i class="fa-solid fa-id-card"></i> PAN: ${escapeHtml(c.pan || 'N/A')}</span>
+          </div>
+          <div style="font-size:0.8rem; color:#475569; margin-top:6px;">
+            <i class="fa-solid fa-location-dot" style="color:var(--text-muted);"></i> ${escapeHtml(c.address || 'Guwahati, Assam')}
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Lifetime Seva</div>
+          <div style="font-size:1.5rem; font-weight:800; color:var(--primary);">₹${c.totalAmount.toLocaleString('en-IN')}</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">(${c.successCount} successful / ${c.failedCount} failed)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center;">
+      <h4 style="font-size:0.95rem; font-weight:800; color:var(--dark); margin:0;">
+        <i class="fa-solid fa-receipt" style="color:var(--primary);"></i> Payments Received from ${escapeHtml(c.name)}
+      </h4>
+      <button type="button" class="btn btn-sm btn-export-xls" onclick="exportCustomerStatement('${escapeHtml(c.key)}');" style="font-size:0.78rem; padding:6px 12px;">
+        <i class="fa-solid fa-file-excel"></i> Export Statement (.XLS)
+      </button>
+    </div>
+
+    <div class="table-responsive-wrap" style="max-height:360px; overflow-y:auto; border:1px solid #E2E8F0; border-radius:8px;">
+      <table class="admin-table" style="font-size:0.82rem;">
+        <thead>
+          <tr>
+            <th>Date &amp; Time</th>
+            <th>Ref # / Txn ID</th>
+            <th>Hospital / Cause</th>
+            <th>Amount (₹)</th>
+            <th>Status</th>
+            <th style="text-align:right;">80G Receipt</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${c.payments.map(p => {
+            const isSucc = (p.status || '').toLowerCase() === 'success';
+            const refNo = formatReceiptRefNo(p);
+            return `
+              <tr>
+                <td>${formatTimestamp(p.created_at || p.date)}</td>
+                <td>
+                  <code class="txn-code">${escapeHtml(p.txn_id || refNo)}</code>
+                </td>
+                <td>${formatLocationLabel(p.location)}</td>
+                <td style="font-weight:800; color:${isSucc ? 'var(--primary)' : '#DC2626'};">
+                  ₹${Number(p.amount).toLocaleString('en-IN')}
+                </td>
+                <td>
+                  <span class="status-badge status-${(p.status || 'success').toLowerCase()}">
+                    ${escapeHtml(p.status || 'Success')}
+                  </span>
+                </td>
+                <td style="text-align:right;">
+                  ${isSucc ? `
+                    <button class="btn-action-primary" style="padding:4px 8px; font-size:0.72rem;" onclick="downloadReceiptForDonation('${p.id}')">
+                      <i class="fa-solid fa-file-pdf"></i> Receipt
+                    </button>
+                  ` : `
+                    <span style="font-size:0.72rem; color:var(--text-muted);">Incomplete</span>
+                  `}
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:1.25rem; display:flex; justify-content:flex-end; gap:8px;">
+      <button class="btn btn-outline" onclick="closeAdminModal()">Close</button>
+    </div>
+  `;
+
+  openAdminModal(`Customer Profile & Payment History`, content);
+}
+
+function exportCustomerStatement(customerKey) {
+  const c = AdminState.customers.find(item => item.key === customerKey);
+  if (!c) {
+    showToast('Customer record not found.', 'error');
+    return;
+  }
+  if (typeof window.XLSX === 'undefined') {
+    showToast('Excel exporter library loading... please try again.', 'error');
+    return;
+  }
+
+  const sheetData = [
+    ['PURE FOR CURE - HARE KRISHNA MOVEMENT GUWAHATI'],
+    ['DONOR STATEMENT & PAYMENT HISTORY'],
+    [''],
+    ['Donor Name:', c.name, 'Email:', c.email],
+    ['Phone:', c.phone, 'PAN (80G):', c.pan || 'NOT_PROVIDED'],
+    ['Total Contributions:', `₹${c.totalAmount.toLocaleString('en-IN')}`, 'Lifetime Payments:', c.payments.length],
+    ['Statement Date:', formatReceiptDate(new Date().toISOString())],
+    [''],
+    ['Date & Time', 'Receipt Ref No', 'Payment Txn ID', 'Hospital / Cause', 'Amount (₹)', 'Payment Method', 'Status', 'Notes'],
+    ...c.payments.map(p => [
+      formatTimestamp(p.created_at || p.date),
+      formatReceiptRefNo(p),
+      p.txn_id || 'N/A',
+      formatLocationLabel(p.location),
+      Number(p.amount) || 0,
+      p.method || 'Razorpay',
+      p.status || 'Success',
+      cleanAddress(p.notes)
+    ])
+  ];
+
+  const wb = window.XLSX.utils.book_new();
+  const ws = window.XLSX.utils.aoa_to_sheet(sheetData);
+  ws['!cols'] = [{ wch: 20 }, { wch: 25 }, { wch: 22 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 35 }];
+  window.XLSX.utils.book_append_sheet(wb, ws, 'DONOR_STATEMENT');
+  const filename = `PFC_Donor_Statement_${c.name.replace(/[^a-zA-Z0-9]/g, '_')}_${getCurrentDateStr()}.xlsx`;
+  window.XLSX.writeFile(wb, filename);
+  showToast(`✓ Exported payment statement for ${c.name}`, 'success');
+}
+
 // ------------------------------------------------------------------------------
-// TABLE 2: VOLUNTEER APPLICATIONS
+// TABLE 3: VOLUNTEER APPLICATIONS
 // ------------------------------------------------------------------------------
 function renderVolunteersTable() {
   const tbody = document.getElementById('volunteers-table-body');
@@ -865,7 +1178,7 @@ function renderVolunteersTable() {
 }
 
 // ------------------------------------------------------------------------------
-// TABLE 3: NEWSLETTER SUBSCRIBERS
+// TABLE 4: NEWSLETTER SUBSCRIBERS
 // ------------------------------------------------------------------------------
 function renderNewsletterTable() {
   const tbody = document.getElementById('newsletter-table-body');
@@ -898,7 +1211,7 @@ function renderNewsletterTable() {
 }
 
 // ------------------------------------------------------------------------------
-// TABLE 4: CONTACT INQUIRIES
+// TABLE 5: CONTACT INQUIRIES
 // ------------------------------------------------------------------------------
 function renderContactTable() {
   const tbody = document.getElementById('contact-table-body');
@@ -938,7 +1251,7 @@ function renderContactTable() {
 }
 
 // ------------------------------------------------------------------------------
-// TABLE 5: CSR INQUIRIES
+// TABLE 6: CSR INQUIRIES
 // ------------------------------------------------------------------------------
 function renderCsrTable() {
   const tbody = document.getElementById('csr-table-body');
@@ -980,7 +1293,7 @@ function renderCsrTable() {
 }
 
 // ------------------------------------------------------------------------------
-// TABLE 6: RAZORPAY GATEWAY RECONCILIATION TABLE
+// TABLE 7: RAZORPAY GATEWAY RECONCILIATION TABLE
 // ------------------------------------------------------------------------------
 function renderRazorpayTable() {
   const tbody = document.getElementById('razorpay-table-body');
@@ -989,7 +1302,7 @@ function renderRazorpayTable() {
   const records = applyFilters(
     AdminState.data.razorpay,
     'created_at',
-    ['payment_id', 'donor_name', 'email', 'hospital_location']
+    ['payment_id', 'donor_name', 'email', 'hospital_location', 'status']
   );
 
   document.getElementById('razorpay-filtered-count').textContent = `${records.length} transactions`;
@@ -1000,6 +1313,7 @@ function renderRazorpayTable() {
   }
 
   tbody.innerHTML = records.map(rzp => {
+    const isCaptured = (rzp.status || '').toLowerCase() === 'captured' || (rzp.status || '').toLowerCase() === 'success';
     return `
       <tr class="table-row-animate">
         <td>
@@ -1009,10 +1323,10 @@ function renderRazorpayTable() {
         <td style="font-weight:700;">${escapeHtml(rzp.donor_name)}</td>
         <td>${escapeHtml(rzp.email)}</td>
         <td><span class="location-chip chip-${getLocationChipClass(rzp.hospital_location)}">${formatLocationLabel(rzp.hospital_location)}</span></td>
-        <td style="font-weight:800; color:var(--primary);">₹${Number(rzp.amount).toLocaleString('en-IN')}</td>
+        <td style="font-weight:800; color:${isCaptured ? 'var(--primary)' : '#DC2626'};">₹${Number(rzp.amount).toLocaleString('en-IN')}</td>
         <td>
-          <span class="status-badge status-success">
-            <i class="fa-solid fa-circle-check"></i> Captured
+          <span class="status-badge status-${isCaptured ? 'success' : 'failed'}">
+            <i class="fa-solid ${isCaptured ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> ${escapeHtml(rzp.status)}
           </span>
         </td>
         <td>
@@ -1026,7 +1340,7 @@ function renderRazorpayTable() {
 }
 
 // ==============================================================================
-// 7. DOWNLOADABLE 80G RECEIPTS ENGINE (pdf-lib)
+// 7. DOWNLOADABLE 80G RECEIPTS ENGINE (Exact Match to Old Receipt Design)
 // ==============================================================================
 async function downloadReceiptForDonation(donationId) {
   const donation = AdminState.data.donations.find(d => d.id === donationId);
@@ -1035,32 +1349,18 @@ async function downloadReceiptForDonation(donationId) {
     return;
   }
 
-  // 1. If an existing Supabase Storage receipt URL is found, download directly
-  const existingUrl = extractReceiptUrlFromNotes(donation.notes);
-  if (existingUrl) {
-    try {
-      const a = document.createElement('a');
-      a.href = existingUrl;
-      a.target = '_blank';
-      a.download = `Donation-Receipt-${donation.txn_id || 'PFC'}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      showToast('Opening verified 80G Receipt from Supabase Storage...', 'success');
-      return;
-    } catch (e) {
-      console.warn('Storage link direct download error, generating dynamic fallback:', e);
-    }
+  if ((donation.status || '').toLowerCase() !== 'success') {
+    showToast('80G Receipts can only be issued for successful contributions.', 'error');
+    return;
   }
 
-  // 2. Generate on-the-fly official 80G Tax Exemption PDF receipt
   showToast('Generating official 80G Tax Receipt (PDF)...', 'info');
 
   try {
-    const refNo = extractRefFromNotes(donation.notes) || (donation.txn_id ? donation.txn_id.replace(/^pay_/, 'DR-').toUpperCase() : `DR-${Date.now().toString().slice(-6)}`);
-    const dateStr = donation.date || (donation.created_at ? donation.created_at.split('T')[0] : new Date().toISOString().split('T')[0]);
+    const refNo = formatReceiptRefNo(donation);
+    const dateStr = formatReceiptDate(donation.created_at || donation.date);
     const pan = extractPanFromNotes(donation.notes) || 'NOT_PROVIDED';
-    const address = extractAddressFromNotes(donation.notes) || 'Assam, India';
+    const address = cleanAddress(donation.notes);
 
     const pdfBlob = await generateAdminReceiptPdf({
       name: donation.name,
@@ -1079,7 +1379,7 @@ async function downloadReceiptForDonation(donationId) {
       const blobUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement('a');
       a.href = blobUrl;
-      a.download = `PureForCure_80G_Receipt_${refNo}.pdf`;
+      a.download = `Donation-Receipt-${refNo}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1094,6 +1394,7 @@ async function downloadReceiptForDonation(donationId) {
   }
 }
 
+// EXACT MATCH TO OLD OFFICIAL RECEIPT (PDF 2)
 async function generateAdminReceiptPdf(meta) {
   if (typeof window.PDFLib === 'undefined') {
     throw new Error('PDFLib library not loaded');
@@ -1105,13 +1406,10 @@ async function generateAdminReceiptPdf(meta) {
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const navy = rgb(0.04, 0.15, 0.45);
-  const darkGreen = rgb(0.1, 0.55, 0.3);
   const black = rgb(0.1, 0.1, 0.1);
-  const gray = rgb(0.4, 0.45, 0.5);
-
   let y = 740;
 
-  // Header Logo (Pure for Cure / HKM)
+  // Header logo
   try {
     const logoResp = await fetch('images/pur-for-cure-logo-clean.jpg');
     if (logoResp.ok) {
@@ -1121,56 +1419,79 @@ async function generateAdminReceiptPdf(meta) {
       page.drawImage(logoImg, { x: 50, y: y - 30, width: dims.width, height: dims.height });
     }
   } catch (e) {
-    console.warn('Logo embed warning:', e);
+    console.warn('Logo embed error:', e);
   }
 
-  page.drawText('PURE FOR CURE', { x: 350, y: y + 10, size: 18, font: bold, color: darkGreen });
-  page.drawText('(Serving the mission of His Divine Grace A.C. Bhaktivedanta Swami Prabhupada)', { x: 195, y: y - 6, size: 7.5, font, color: black });
+  page.drawText('PURE FOR CURE', { x: 350, y: y + 10, size: 18, font: bold, color: navy });
+  page.drawText('(Serving the mission of His Divine Grace A.C. Bhaktivedanta Swami Prabhupada)', { x: 200, y: y - 6, size: 7, font, color: black });
   y -= 55;
 
-  page.drawText('Receipt No: ' + meta.refNo, { x: 50, y, size: 10, font: bold, color: black });
+  page.drawText('Ref. No.: ' + meta.refNo, { x: 50, y, size: 10, font: bold, color: black });
   page.drawText('Date: ' + meta.dateStr, { x: 420, y, size: 10, font: bold, color: black });
   y -= 45;
 
-  page.drawText('DONATION RECEIPT', { x: 175, y, size: 24, font: bold, color: navy });
-  y -= 30;
+  page.drawText('DONATION RECEIPT', { x: 170, y, size: 26, font: bold, color: navy });
+  y -= 35;
 
-  page.drawText('This is to acknowledge that PURE FOR CURE (Hare Krishna Movement, Guwahati) has gratefully received:', { x: 50, y, size: 9.5, font, color: black });
-  y -= 45;
+  page.drawText('This is to acknowledge that PURE FOR CURE, GUWAHATI has received a contribution of', { x: 50, y, size: 10, font, color: black });
+  y -= 55;
 
-  // Amount Highlight Box
-  page.drawRectangle({ x: 170, y: y - 8, width: 270, height: 42, borderColor: darkGreen, borderWidth: 1.5, color: rgb(0.96, 0.99, 0.97) });
-  page.drawText('Rs. ' + Number(meta.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }), { x: 210, y: y + 5, size: 20, font: bold, color: darkGreen });
-  y -= 50;
+  page.drawRectangle({ x: 180, y: y - 10, width: 250, height: 45, borderColor: navy, borderWidth: 1.5 });
+  page.drawText('Rs. ' + Number(meta.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }), { x: 220, y: y + 5, size: 22, font: bold, color: navy });
+  y -= 60;
 
   const col = (label, value, x) => {
-    page.drawText(label, { x, y, size: 8.5, font: bold, color: gray });
-    page.drawText(String(value || ''), { x, y: y - 13, size: 9.5, font: bold, color: black });
+    page.drawText(label, { x, y, size: 9, font: bold, color: black });
+    page.drawText(String(value || ''), { x, y: y - 13, size: 9, font, color: black });
+  };
+
+  const wrapText = (text, f, size, maxWidth) => {
+    const cleanStr = String(text || '').replace(/\\n/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    const words = cleanStr.split(' ');
+    const lines = [];
+    let line = '';
+    words.forEach(word => {
+      const test = line ? line + ' ' + word : word;
+      if (f.widthOfTextAtSize(test, size) > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    if (line) lines.push(line);
+    return lines;
   };
 
   col('Donor Name', meta.name, 50);
-  col('WhatsApp / Phone', meta.phone || 'N/A', 230);
-  col('Towards Seva', meta.causeName, 390);
+  col('WhatsApp No.', meta.phone, 230);
+  col('Towards', meta.causeName || 'Pure for Cure-Satvik Food Distribution', 380);
   y -= 35;
 
-  col('Email Address', meta.email || 'N/A', 50);
-  col('PAN Number', meta.pan || 'NOT_PROVIDED', 230);
-  col('Payment Gateway', 'Razorpay Online', 390);
-  y -= 35;
+  page.drawText('Address', { x: 50, y, size: 9, font: bold, color: black });
+  const addressLines = wrapText(meta.address || 'Guwahati, Assam, India', font, 9, 290).slice(0, 2);
+  addressLines.forEach((line, i) => {
+    page.drawText(line, { x: 50, y: y - 13 - i * 12, size: 9, font, color: black });
+  });
+  y -= 13 + (addressLines.length - 1) * 12 + 22;
 
-  col('Payment Txn ID', meta.txnId, 50);
-  col('Address', meta.address || 'Guwahati, Assam, India', 230);
+  col('Email ID', meta.email, 50);
+  col('PAN', meta.pan || 'NOT_PROVIDED', 230);
   y -= 45;
 
-  // 80G Tax Exemption Legal Declarations
-  page.drawRectangle({ x: 50, y: y - 55, width: 512, height: 60, borderColor: rgb(0.85, 0.88, 0.92), borderWidth: 1, color: rgb(0.98, 0.98, 0.99) });
-  page.drawText('SECTION 80G TAX EXEMPTION CERTIFICATION', { x: 65, y: y - 10, size: 8.5, font: bold, color: navy });
-  page.drawText('• Donations to this institution are 50% Tax Exempted under Section 80G(5)(vi) of the Income Tax Act, 1961.', { x: 65, y: y - 24, size: 8, font, color: black });
-  page.drawText('• Unique Registration No. (URN): 14/80G/CIT/GHY-II/2011-12/4701-05 | PAN: AAATH8807J', { x: 65, y: y - 36, size: 8, font: bold, color: darkGreen });
-  page.drawText('• This is an electronically generated and certified receipt issued by Hare Krishna Movement Guwahati.', { x: 65, y: y - 48, size: 7.5, font, color: gray });
-  y -= 85;
+  page.drawText('Payment Mode', { x: 380, y, size: 9, font: bold, color: black });
+  page.drawText('Razorpay (Card/UPI/NetBanking)', { x: 380, y: y - 13, size: 9, font, color: black });
+  page.drawText('Txn ID: ' + meta.txnId, { x: 380, y: y - 26, size: 8, font, color: black });
+  y -= 60;
 
-  // President Digital Signature
+  page.drawText('Thank you for your generous support', { x: 190, y, size: 11, font, color: black });
+  y -= 45;
+
+  page.drawText('Donations to this institution are exempted u/s 80G Vide', { x: 50, y, size: 8, font, color: black });
+  page.drawText('14/80G/CIT/GHY-II/2011-12/4701-05 DTD:29/02/2012', { x: 50, y, size: 8, font, color: black });
+  page.drawText('PAN: AAATH8807J', { x: 50, y: y - 22, size: 8, font, color: black });
+
+  // Signature
   try {
     const sigResp = await fetch('images/signature-janardan-dasa.png');
     if (sigResp.ok) {
@@ -1180,16 +1501,17 @@ async function generateAdminReceiptPdf(meta) {
       page.drawImage(sigImg, { x: 440, y: y + 2, width: sigDims.width, height: sigDims.height });
     }
   } catch (e) {
-    console.warn('Signature embed warning:', e);
+    console.warn('Signature embed error:', e);
   }
 
-  page.drawText('Janardan Dasa', { x: 440, y: y - 15, size: 9.5, font: bold, color: black });
-  page.drawText('President, HKM Guwahati', { x: 440, y: y - 27, size: 8.5, font, color: gray });
+  page.drawText('Janardan Dasa', { x: 440, y: y - 22, size: 10, font: bold, color: black });
+  page.drawText('President', { x: 440, y: y - 34, size: 9, font, color: black });
 
-  // Footer Contacts
-  y = 80;
-  page.drawLine({ start: { x: 50, y: y + 15 }, end: { x: 562, y: y + 15 }, thickness: 0.5, color: rgb(0.8, 0.8, 0.8) });
-  page.drawText('Hare Krishna Mandir Road, Ghorajan, Guwahati 781031, Assam | Phone: +91 7099039770 | Email: info@pureforcure.org', { x: 65, y: y + 2, size: 7.5, font, color: gray });
+  y = 90;
+  page.drawLine({ start: { x: 50, y: y + 10 }, end: { x: 562, y: y + 10 }, thickness: 0.5, color: black });
+  col('Contact', '+917099039770', 50);
+  col('Email', 'info@hkmguwahati.org', 220);
+  col('Address', 'Hare Krishna Mandir Road, Ghorajan, Guwahati 781031, Assam', 380);
 
   const pdfBytes = await pdfDoc.save();
   return new Blob([pdfBytes], { type: 'application/pdf' });
@@ -1197,13 +1519,15 @@ async function generateAdminReceiptPdf(meta) {
 
 // Bulk Receipts Download (sequential triggered downloads)
 async function downloadAllReceipts() {
-  const donations = applyFilters(AdminState.data.donations, 'created_at', ['name', 'email', 'phone', 'txn_id', 'location', 'notes']);
+  const donations = applyFilters(AdminState.data.donations, 'created_at', ['name', 'email', 'phone', 'txn_id', 'location', 'notes', 'status'])
+    .filter(d => (d.status || '').toLowerCase() === 'success');
+
   if (donations.length === 0) {
-    showToast('No donation records selected to download.', 'error');
+    showToast('No successful donation records selected to download.', 'error');
     return;
   }
 
-  if (!confirm(`Generate and download all ${donations.length} receipts for the currently filtered view?`)) {
+  if (!confirm(`Generate and download all ${donations.length} official 80G receipts for the currently filtered view?`)) {
     return;
   }
 
@@ -1215,7 +1539,148 @@ async function downloadAllReceipts() {
 }
 
 // ==============================================================================
-// 8. CSV & EXCEL (.XLS / .XLSX) EXPORT ENGINE
+// 8. BULK ACTIONS ON DONATIONS TABLE
+// ==============================================================================
+function toggleSelectAllDonations(masterEl) {
+  const isChecked = masterEl.checked;
+  const checkboxes = document.querySelectorAll('.donation-row-checkbox');
+  checkboxes.forEach(cb => {
+    cb.checked = isChecked;
+    if (isChecked) {
+      AdminState.selectedDonationIds.add(cb.value);
+    } else {
+      AdminState.selectedDonationIds.delete(cb.value);
+    }
+  });
+  updateBulkToolbar();
+}
+
+function onDonationCheckboxChange(id, isChecked) {
+  if (isChecked) {
+    AdminState.selectedDonationIds.add(id);
+  } else {
+    AdminState.selectedDonationIds.delete(id);
+  }
+  const selectAll = document.getElementById('select-all-donations');
+  if (selectAll) {
+    const checkboxes = document.querySelectorAll('.donation-row-checkbox');
+    selectAll.checked = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+  }
+  updateBulkToolbar();
+}
+
+function updateBulkToolbar() {
+  const toolbar = document.getElementById('donations-bulk-toolbar');
+  const countEl = document.getElementById('bulk-selected-count');
+  const count = AdminState.selectedDonationIds.size;
+  if (countEl) countEl.textContent = count;
+  if (toolbar) {
+    toolbar.style.display = count > 0 ? 'flex' : 'none';
+  }
+}
+
+function clearDonationSelection() {
+  AdminState.selectedDonationIds.clear();
+  document.querySelectorAll('.donation-row-checkbox').forEach(cb => cb.checked = false);
+  const selectAll = document.getElementById('select-all-donations');
+  if (selectAll) selectAll.checked = false;
+  updateBulkToolbar();
+}
+
+async function bulkDownloadSelectedReceipts() {
+  const selectedIds = Array.from(AdminState.selectedDonationIds);
+  if (selectedIds.length === 0) {
+    showToast('No payments selected to download receipts.', 'error');
+    return;
+  }
+  const successDonations = AdminState.data.donations.filter(d => selectedIds.includes(d.id) && (d.status || '').toLowerCase() === 'success');
+  if (successDonations.length === 0) {
+    showToast('None of the selected payments are successful contributions.', 'error');
+    return;
+  }
+  showToast(`Generating and downloading ${successDonations.length} selected 80G receipts...`, 'info');
+  for (let i = 0; i < successDonations.length; i++) {
+    await downloadReceiptForDonation(successDonations[i].id);
+    await new Promise(r => setTimeout(r, 600));
+  }
+}
+
+function bulkExportSelectedCSV() {
+  const selectedIds = Array.from(AdminState.selectedDonationIds);
+  if (selectedIds.length === 0) {
+    showToast('No payments selected to export.', 'error');
+    return;
+  }
+  const records = AdminState.data.donations.filter(d => selectedIds.includes(d.id));
+  const headers = ['Date & Time', 'Receipt Ref No', 'Donor Name', 'Email', 'Phone', 'PAN', 'Hospital / Location', 'Amount (INR)', 'Meals Sponsored', 'Method', 'Payment Txn ID', 'Status', 'Notes'];
+  let csvContent = '\uFEFF' + headers.map(escapeCsvCell).join(',') + '\n';
+  records.forEach(d => {
+    csvContent += [
+      formatTimestamp(d.created_at || d.date),
+      formatReceiptRefNo(d),
+      d.name || 'Anonymous',
+      d.email || '',
+      d.phone || '',
+      extractPanFromNotes(d.notes) || 'N/A',
+      formatLocationLabel(d.location),
+      d.amount,
+      Math.floor((Number(d.amount) || 0) / ADMIN_CONFIG.MEAL_UNIT_COST),
+      d.method || 'Razorpay',
+      d.txn_id || '',
+      d.status || 'Success',
+      cleanAddress(d.notes)
+    ].map(escapeCsvCell).join(',') + '\n';
+  });
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `PureForCure_Selected_Donations_${getCurrentDateStr()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  showToast(`✓ Exported ${records.length} selected records to CSV`, 'success');
+}
+
+function bulkExportSelectedXLS() {
+  const selectedIds = Array.from(AdminState.selectedDonationIds);
+  if (selectedIds.length === 0) {
+    showToast('No payments selected to export.', 'error');
+    return;
+  }
+  if (typeof window.XLSX === 'undefined') {
+    showToast('Excel exporter library loading... please try again.', 'error');
+    return;
+  }
+  const records = AdminState.data.donations.filter(d => selectedIds.includes(d.id));
+  const sheetData = [
+    ['Date & Time', 'Receipt Ref No', 'Donor Name', 'Email', 'Phone', 'PAN', 'Hospital / Location', 'Amount (₹)', 'Meals Sponsored', 'Method', 'Payment Txn ID', 'Status', 'Notes'],
+    ...records.map(d => [
+      formatTimestamp(d.created_at || d.date),
+      formatReceiptRefNo(d),
+      d.name || 'Anonymous',
+      d.email || '',
+      d.phone || '',
+      extractPanFromNotes(d.notes) || 'N/A',
+      formatLocationLabel(d.location),
+      Number(d.amount) || 0,
+      Math.floor((Number(d.amount) || 0) / ADMIN_CONFIG.MEAL_UNIT_COST),
+      d.method || 'Razorpay',
+      d.txn_id || '',
+      d.status || 'Success',
+      cleanAddress(d.notes)
+    ])
+  ];
+  const wb = window.XLSX.utils.book_new();
+  const ws = window.XLSX.utils.aoa_to_sheet(sheetData);
+  window.XLSX.utils.book_append_sheet(wb, ws, 'SELECTED_PAYMENTS');
+  window.XLSX.writeFile(wb, `PureForCure_Selected_Payments_${getCurrentDateStr()}.xlsx`);
+  showToast(`✓ Exported ${records.length} selected records to Excel`, 'success');
+}
+
+// ==============================================================================
+// 9. CSV & EXCEL (.XLS / .XLSX) EXPORT ENGINE
 // ==============================================================================
 function exportCurrentTableToCSV() {
   const tab = AdminState.activeTab;
@@ -1226,11 +1691,11 @@ function exportCurrentTableToCSV() {
 
   switch (tab) {
     case 'donations':
-      records = applyFilters(AdminState.data.donations, 'created_at', ['name', 'email', 'phone', 'txn_id', 'location', 'notes']);
+      records = applyFilters(AdminState.data.donations, 'created_at', ['name', 'email', 'phone', 'txn_id', 'location', 'notes', 'status']);
       headers = ['Date & Time', 'Receipt Ref No', 'Donor Name', 'Email', 'Phone', 'PAN', 'Hospital / Location', 'Amount (INR)', 'Meals Sponsored', 'Method', 'Payment Txn ID', 'Status', 'Notes'];
       rowMapper = d => [
         formatTimestamp(d.created_at || d.date),
-        extractRefFromNotes(d.notes) || d.txn_id || 'N/A',
+        formatReceiptRefNo(d),
         d.name || 'Anonymous',
         d.email || '',
         d.phone || '',
@@ -1241,7 +1706,28 @@ function exportCurrentTableToCSV() {
         d.method || 'Razorpay',
         d.txn_id || '',
         d.status || 'Success',
-        (d.notes || '').replace(/\r?\n|\r/g, ' ')
+        cleanAddress(d.notes)
+      ];
+      break;
+
+    case 'customers':
+      records = AdminState.customers;
+      if (AdminState.searchQuery) {
+        const q = AdminState.searchQuery.toLowerCase();
+        records = records.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.phone.toLowerCase().includes(q));
+      }
+      headers = ['Customer Name', 'Email', 'Phone', 'PAN', 'Total Contributed (INR)', 'Total Payments', 'Successful Payments', 'Failed Payments', 'Last Active Date', 'Address'];
+      rowMapper = c => [
+        c.name,
+        c.email,
+        c.phone,
+        c.pan || 'N/A',
+        c.totalAmount,
+        c.donationCount,
+        c.successCount,
+        c.failedCount,
+        formatTimestamp(c.lastDonationDate),
+        c.address
       ];
       break;
 
@@ -1306,7 +1792,7 @@ function exportCurrentTableToCSV() {
       break;
 
     case 'razorpay':
-      records = applyFilters(AdminState.data.razorpay, 'created_at', ['payment_id', 'donor_name', 'email', 'hospital_location']);
+      records = applyFilters(AdminState.data.razorpay, 'created_at', ['payment_id', 'donor_name', 'email', 'hospital_location', 'status']);
       headers = ['Payment ID', 'Date & Time', 'Donor Name', 'Email', 'Phone', 'Hospital Location', 'Amount (INR)', 'Currency', 'Status', 'Reconciled in DB'];
       rowMapper = r => [
         r.payment_id,
@@ -1361,12 +1847,12 @@ function exportCurrentTableToXLS() {
 
   switch (tab) {
     case 'donations': {
-      records = applyFilters(AdminState.data.donations, 'created_at', ['name', 'email', 'phone', 'txn_id', 'location', 'notes']);
+      records = applyFilters(AdminState.data.donations, 'created_at', ['name', 'email', 'phone', 'txn_id', 'location', 'notes', 'status']);
       sheetData = [
         ['Date & Time', 'Receipt Ref No', 'Donor Name', 'Email', 'Phone', 'PAN', 'Hospital / Location', 'Amount (₹)', 'Meals Sponsored', 'Method', 'Payment Txn ID', 'Status', 'Notes'],
         ...records.map(d => [
           formatTimestamp(d.created_at || d.date),
-          extractRefFromNotes(d.notes) || d.txn_id || 'N/A',
+          formatReceiptRefNo(d),
           d.name || 'Anonymous',
           d.email || '',
           d.phone || '',
@@ -1377,7 +1863,30 @@ function exportCurrentTableToXLS() {
           d.method || 'Razorpay',
           d.txn_id || '',
           d.status || 'Success',
-          d.notes || ''
+          cleanAddress(d.notes)
+        ])
+      ];
+      break;
+    }
+    case 'customers': {
+      records = AdminState.customers;
+      if (AdminState.searchQuery) {
+        const q = AdminState.searchQuery.toLowerCase();
+        records = records.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.phone.toLowerCase().includes(q));
+      }
+      sheetData = [
+        ['Customer Name', 'Email', 'Phone', 'PAN', 'Total Contributed (₹)', 'Total Payments', 'Successful Payments', 'Failed Payments', 'Last Active Date', 'Address'],
+        ...records.map(c => [
+          c.name,
+          c.email,
+          c.phone,
+          c.pan || 'N/A',
+          c.totalAmount,
+          c.donationCount,
+          c.successCount,
+          c.failedCount,
+          formatTimestamp(c.lastDonationDate),
+          c.address
         ])
       ];
       break;
@@ -1451,7 +1960,7 @@ function exportCurrentTableToXLS() {
       break;
     }
     case 'razorpay': {
-      records = applyFilters(AdminState.data.razorpay, 'created_at', ['payment_id', 'donor_name', 'email', 'hospital_location']);
+      records = applyFilters(AdminState.data.razorpay, 'created_at', ['payment_id', 'donor_name', 'email', 'hospital_location', 'status']);
       sheetData = [
         ['Payment ID', 'Date & Time', 'Donor Name', 'Email', 'Phone', 'Hospital Location', 'Amount (₹)', 'Currency', 'Status', 'Reconciled in DB'],
         ...records.map(r => [
@@ -1482,7 +1991,7 @@ function exportCurrentTableToXLS() {
 
   // Set column widths dynamically
   const colWidths = sheetData[0].map((col, idx) => {
-    let maxLen = col.length;
+    let maxLen = String(col).length;
     sheetData.slice(1).forEach(row => {
       const cellVal = String(row[idx] || '');
       if (cellVal.length > maxLen) maxLen = Math.min(cellVal.length, 40);
@@ -1507,17 +2016,19 @@ function escapeCsvCell(cell) {
 }
 
 // ==============================================================================
-// 9. MODALS & POPUPS
+// 10. MODALS & POPUPS
 // ==============================================================================
 function viewDonationModal(donationId) {
   const d = AdminState.data.donations.find(item => item.id === donationId);
   if (!d) return;
 
+  const isSuccess = (d.status || '').toLowerCase() === 'success';
+
   const content = `
     <div class="modal-detail-grid">
       <div class="detail-group">
         <label>Receipt Reference</label>
-        <p><strong>${escapeHtml(extractRefFromNotes(d.notes) || d.txn_id || 'N/A')}</strong></p>
+        <p><strong>${escapeHtml(formatReceiptRefNo(d))}</strong></p>
       </div>
       <div class="detail-group">
         <label>Date & Time</label>
@@ -1529,7 +2040,7 @@ function viewDonationModal(donationId) {
       </div>
       <div class="detail-group">
         <label>Contribution Amount</label>
-        <p style="font-size:1.3rem; font-weight:800; color:var(--primary);">₹${Number(d.amount).toLocaleString('en-IN')}</p>
+        <p style="font-size:1.3rem; font-weight:800; color:${isSuccess ? 'var(--primary)' : '#DC2626'};">₹${Number(d.amount).toLocaleString('en-IN')}</p>
       </div>
       <div class="detail-group">
         <label>Email Address</label>
@@ -1552,23 +2063,25 @@ function viewDonationModal(donationId) {
         <p><code class="txn-code">${escapeHtml(d.txn_id || 'N/A')}</code></p>
       </div>
       <div class="detail-group">
-        <label>Payment Method</label>
-        <p>${escapeHtml(d.method || 'Razorpay')}</p>
+        <label>Gateway Status</label>
+        <p><span class="status-badge status-${(d.status || 'success').toLowerCase()}">${escapeHtml(d.status || 'Success')}</span></p>
       </div>
       <div class="detail-group full-width">
         <label>Notes / Address / Remarks</label>
-        <p style="background:#F8FAFC; padding:10px; border-radius:6px; border:1px solid #E2E8F0; white-space:pre-wrap;">${escapeHtml(d.notes || 'None recorded')}</p>
+        <p style="background:#F8FAFC; padding:10px; border-radius:6px; border:1px solid #E2E8F0; white-space:pre-wrap;">${escapeHtml(cleanAddress(d.notes))}</p>
       </div>
     </div>
     <div style="margin-top:20px; text-align:right; display:flex; justify-content:flex-end; gap:10px;">
-      <button class="btn-action-primary" onclick="downloadReceiptForDonation('${d.id}')">
-        <i class="fa-solid fa-file-pdf"></i> Download Official 80G Receipt
-      </button>
+      ${isSuccess ? `
+        <button class="btn-action-primary" onclick="downloadReceiptForDonation('${d.id}')">
+          <i class="fa-solid fa-file-pdf"></i> Download Official 80G Receipt
+        </button>
+      ` : ''}
       <button class="btn btn-outline" onclick="closeAdminModal()">Close</button>
     </div>
   `;
 
-  openAdminModal('Donation Record Details', content);
+  openAdminModal('Payment Record Details', content);
 }
 
 function viewVolunteerModal(volId) {
@@ -1699,7 +2212,7 @@ function closeAdminModal() {
 }
 
 // ==============================================================================
-// 10. EVENT LISTENERS & UI HELPERS
+// 11. EVENT LISTENERS & UI HELPERS
 // ==============================================================================
 function setupEventListeners() {
   // Global Search Input
@@ -1737,6 +2250,12 @@ function setupEventListeners() {
   // Location Filter
   document.getElementById('admin-location-filter')?.addEventListener('change', (e) => {
     AdminState.locationFilter = e.target.value;
+    renderActiveTab();
+  });
+
+  // Status Filter (Success / Failed / Pending)
+  document.getElementById('admin-status-filter')?.addEventListener('change', (e) => {
+    AdminState.statusFilter = e.target.value;
     renderActiveTab();
   });
 
@@ -1804,6 +2323,13 @@ function formatTimestamp(ts) {
   }) + ' ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 }
 
+function formatReceiptDate(dStr) {
+  if (!dStr) return new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const d = new Date(dStr);
+  if (isNaN(d.getTime())) return String(dStr);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 function getCurrentDateStr() {
   return new Date().toISOString().split('T')[0];
 }
@@ -1820,17 +2346,36 @@ function extractRefFromNotes(notes) {
   return match ? match[1].toUpperCase() : '';
 }
 
+function formatReceiptRefNo(donation) {
+  const existingRef = extractRefFromNotes(donation.notes);
+  if (existingRef) return existingRef;
+  const d = donation.created_at || donation.date || new Date().toISOString();
+  const dateObj = new Date(d);
+  const yyyymm = dateObj.getFullYear() + String(dateObj.getMonth() + 1).padStart(2, '0');
+  const code = (donation.txn_id ? donation.txn_id.replace(/^pay_/, '') : donation.id.replace(/-/g, '')).slice(-6).toUpperCase();
+  return `PFC-DR-${yyyymm}-${code}`;
+}
+
 function extractReceiptUrlFromNotes(notes) {
   if (!notes) return '';
   const match = notes.match(/Receipt:\s*(https:\/\/[^\s]+)/i);
   return match ? match[1] : '';
 }
 
-function extractAddressFromNotes(notes) {
-  if (!notes) return '';
-  const lines = notes.split('\n');
-  const cleanLines = lines.filter(l => !l.includes('PAN:') && !l.includes('Ref:') && !l.includes('Receipt:') && !l.includes('Cause:'));
-  return cleanLines.join(', ').trim();
+function cleanAddress(notes) {
+  if (!notes) return 'Guwahati, Assam, India';
+  let addr = notes;
+  addr = addr.replace(/Receipt:\s*https?:\/\/[^\s]+/gi, '');
+  addr = addr.replace(/PAN:\s*[A-Z0-9]+/gi, '');
+  addr = addr.replace(/Ref:\s*[A-Z0-9\-_]+/gi, '');
+  addr = addr.replace(/Cause:\s*[^|\n]+/gi, '');
+  addr = addr.replace(/Reason:\s*[^|\n]+/gi, '');
+  addr = addr.replace(/\\n/g, ', ');
+  addr = addr.replace(/\n/g, ', ');
+  addr = addr.replace(/[|]/g, ' ');
+  addr = addr.replace(/\s+/g, ' ').trim();
+  addr = addr.replace(/^,\s*|,\s*$/g, '');
+  return addr || 'Guwahati, Assam, India';
 }
 
 function formatLocationLabel(loc) {

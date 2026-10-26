@@ -926,6 +926,123 @@
       color: #B45309;
     }
 
+    .status-failed {
+      background: #FEE2E2;
+      color: #DC2626;
+    }
+
+    .row-selected {
+      background-color: #F0FDF4 !important;
+    }
+
+    .customer-avatar-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #E0F2FE;
+      color: #0369A1;
+      font-weight: 800;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1.5px solid #BAE6FD;
+    }
+
+    .bulk-action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 0.75rem 1.25rem;
+      border-radius: 10px;
+      margin: 1rem 1.5rem;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+      animation: fadeInRow 0.25s ease;
+    }
+
+    .bulk-bar-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.84rem;
+    }
+
+    .bulk-selected-pill {
+      background: var(--primary);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.76rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    .bulk-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-bulk-act {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-bulk-pdf {
+      background: #D97706;
+      color: #FFFFFF;
+    }
+
+    .btn-bulk-pdf:hover {
+      background: #B45309;
+    }
+
+    .btn-bulk-csv {
+      background: #0284C7;
+      color: #FFFFFF;
+    }
+
+    .btn-bulk-csv:hover {
+      background: #0369A1;
+    }
+
+    .btn-bulk-xls {
+      background: #16A34A;
+      color: #FFFFFF;
+    }
+
+    .btn-bulk-xls:hover {
+      background: #15803D;
+    }
+
+    .btn-bulk-clear {
+      background: transparent;
+      border: 1px solid #475569;
+      color: #CBD5E1;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .btn-bulk-clear:hover {
+      background: #334155;
+      color: #FFFFFF;
+    }
+
     .role-badge {
       font-size: 0.74rem;
       font-weight: 700;
@@ -1389,6 +1506,10 @@
             <i class="fa-solid fa-hand-holding-dollar"></i> Donations &amp; Receipts
             <span class="tab-badge" id="badge-count-donations">0</span>
           </button>
+          <button class="admin-nav-item" data-tab="customers" onclick="switchTab('customers');">
+            <i class="fa-solid fa-users-viewfinder"></i> Customers &amp; Donors
+            <span class="tab-badge" id="badge-count-customers">0</span>
+          </button>
           <button class="admin-nav-item" data-tab="volunteers" onclick="switchTab('volunteers');">
             <i class="fa-solid fa-users"></i> Volunteer Applications
             <span class="tab-badge" id="badge-count-volunteers">0</span>
@@ -1449,6 +1570,16 @@
                 <option value="general">General Relief</option>
               </select>
             </div>
+
+            <!-- Payment Status Filter (For Donations & Razorpay Tabs) -->
+            <div id="filter-status-wrap">
+              <select id="admin-status-filter" class="filter-select">
+                <option value="all">💳 All Statuses (Success &amp; Failed)</option>
+                <option value="success">✅ Successful Only</option>
+                <option value="failed">❌ Failed / Attempted Only</option>
+                <option value="pending">⏳ Pending Verification</option>
+              </select>
+            </div>
           </div>
 
           <!-- Export Action Buttons -->
@@ -1470,10 +1601,35 @@
 
         <!-- TAB PANE 1: DONATIONS & 80G RECEIPTS -->
         <div class="admin-tab-pane active" id="tab-pane-donations">
+          <!-- Floating Bulk Actions Toolbar -->
+          <div class="bulk-action-bar" id="donations-bulk-toolbar" style="display:none;">
+            <div class="bulk-bar-info">
+              <span class="bulk-selected-pill"><span id="bulk-selected-count">0</span> selected</span>
+              <span class="bulk-hint">Bulk actions for selected payment records:</span>
+            </div>
+            <div class="bulk-bar-actions">
+              <button type="button" class="btn-bulk-act btn-bulk-pdf" onclick="bulkDownloadSelectedReceipts();" title="Download all selected 80G Receipts">
+                <i class="fa-solid fa-file-pdf"></i> Download 80G Receipts
+              </button>
+              <button type="button" class="btn-bulk-act btn-bulk-csv" onclick="bulkExportSelectedCSV();" title="Export Selected as CSV">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
+              </button>
+              <button type="button" class="btn-bulk-act btn-bulk-xls" onclick="bulkExportSelectedXLS();" title="Export Selected as XLS">
+                <i class="fa-solid fa-file-excel"></i> Export XLS
+              </button>
+              <button type="button" class="btn-bulk-clear" onclick="clearDonationSelection();" title="Clear Selection">
+                <i class="fa-solid fa-xmark"></i> Clear
+              </button>
+            </div>
+          </div>
+
           <div class="table-responsive-wrap">
             <table class="admin-table">
               <thead>
                 <tr>
+                  <th style="width:38px; text-align:center;">
+                    <input type="checkbox" id="select-all-donations" onchange="toggleSelectAllDonations(this);" title="Select All Filtered Records">
+                  </th>
                   <th>Date &amp; Receipt Ref</th>
                   <th>Contributor Details</th>
                   <th>Hospital / Cause</th>
@@ -1486,7 +1642,7 @@
               </thead>
               <tbody id="donations-table-body">
                 <tr>
-                  <td colspan="8" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading Supabase
+                  <td colspan="9" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading Supabase
                     records...</td>
                 </tr>
               </tbody>
@@ -1494,6 +1650,32 @@
           </div>
           <div style="padding:10px 20px; font-size:0.75rem; color:var(--text-muted); border-top:1px solid #F1F5F9;"
             id="donations-filtered-count">0 records</div>
+        </div>
+
+        <!-- TAB PANE: CUSTOMERS & DONORS -->
+        <div class="admin-tab-pane" id="tab-pane-customers">
+          <div class="table-responsive-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Customer / Donor Name</th>
+                  <th>Contact (Email &amp; Phone)</th>
+                  <th>PAN (80G)</th>
+                  <th>Lifetime Seva Amount</th>
+                  <th>Transactions</th>
+                  <th>Last Contribution</th>
+                  <th style="text-align:right;">Customer History</th>
+                </tr>
+              </thead>
+              <tbody id="customers-table-body">
+                <tr>
+                  <td colspan="7" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading customer records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:10px 20px; font-size:0.75rem; color:var(--text-muted); border-top:1px solid #F1F5F9;"
+            id="customers-filtered-count">0 donors &amp; customers</div>
         </div>
 
         <!-- TAB PANE 2: VOLUNTEER APPLICATIONS -->

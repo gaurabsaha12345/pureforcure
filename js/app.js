@@ -843,11 +843,24 @@ function executeRazorpayPay() {
         tax_exemption: 'Section 80G Certified'
       },
       theme: { color: RAZORPAY_ENGINE.themeColor },
+      modal: {
+        ondismiss: function() {
+          if (!currentDonationData || currentDonationData._completed) return;
+          logFailedOrAbandonedDonation('Checkout Dismissed / Window Closed');
+        }
+      },
       handler: function(response) {
+        if (currentDonationData) currentDonationData._completed = true;
         completeSuccessfulDonation(response.razorpay_payment_id || 'pay_' + Date.now());
       }
     };
     const rzp = new window.Razorpay(options);
+    rzp.on('payment.failed', function(resp) {
+      logFailedOrAbandonedDonation(
+        'Payment Failed: ' + (resp.error?.description || 'Gateway Failure'),
+        resp.error?.metadata?.payment_id
+      );
+    });
     rzp.open();
     document.getElementById('payment-gateway-modal')?.classList.remove('active');
   } else {
@@ -863,13 +876,38 @@ function executeRazorpayPay() {
   }
 }
 
+async function logFailedOrAbandonedDonation(reason, failedPaymentId) {
+  if (!currentDonationData || currentDonationData._loggedFailed || currentDonationData._completed) return;
+  currentDonationData._loggedFailed = true;
+  try {
+    const loc = currentDonationData.causeKey || currentDonationData.location || 'General';
+    await SUPABASE_BACKEND.insertRecord('donations', {
+      name: currentDonationData.name || 'Anonymous',
+      email: currentDonationData.email || '',
+      phone: currentDonationData.phone || '',
+      amount: parseInt(currentDonationData.amount) || 0,
+      location: loc,
+      method: currentDonationData.paymentMode || 'Razorpay',
+      status: 'Failed',
+      txn_id: failedPaymentId || ('fail_' + Date.now().toString(36)),
+      date: new Date().toISOString().split('T')[0],
+      notes: `Failure Reason: ${reason} | PAN: ${currentDonationData.pan || 'N/A'} | Cause: ${currentDonationData.causeName || 'Hospital Food Relief'}`
+    });
+    console.log('Logged failed/abandoned transaction to Supabase:', reason);
+  } catch (err) {
+    console.warn('Failed to log failed donation to Supabase:', err);
+  }
+}
+
 function executeSimulatedPay() {
   if (!currentDonationData) return;
+  currentDonationData._completed = true;
   const simPayId = 'pay_sim_' + Math.random().toString(36).substring(2, 10).toUpperCase();
   completeSuccessfulDonation(simPayId);
 }
 
 async function completeSuccessfulDonation(paymentId) {
+  if (currentDonationData) currentDonationData._completed = true;
   const gatewayModal = document.getElementById('payment-gateway-modal');
   const receiptModal = document.getElementById('receipt-modal');
 
