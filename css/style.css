@@ -6062,8 +6062,8 @@ input[type="submit"] {
   border-radius: 16px !important;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28), 0 0 25px rgba(250, 160, 40, 0.12) !important;
   display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-  padding: 2rem 1rem !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  padding: 1.75rem 0.75rem !important;
   text-align: center !important;
   transition: all 0.3s ease !important;
   box-sizing: border-box !important;

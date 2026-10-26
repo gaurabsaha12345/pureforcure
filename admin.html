@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Admin Dashboard &amp; Real-time Operations Portal | Pure for Cure</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- External Libraries: Supabase Client, Chart.js, SheetJS (XLSX), PDFLib -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #1A8C4E;
+      --primary-dark: #0D2818;
+      --primary-mid: #166534;
+      --primary-light: #E8F5E9;
+      --secondary: #FCA028;
+      --secondary-dark: #E68A00;
+      --accent-blue: #0D80CC;
+      --dark: #0F172A;
+      --dark-card: #1E293B;
+      --light-bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--light-bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =========================================================
+       LOGIN GATE / LOCK SCREEN
+       ========================================================= */
+    #admin-login-gate {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 20%, #163824 0%, #0D2818 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 20px;
+    }
+
+    .login-modal-box {
+      background: #FFFFFF;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+      text-align: center;
+      position: relative;
+    }
+
+    .login-brand-logo {
+      height: 64px;
+      object-fit: contain;
+      margin-bottom: 1.25rem;
+    }
+
+    .login-title {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.35rem;
+    }
+
+    .login-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .btn-google-auth {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      background: #FFFFFF;
+      color: #374151;
+      border: 1px solid #D1D5DB;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-google-auth:hover {
+      background: #F9FAFB;
+      border-color: #9CA3AF;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      margin: 1.75rem 0 1.25rem;
+      color: #94A3B8;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #E2E8F0;
+    }
+
+    .login-divider span {
+      padding: 0 12px;
+    }
+
+    .passcode-form-group {
+      text-align: left;
+    }
+
+    .passcode-form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+    }
+
+    .passcode-input-wrap {
+      display: flex;
+      gap: 8px;
+    }
+
+    .passcode-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .passcode-input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-passcode-submit {
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      padding: 0 1.2rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-passcode-submit:hover {
+      background: var(--primary-mid);
+    }
+
+    .login-status-alert {
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      padding: 0.6rem;
+      border-radius: 8px;
+      background: #F1F5F9;
+      color: #475569;
+      display: none;
+    }
+
+    /* =========================================================
+       ADMIN APP SHELL & TOPBAR
+       ========================================================= */
+    #admin-app-shell {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .admin-brand-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .admin-logo-img {
+      height: 44px;
+      object-fit: contain;
+    }
+
+    .admin-portal-badge {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-portal-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      line-height: 1.2;
+    }
+
+    .admin-portal-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .admin-header-center {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .status-live {
+      background: #DCFCE7;
+      color: #15803D;
+      border: 1px solid #86EFAC;
+    }
+
+    .status-polling {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+
+    .status-pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22C55E;
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(34, 197, 94, 0.5);
+      animation: pulseGreen 1.6s infinite;
+    }
+
+    .status-pulse-dot.dot-amber {
+      background-color: #F59E0B;
+      animation: pulseAmber 1.6s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+      }
+      70% {
+        box-shadow: 0 0 0 7px rgba(34, 197, 94, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+      }
+    }
+
+    @keyframes pulseAmber {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6);
+      }
+      70% {
+        box-shadow: 0 0 0 7px rgba(245, 158, 11, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+      }
+    }
+
+    .live-clock-badge {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #475569;
+      background: #F1F5F9;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+    }
+
+    .admin-header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-refresh-data {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-refresh-data:hover {
+      background: #EDF2F7;
+    }
+
+    .admin-user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 1px solid var(--border);
+      padding-left: 16px;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      object-fit: cover;
+    }
+
+    .admin-user-info {
+      text-align: left;
+      line-height: 1.2;
+    }
+
+    .admin-user-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .admin-user-email {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .btn-signout {
+      background: #FEE2E2;
+      color: #B91C1C;
+      border: 1px solid #FCA5A5;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-signout:hover {
+      background: #FCA5A5;
+      color: #7F1D1D;
+    }
+
+    /* =========================================================
+       DASHBOARD BODY CONTAINER
+       ========================================================= */
+    .admin-main-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem 3rem;
+      width: 100%;
+    }
+
+    /* KPI METRICS OVERVIEW CARDS */
+    .kpi-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3.5px;
+      background: var(--primary);
+    }
+
+    .kpi-card.kpi-orange::before {
+      background: var(--secondary);
+    }
+
+    .kpi-card.kpi-blue::before {
+      background: var(--accent-blue);
+    }
+
+    .kpi-card.kpi-purple::before {
+      background: #8B5CF6;
+    }
+
+    .kpi-card.kpi-emerald::before {
+      background: #10B981;
+    }
+
+    .kpi-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+    }
+
+    .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .kpi-icon-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      background: #F1F5F9;
+      color: #475569;
+    }
+
+    .kpi-card.kpi-orange .kpi-icon-badge {
+      background: #FFF7ED;
+      color: var(--secondary-dark);
+    }
+
+    .kpi-card.kpi-blue .kpi-icon-badge {
+      background: #EFF6FF;
+      color: var(--accent-blue);
+    }
+
+    .kpi-card.kpi-emerald .kpi-icon-badge {
+      background: #ECFDF5;
+      color: #059669;
+    }
+
+    .kpi-val {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1.1;
+    }
+
+    .kpi-subtext {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* CHARTS ROW */
+    .charts-row-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    @media (max-width: 992px) {
+      .charts-row-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .chart-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .chart-title {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-canvas-wrap {
+      position: relative;
+      height: 220px;
+      width: 100%;
+    }
+
+    /* TABBED DATA MANAGER */
+    .admin-data-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+    }
+
+    .admin-nav-tabs {
+      display: flex;
+      align-items: center;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.25rem;
+      overflow-x: auto;
+      gap: 4px;
+    }
+
+    .admin-nav-item {
+      padding: 1rem 1.15rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #64748B;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .admin-nav-item:hover {
+      color: var(--primary);
+    }
+
+    .admin-nav-item.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #FFFFFF;
+    }
+
+    .tab-badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: #E2E8F0;
+      color: #475569;
+    }
+
+    .admin-nav-item.active .tab-badge {
+      background: #DCFCE7;
+      color: #15803D;
+    }
+
+    /* TOOLBAR: SEARCH, FILTERS & EXPORT ACTIONS */
+    .admin-toolbar {
+      padding: 1rem 1.5rem;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toolbar-left-filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .search-input-box {
+      position: relative;
+      min-width: 240px;
+      max-width: 320px;
+      flex: 1;
+    }
+
+    .search-input-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94A3B8;
+      font-size: 0.85rem;
+    }
+
+    .search-input-box input {
+      width: 100%;
+      padding: 0.55rem 0.85rem 0.55rem 2.2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.84rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .search-input-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 140, 78, 0.1);
+    }
+
+    .filter-select {
+      padding: 0.55rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--dark);
+      background-color: #FFFFFF;
+      outline: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .custom-date-box {
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .custom-date-box input[type="date"] {
+      padding: 0.5rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-family: inherit;
+    }
+
+    .toolbar-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.55rem 0.95rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: var(--dark);
+      transition: all 0.2s;
+    }
+
+    .btn-export:hover {
+      background: #F1F5F9;
+      border-color: #CBD5E1;
+    }
+
+    .btn-export-csv {
+      color: #0D80CC;
+      border-color: #BAE6FD;
+      background: #F0F9FF;
+    }
+
+    .btn-export-csv:hover {
+      background: #E0F2FE;
+    }
+
+    .btn-export-xls {
+      color: #15803D;
+      border-color: #BBF7D0;
+      background: #F0FDF4;
+    }
+
+    .btn-export-xls:hover {
+      background: #DCFCE7;
+    }
+
+    .btn-bulk-receipts {
+      color: #D97706;
+      border-color: #FDE68A;
+      background: #FFFBEB;
+    }
+
+    .btn-bulk-receipts:hover {
+      background: #FEF3C7;
+    }
+
+    /* RESPONSIVE DATA TABLES */
+    .admin-tab-pane {
+      display: none;
+    }
+
+    .admin-tab-pane.active {
+      display: block;
+    }
+
+    .table-responsive-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.84rem;
+    }
+
+    .admin-table thead th {
+      background: #F8FAFC;
+      padding: 0.85rem 1rem;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .admin-table tbody td {
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid #F1F5F9;
+      color: #334155;
+      vertical-align: middle;
+    }
+
+    .admin-table tbody tr:hover {
+      background-color: #F8FAFC;
+    }
+
+    .table-row-animate {
+      animation: fadeInRow 0.3s ease;
+    }
+
+    @keyframes fadeInRow {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .badge-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #F1F5F9;
+      color: #475569;
+    }
+
+    .badge-ref {
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #DBEAFE;
+    }
+
+    .location-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .chip-bbci {
+      background: #ECFDF5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+
+    .chip-gmch {
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #BFDBFE;
+    }
+
+    .chip-aiims {
+      background: #FFF7ED;
+      color: #9A3412;
+      border: 1px solid #FED7AA;
+    }
+
+    .chip-flood {
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
+
+    .chip-general {
+      background: #F5F3FF;
+      color: #5B21B6;
+      border: 1px solid #DDD6FE;
+    }
+
+    .pan-badge {
+      font-family: monospace;
+      font-weight: 700;
+      color: #475569;
+      background: #F1F5F9;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      border: 1px dashed #CBD5E1;
+    }
+
+    .txn-code {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: #64748B;
+      background: #F8FAFC;
+      padding: 2px 5px;
+      border-radius: 4px;
+      display: inline-block;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .status-success,
+    .status-active,
+    .status-approved {
+      background: #DCFCE7;
+      color: #15803D;
+    }
+
+    .status-pending {
+      background: #FEF3C7;
+      color: #B45309;
+    }
+
+    .role-badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: #F1F5F9;
+      color: #334155;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .btn-action-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.2s;
+    }
+
+    .btn-action-primary:hover {
+      background: var(--primary-mid);
+    }
+
+    .btn-action-icon {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748B;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .btn-action-icon:hover {
+      background: #EDF2F7;
+      color: var(--dark);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .empty-state i {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+      display: block;
+      color: #CBD5E1;
+    }
+
+    /* FOOTER BAR */
+    .admin-footer {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border);
+      padding: 1rem 2rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    /* MODAL POPUPS */
+    .admin-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .admin-modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .admin-modal-content {
+      background: #FFFFFF;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-modal-header h3 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #94A3B8;
+      cursor: pointer;
+    }
+
+    .admin-modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .detail-group.full-width {
+      grid-column: span 2;
+    }
+
+    .detail-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .detail-group p {
+      font-size: 0.88rem;
+      color: var(--dark);
+      word-break: break-word;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .btn-outline {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      color: var(--dark);
+    }
+
+    /* TOAST NOTIFICATIONS */
+    #admin-toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .admin-toast {
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: 12px 18px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border-left: 4px solid var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--dark);
+      min-width: 280px;
+      max-width: 380px;
+      animation: slideInToast 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s ease;
+    }
+
+    .admin-toast.hide {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+
+    .admin-toast.toast-success {
+      border-left-color: #22C55E;
+    }
+
+    .admin-toast.toast-error {
+      border-left-color: #EF4444;
+    }
+
+    .admin-toast.toast-donation {
+      border-left-color: var(--secondary);
+    }
+
+    @keyframes slideInToast {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================================================
+       1. SECURE ADMIN LOGIN GATE (Google OAuth + Master Key)
+       ========================================================= -->
+  <div id="admin-login-gate">
+    <div class="login-modal-box">
+      <img src="images/logo/pfc-logo-new.png" alt="Pure for Cure Logo" class="login-brand-logo">
+      <h1 class="login-title">Admin Management Portal</h1>
+      <p class="login-subtitle">Hare Krishna Movement Guwahati • Food Relief Operations</p>
+
+      <!-- Google OAuth Sign-In Button -->
+      <button type="button" class="btn-google-auth" onclick="signInWithGoogle();" id="btn-google-login">
+        <svg width="20" height="20" viewBox="0 0 48 48">
+          <path fill="#EA4335"
+            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+          <path fill="#4285F4"
+            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+          <path fill="#FBBC05"
+            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+          <path fill="#34A853"
+            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+        </svg>
+        Sign in with Google
+      </button>
+
+      <!-- Fallback Divider -->
+      <div class="login-divider">
+        <span>Or Master Passcode</span>
+      </div>
+
+      <!-- Master Key Fallback Form -->
+      <div class="passcode-form-group">
+        <label for="master-passcode-input">Administrator Passcode</label>
+        <div class="passcode-input-wrap">
+          <input type="password" id="master-passcode-input" class="passcode-input" placeholder="Enter Master Passcode"
+            autocomplete="current-password">
+          <button type="button" class="btn-passcode-submit" onclick="verifyMasterPasscode();">
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+        <p id="passcode-error" style="color:#DC2626; font-size:0.75rem; margin-top:5px; display:none;"></p>
+      </div>
+
+      <div class="login-status-alert" id="login-status-msg"></div>
+
+      <p style="font-size:0.75rem; color:#94A3B8; margin-top:1.5rem;">
+        <i class="fa-solid fa-lock"></i> Protected by Section 80G Compliant Access Control
+      </p>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       2. AUTHENTICATED ADMIN APPLICATION SHELL
+       ========================================================= -->
+  <div id="admin-app-shell">
+
+    <!-- Top Navigation Header -->
+    <header class="admin-header">
+      <div class="admin-brand-left">
+        <a href="index.html" title="Visit Public Pure for Cure Site">
+          <img src="images/logo/pfc-logo-new.png" alt="Pure for Cure Logo" class="admin-logo-img">
+        </a>
+        <div class="admin-portal-badge">
+          <span class="admin-portal-title">Pure for Cure</span>
+          <span class="admin-portal-sub">Master Operations &amp; Ledger Portal</span>
+        </div>
+      </div>
+
+      <div class="admin-header-center">
+        <!-- Live Real-time Status Badge -->
+        <span class="status-pill status-live" id="realtime-status-pill">
+          <span class="status-pulse-dot"></span> Realtime Live (WebSockets)
+        </span>
+        <!-- Real-time Clock -->
+        <span class="live-clock-badge" id="live-clock-display"></span>
+      </div>
+
+      <div class="admin-header-right">
+        <button type="button" class="btn-refresh-data" onclick="loadAllDashboardData();" title="Refresh Live Data">
+          <i class="fa-solid fa-rotate" id="refresh-data-icon"></i>
+          <span id="last-sync-time">Sync</span>
+        </button>
+
+        <div class="admin-user-profile">
+          <img src="images/prabhupada/prabhupada.png" alt="Admin" class="admin-avatar" id="admin-user-avatar">
+          <div class="admin-user-info">
+            <div class="admin-user-name" id="admin-user-name">Administrator</div>
+            <div class="admin-user-email" id="admin-user-email">admin@pureforcure.org</div>
+          </div>
+          <button type="button" class="btn-signout" onclick="signOutAdmin();" title="Sign Out">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Body -->
+    <main class="admin-main-container">
+
+      <!-- SECTION 1: KPI OVERVIEW SUMMARY CARDS -->
+      <section class="kpi-metrics-grid">
+        <!-- KPI 1: Total Revenue -->
+        <div class="kpi-card kpi-emerald">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Total Contributions</span>
+            <span class="kpi-icon-badge"><i class="fa-solid fa-indian-rupee-sign"></i></span>
+          </div>
+          <div class="kpi-val" id="kpi-total-revenue">₹0</div>
+          <div class="kpi-subtext">Online &amp; Direct Seva Raised</div>
+        </div>
+
+        <!-- KPI 2: Meals Sponsored -->
+        <div class="kpi-card kpi-orange">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Plates Sponsored</span>
+            <span class="kpi-icon-badge"><i class="fa-solid fa-bowl-food"></i></span>
+          </div>
+          <div class="kpi-val" id="kpi-meals-sponsored">0 Plates</div>
+          <div class="kpi-subtext">At ₹80 / Sattvik Hospital Meal</div>
+        </div>
+
+        <!-- KPI 3: Total Verified Donors -->
+        <div class="kpi-card kpi-blue">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Verified Donors</span>
+            <span class="kpi-icon-badge"><i class="fa-solid fa-heart"></i></span>
+          </div>
+          <div class="kpi-val" id="kpi-total-donors">0</div>
+          <div class="kpi-subtext">80G Receipts Generated</div>
+        </div>
+
+        <!-- KPI 4: Average Ticket -->
+        <div class="kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Avg. Contribution</span>
+            <span class="kpi-icon-badge"><i class="fa-solid fa-chart-line"></i></span>
+          </div>
+          <div class="kpi-val" id="kpi-avg-ticket">₹0</div>
+          <div class="kpi-subtext">Per Successful Donation</div>
+        </div>
+
+        <!-- KPI 5: Active Subscribers -->
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Newsletter Subscribed</span>
+            <span class="kpi-icon-badge"><i class="fa-solid fa-paper-plane"></i></span>
+          </div>
+          <div class="kpi-val" id="kpi-active-subscribers">0</div>
+          <div class="kpi-subtext">Active Supabase Subscribers</div>
+        </div>
+
+        <!-- KPI 6: Pending Volunteers -->
+        <div class="kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Volunteers</span>
+            <span class="kpi-icon-badge"><i class="fa-solid fa-hands-helping"></i></span>
+          </div>
+          <div class="kpi-val" id="kpi-pending-volunteers">0</div>
+          <div class="kpi-subtext">Applications on Record</div>
+        </div>
+
+        <!-- KPI 7: Corporate / Contact Inquiries -->
+        <div class="kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Leads &amp; Inquiries</span>
+            <span class="kpi-icon-badge"><i class="fa-solid fa-envelope-open-text"></i></span>
+          </div>
+          <div class="kpi-val" id="kpi-total-inquiries">0</div>
+          <div class="kpi-subtext">CSR &amp; Contact Submissions</div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: VISUAL ANALYTICS & CHARTS -->
+      <section class="charts-row-grid">
+        <!-- Revenue Over Time Line Chart -->
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <h2 class="chart-title"><i class="fa-solid fa-chart-area" style="color:var(--primary);"></i> Donation
+              Revenue Timeline</h2>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">Monthly Aggregation</span>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="chartRevenueTrends"></canvas>
+          </div>
+        </div>
+
+        <!-- Hospital Location Distribution Doughnut Chart -->
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <h2 class="chart-title"><i class="fa-solid fa-chart-pie" style="color:var(--secondary);"></i> Hospital Seva
+              Share</h2>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">By Relief Location</span>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="chartLocationDistribution"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: TABBED DATA MANAGER & EXPORT SUITE -->
+      <div class="admin-data-card">
+
+        <!-- Navigation Tabs -->
+        <div class="admin-nav-tabs">
+          <button class="admin-nav-item active" data-tab="donations" onclick="switchTab('donations');">
+            <i class="fa-solid fa-hand-holding-dollar"></i> Donations &amp; Receipts
+            <span class="tab-badge" id="badge-count-donations">0</span>
+          </button>
+          <button class="admin-nav-item" data-tab="volunteers" onclick="switchTab('volunteers');">
+            <i class="fa-solid fa-users"></i> Volunteer Applications
+            <span class="tab-badge" id="badge-count-volunteers">0</span>
+          </button>
+          <button class="admin-nav-item" data-tab="newsletter" onclick="switchTab('newsletter');">
+            <i class="fa-solid fa-envelope"></i> Newsletter Subscribers
+            <span class="tab-badge" id="badge-count-newsletter">0</span>
+          </button>
+          <button class="admin-nav-item" data-tab="contact" onclick="switchTab('contact');">
+            <i class="fa-solid fa-inbox"></i> Contact Inquiries
+            <span class="tab-badge" id="badge-count-contact">0</span>
+          </button>
+          <button class="admin-nav-item" data-tab="csr" onclick="switchTab('csr');">
+            <i class="fa-solid fa-building"></i> CSR Partnerships
+            <span class="tab-badge" id="badge-count-csr">0</span>
+          </button>
+          <button class="admin-nav-item" data-tab="razorpay" onclick="switchTab('razorpay');">
+            <i class="fa-solid fa-receipt"></i> Razorpay Live Reconcile
+            <span class="tab-badge" id="badge-count-razorpay">0</span>
+          </button>
+        </div>
+
+        <!-- Search, Date Filters & Export Action Toolbar -->
+        <div class="admin-toolbar">
+          <div class="toolbar-left-filters">
+            <!-- Search Box -->
+            <div class="search-input-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="admin-global-search" placeholder="Search by name, email, phone, txn ID...">
+            </div>
+
+            <!-- Date Range Filter -->
+            <select id="admin-date-filter" class="filter-select">
+              <option value="all">📅 All Time Records</option>
+              <option value="today">Today</option>
+              <option value="week">Past 7 Days</option>
+              <option value="month">This Month</option>
+              <option value="fy26">Fiscal Year 2026-27</option>
+              <option value="custom">Custom Date Range...</option>
+            </select>
+
+            <!-- Custom Date Range Inputs -->
+            <div class="custom-date-box" id="custom-date-inputs">
+              <input type="date" id="custom-date-start" title="From Date">
+              <span style="font-size:0.75rem; color:#94A3B8;">to</span>
+              <input type="date" id="custom-date-end" title="To Date">
+            </div>
+
+            <!-- Location Filter (For Donations Tab) -->
+            <div id="filter-location-wrap">
+              <select id="admin-location-filter" class="filter-select">
+                <option value="all">🏥 All Locations / Hospitals</option>
+                <option value="borooah">BBCI Cancer Hospital</option>
+                <option value="gmch">GMCH Hospital</option>
+                <option value="aiims">AIIMS Guwahati</option>
+                <option value="flood">Assam Flood Relief</option>
+                <option value="kiosk">Hospital Kiosks</option>
+                <option value="general">General Relief</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Export Action Buttons -->
+          <div class="toolbar-right-actions">
+            <button type="button" class="btn-export btn-export-csv" onclick="exportCurrentTableToCSV();"
+              title="Export filtered records as comma-separated values (.csv)">
+              <i class="fa-solid fa-file-csv"></i> Export .CSV
+            </button>
+            <button type="button" class="btn-export btn-export-xls" onclick="exportCurrentTableToXLS();"
+              title="Export formatted Excel spreadsheet (.xlsx / .xls)">
+              <i class="fa-solid fa-file-excel"></i> Export .XLS
+            </button>
+            <button type="button" class="btn-export btn-bulk-receipts" onclick="downloadAllReceipts();"
+              title="Download all 80G PDF receipts for the selected view">
+              <i class="fa-solid fa-file-pdf"></i> Download Receipts
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB PANE 1: DONATIONS & 80G RECEIPTS -->
+        <div class="admin-tab-pane active" id="tab-pane-donations">
+          <div class="table-responsive-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Date &amp; Receipt Ref</th>
+                  <th>Contributor Details</th>
+                  <th>Hospital / Cause</th>
+                  <th>Amount (INR)</th>
+                  <th>PAN (80G)</th>
+                  <th>Payment Mode &amp; Txn ID</th>
+                  <th>Status</th>
+                  <th style="text-align:right;">80G Actions</th>
+                </tr>
+              </thead>
+              <tbody id="donations-table-body">
+                <tr>
+                  <td colspan="8" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading Supabase
+                    records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:10px 20px; font-size:0.75rem; color:var(--text-muted); border-top:1px solid #F1F5F9;"
+            id="donations-filtered-count">0 records</div>
+        </div>
+
+        <!-- TAB PANE 2: VOLUNTEER APPLICATIONS -->
+        <div class="admin-tab-pane" id="tab-pane-volunteers">
+          <div class="table-responsive-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Applied Date</th>
+                  <th>Volunteer Name</th>
+                  <th>Contact Information</th>
+                  <th>City / Location</th>
+                  <th>Preferred Role</th>
+                  <th>Status</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="volunteers-table-body">
+                <tr>
+                  <td colspan="7" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading
+                    applications...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:10px 20px; font-size:0.75rem; color:var(--text-muted); border-top:1px solid #F1F5F9;"
+            id="volunteers-filtered-count">0 applications</div>
+        </div>
+
+        <!-- TAB PANE 3: NEWSLETTER SUBSCRIBERS -->
+        <div class="admin-tab-pane" id="tab-pane-newsletter">
+          <div class="table-responsive-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Subscribed Date</th>
+                  <th>Subscriber Name</th>
+                  <th>Email Address</th>
+                  <th>Source Page</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="newsletter-table-body">
+                <tr>
+                  <td colspan="5" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading
+                    subscribers...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:10px 20px; font-size:0.75rem; color:var(--text-muted); border-top:1px solid #F1F5F9;"
+            id="newsletter-filtered-count">0 subscribers</div>
+        </div>
+
+        <!-- TAB PANE 4: CONTACT INQUIRIES -->
+        <div class="admin-tab-pane" id="tab-pane-contact">
+          <div class="table-responsive-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Sender Name</th>
+                  <th>Email Address</th>
+                  <th>Subject</th>
+                  <th>Message Preview</th>
+                  <th style="text-align:right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="contact-table-body">
+                <tr>
+                  <td colspan="6" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading contact
+                    inquiries...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:10px 20px; font-size:0.75rem; color:var(--text-muted); border-top:1px solid #F1F5F9;"
+            id="contact-filtered-count">0 messages</div>
+        </div>
+
+        <!-- TAB PANE 5: CSR PARTNERSHIPS -->
+        <div class="admin-tab-pane" id="tab-pane-csr">
+          <div class="table-responsive-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Company Name</th>
+                  <th>Contact Person</th>
+                  <th>Email &amp; Phone</th>
+                  <th>Partnership Focus</th>
+                  <th>Proposed Budget</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="csr-table-body">
+                <tr>
+                  <td colspan="7" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading corporate
+                    inquiries...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:10px 20px; font-size:0.75rem; color:var(--text-muted); border-top:1px solid #F1F5F9;"
+            id="csr-filtered-count">0 inquiries</div>
+        </div>
+
+        <!-- TAB PANE 6: RAZORPAY GATEWAY RECONCILIATION -->
+        <div class="admin-tab-pane" id="tab-pane-razorpay">
+          <div style="padding:1.25rem 1.5rem; background:#F8FAFC; border-bottom:1px solid var(--border);">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+              <div>
+                <strong style="color:var(--dark); font-size:0.95rem;">Razorpay Gateway Live Reconciliation</strong>
+                <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+                  Active Key ID: <code
+                    style="font-family:monospace; background:#FFFFFF; padding:2px 6px; border:1px solid #CBD5E1; border-radius:4px;">rzp_live_ysKJLc5VAgvM7W</code>
+                  (Official Pure for Cure Merchant Gateway)
+                </p>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <span class="status-badge status-success"><i class="fa-solid fa-shield-check"></i> 100% DB
+                  Reconciled</span>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Razorpay Payment ID</th>
+                  <th>Donor Name</th>
+                  <th>Email</th>
+                  <th>Relief Location</th>
+                  <th>Captured Amount</th>
+                  <th>Gateway Status</th>
+                  <th>Ledger Sync Status</th>
+                </tr>
+              </thead>
+              <tbody id="razorpay-table-body">
+                <tr>
+                  <td colspan="7" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading Razorpay
+                    reconciliation...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:10px 20px; font-size:0.75rem; color:var(--text-muted); border-top:1px solid #F1F5F9;"
+            id="razorpay-filtered-count">0 transactions</div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer Information -->
+    <footer class="admin-footer">
+      <div>
+        <strong>Pure for Cure</strong> • Healthcare Humanitarian Mission of <em>Hare Krishna Movement Guwahati</em>.
+        URN: 14/80G/CIT/GHY-II/2011-12/4701-05
+      </div>
+      <div>
+        Real-time Database: <strong>Supabase PostgreSQL</strong> | Payment Gateway: <strong>Razorpay Live</strong>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- =========================================================
+       3. GLOBAL RECORD DETAIL & RECEIPT MODAL
+       ========================================================= -->
+  <div class="admin-modal-backdrop" id="admin-global-modal">
+    <div class="admin-modal-content">
+      <div class="admin-modal-header">
+        <h3 id="admin-modal-title">Record Details</h3>
+        <button type="button" class="modal-close-btn" onclick="closeAdminModal();">&times;</button>
+      </div>
+      <div class="admin-modal-body" id="admin-modal-body">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       4. TOAST NOTIFICATIONS CONTAINER
+       ========================================================= -->
+  <div id="admin-toast-container"></div>
+
+  <!-- Admin Application Master Engine -->
+  <script src="js/admin.js"></script>
+</body>
+
+</html>

@@ -5,7 +5,7 @@ import json
 PAGES_CONFIG = {
     "index.html": {
         "title": "Pure for Cure | Hospital Caregiver Food Relief | Hare Krishna Mandir Guwahati",
-        "desc": "Pure for Cure by Hare Krishna Movement Guwahati serves 40,70,000+ pure, hygienic Sattvik meals to patients and caregivers camping at AIIMS, GMCH & BBCI hospitals.",
+        "desc": "Pure for Cure by Hare Krishna Movement Guwahati serves 48,90,470+ pure, hygienic Sattvik meals to patients and caregivers camping at AIIMS, GMCH & BBCI hospitals.",
         "canonical": "https://pureforcure.org/",
         "type": "website",
         "include_ngo": True

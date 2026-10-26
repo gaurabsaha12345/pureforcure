@@ -2288,20 +2288,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Count Up Animation for Floating Data Bar
-  // Weekly Dynamic Stats Calculation (Base: 2026-10-01, +2 locations/week, +8 active days/week)
-  const statsBaseDate = new Date('2026-10-01T00:00:00Z');
+  // Count Up Animation for Floating Data Bar & Hero Stats
+  // Weekly Dynamic Stats Calculation:
+  // Base: 2026-10-15 (Today)
+  // Dynamic Growth: +8,000 plates/week to 48,90,470, +2 locations/week, +8 active days/week
+  const statsBaseDate = new Date('2026-10-15T00:00:00Z');
   const statsNow = new Date();
   const diffWeeks = Math.max(0, Math.floor((statsNow - statsBaseDate) / (1000 * 60 * 60 * 24 * 7)));
-  const dynamicLocations = 47 + (diffWeeks * 2);
-  const dynamicDays = 3051 + (diffWeeks * 8);
+  const dynamicPlates = 4890470 + (diffWeeks * 8000);
+  const dynamicLocations = 49 + (diffWeeks * 2);
+  const dynamicDays = 3059 + (diffWeeks * 8);
 
+  // 1. Update Data Bar Total Plates
+  const platesDatabarEl = document.getElementById('databar-plates-num');
+  if (platesDatabarEl) {
+    platesDatabarEl.setAttribute('data-count', dynamicPlates);
+    platesDatabarEl.textContent = dynamicPlates.toLocaleString('en-IN') + '+';
+  }
+
+  // 2. Update Home Hero Image Badge (Plates of Meals served)
+  const platesHeroEl = document.getElementById('home-hero-plates-num');
+  if (platesHeroEl) {
+    platesHeroEl.textContent = dynamicPlates.toLocaleString('en-IN') + '+';
+  }
+
+  // 3. Update Data Bar Locations
   const locEl = document.getElementById('databar-locations-num');
   if (locEl) {
     locEl.setAttribute('data-count', dynamicLocations);
     locEl.textContent = dynamicLocations + '+';
   }
 
+  // 4. Update Data Bar Days
   const daysEl = document.getElementById('databar-days-num');
   if (daysEl) {
     daysEl.setAttribute('data-count', dynamicDays);
@@ -2318,7 +2336,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const countTo = parseInt(countToStr);
           const prefix = target.getAttribute('data-prefix') || '';
           const suffix = target.getAttribute('data-suffix') || '';
-          const formatCustom = target.getAttribute('data-format') === 'indian';
 
           let count = 0;
           const duration = 1800;
@@ -2332,10 +2349,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             let formattedVal = count.toLocaleString('en-IN');
-            if (formatCustom && count >= 4070000) {
-              formattedVal = "40,70,000";
-            }
-
             target.textContent = prefix + formattedVal + suffix;
           }, stepTime);
 
