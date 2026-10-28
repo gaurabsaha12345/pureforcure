@@ -596,83 +596,213 @@ async function generateReceiptPdfBlob(donor, meta) {
   try {
     const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
     const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([612, 792]); // US Letter
+    const page = pdfDoc.addPage([612, 792]); // US Letter standard
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const navy = rgb(0.04, 0.15, 0.45);
-    const black = rgb(0.1, 0.1, 0.1);
-    let y = 740;
+    
+    // Palette matching official template
+    const greenHeader = rgb(0.06, 0.42, 0.22); // #0F6B38
+    const darkGreenBadge = rgb(0.06, 0.22, 0.13); // #0F3822
+    const greenFooter = rgb(0.05, 0.35, 0.20); // #0D5933
+    const black = rgb(0.12, 0.12, 0.12);
+    const white = rgb(1, 1, 1);
 
-    // Header logo
+    let y = 745;
+
+    // 1. Top Left: HKM Logo
     try {
-      const logoResp = await fetch('images/pur-for-cure-logo-clean.jpg');
+      let logoResp = await fetch('images/logo/hkm-logo.png');
       if (logoResp.ok) {
         const logoBytes = await logoResp.arrayBuffer();
-        const logoImg = await pdfDoc.embedJpg(logoBytes);
-        const dims = logoImg.scaleToFit(110, 44);
-        page.drawImage(logoImg, { x: 50, y: y - 30, width: dims.width, height: dims.height });
+        const logoImg = await pdfDoc.embedPng(logoBytes);
+        const dims = logoImg.scaleToFit(85, 45);
+        page.drawImage(logoImg, { x: 45, y: y - 35, width: dims.width, height: dims.height });
+      } else {
+        logoResp = await fetch('images/pur-for-cure-logo-clean.jpg');
+        if (logoResp.ok) {
+          const logoBytes = await logoResp.arrayBuffer();
+          const logoImg = await pdfDoc.embedJpg(logoBytes);
+          const dims = logoImg.scaleToFit(85, 45);
+          page.drawImage(logoImg, { x: 45, y: y - 35, width: dims.width, height: dims.height });
+        }
       }
     } catch (e) {
       console.warn('Logo embed error:', e);
     }
 
-    page.drawText('PURE FOR CURE', { x: 350, y: y + 10, size: 18, font: bold, color: navy });
-    page.drawText('(Serving the mission of His Divine Grace A.C. Bhaktivedanta Swami Prabhupada)', { x: 200, y: y - 6, size: 7, font, color: black });
-    y -= 55;
-    page.drawText('Ref. No.: ' + meta.refNo, { x: 50, y, size: 10, font: bold, color: black });
-    page.drawText('Date: ' + meta.dateStr, { x: 420, y, size: 10, font: bold, color: black });
-    y -= 45;
-    page.drawText('DONATION RECEIPT', { x: 170, y, size: 26, font: bold, color: navy });
-    y -= 35;
-    page.drawText('This is to acknowledge that PURE FOR CURE, GUWAHATI has received a contribution of', { x: 50, y, size: 10, font, color: black });
-    y -= 55;
-    page.drawRectangle({ x: 180, y: y - 10, width: 250, height: 45, borderColor: navy, borderWidth: 1.5 });
-    page.drawText('Rs. ' + Number(donor.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }), { x: 220, y: y + 5, size: 22, font: bold, color: navy });
-    y -= 60;
+    // 2. Top Center: Organization Title & Subtitle
+    page.drawText('HARE KRISHNA MOVEMENT,GUWAHATI', {
+      x: 140,
+      y: y - 8,
+      size: 14.5,
+      font: bold,
+      color: greenHeader
+    });
+    page.drawText('(Serving the mission of  His Divine Grace Vishwaguru A.C. Bhaktivedanta Swami Prabhupada)', {
+      x: 140,
+      y: y - 22,
+      size: 7.2,
+      font: font,
+      color: black
+    });
 
-    const col = (label, value, x) => {
-      page.drawText(label, { x, y, size: 9, font: bold, color: black });
-      page.drawText(String(value || ''), { x, y: y - 13, size: 9, font, color: black });
-    };
-    const wrapText = (text, f, size, maxWidth) => {
-      const words = String(text || '').split(' ');
+    // 3. Top Right: PURE FOR CURE Badge
+    const badgeX = 502;
+    const badgeY = y - 35;
+    const badgeW = 65;
+    const badgeH = 44;
+    page.drawRectangle({
+      x: badgeX,
+      y: badgeY,
+      width: badgeW,
+      height: badgeH,
+      color: darkGreenBadge,
+      borderColor: darkGreenBadge,
+      borderWidth: 1
+    });
+    page.drawText('PURE', { x: badgeX + 11, y: badgeY + 28, size: 10, font: bold, color: white });
+    page.drawText('FOR', { x: badgeX + 26, y: badgeY + 19, size: 6.5, font: bold, color: white });
+    page.drawText('CURE', { x: badgeX + 11, y: badgeY + 8, size: 10, font: bold, color: white });
+
+    // 4. Reference Number & Date
+    y = 675;
+    page.drawText('DR No: ', { x: 45, y, size: 11, font: bold, color: black });
+    page.drawText(String(meta.refNo || ''), { x: 92, y, size: 10.5, font: font, color: black });
+
+    page.drawText('Date: ', { x: 430, y, size: 11, font: bold, color: black });
+    page.drawText(String(meta.dateStr || ''), { x: 465, y, size: 10.5, font: font, color: black });
+
+    // 5. Title: DONATION RECEIPT
+    y = 620;
+    const titleText = 'DONATION RECEIPT';
+    const titleWidth = bold.widthOfTextAtSize(titleText, 25);
+    page.drawText(titleText, {
+      x: (612 - titleWidth) / 2,
+      y,
+      size: 25,
+      font: bold,
+      color: greenHeader
+    });
+
+    // 6. Centered Acknowledgment
+    y = 588;
+    const ack1 = 'This is to acknowledge that HARE KRISHNA MOVEMENT, GUWAHATI';
+    const ack1W = font.widthOfTextAtSize(ack1, 10.5);
+    page.drawText(ack1, { x: (612 - ack1W) / 2, y, size: 10.5, font: font, color: black });
+
+    y = 574;
+    const ack2 = 'has received a contribution of';
+    const ack2W = font.widthOfTextAtSize(ack2, 10.5);
+    page.drawText(ack2, { x: (612 - ack2W) / 2, y, size: 10.5, font: font, color: black });
+
+    // 7. Amount Box with Vector Rupee Symbol
+    y = 502;
+    const boxW = 300;
+    const boxH = 55;
+    const boxX = (612 - boxW) / 2;
+    page.drawRectangle({
+      x: boxX,
+      y,
+      width: boxW,
+      height: boxH,
+      borderColor: black,
+      borderWidth: 1.2
+    });
+
+    // Draw Vector Rupee Glyph inside box
+    const amtStr = Number(donor.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+    const numWidth = bold.widthOfTextAtSize(amtStr, 23);
+    const rupeeW = 18;
+    const totalAmtW = rupeeW + 8 + numWidth;
+    const amtStartX = (612 - totalAmtW) / 2;
+    const amtY = y + 18;
+
+    // Crisp Vector Rupee Glyph (₹)
+    const rx = amtStartX;
+    const ry = amtY + 2;
+    page.drawLine({ start: { x: rx, y: ry + 16 }, end: { x: rx + 14, y: ry + 16 }, thickness: 2.2, color: black });
+    page.drawLine({ start: { x: rx, y: ry + 10 }, end: { x: rx + 13, y: ry + 10 }, thickness: 2.2, color: black });
+    page.drawLine({ start: { x: rx + 3.2, y: ry + 16 }, end: { x: rx + 3.2, y: ry + 4 }, thickness: 2.2, color: black });
+    page.drawLine({ start: { x: rx + 3.2, y: ry + 16 }, end: { x: rx + 12.5, y: ry + 13 }, thickness: 1.8, color: black });
+    page.drawLine({ start: { x: rx + 12.5, y: ry + 13 }, end: { x: rx + 3.2, y: ry + 10 }, thickness: 1.8, color: black });
+    page.drawLine({ start: { x: rx + 4, y: ry + 10 }, end: { x: rx + 14, y: ry - 2 }, thickness: 2.4, color: black });
+
+    page.drawText(amtStr, {
+      x: amtStartX + rupeeW + 8,
+      y: amtY,
+      size: 23,
+      font: bold,
+      color: black
+    });
+
+    // Helper: Clean Address Wrap
+    const wrapCleanText = (text, f, size, maxWidth) => {
+      const cleanStr = String(text || '').replace(/\\n/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ');
+      const words = cleanStr.split(' ');
       const lines = [];
-      let line = '';
-      words.forEach(word => {
-        const test = line ? line + ' ' + word : word;
-        if (f.widthOfTextAtSize(test, size) > maxWidth && line) {
-          lines.push(line);
-          line = word;
+      let cur = '';
+      words.forEach(w => {
+        const test = cur ? cur + ' ' + w : w;
+        if (f.widthOfTextAtSize(test, size) > maxWidth && cur) {
+          lines.push(cur);
+          cur = w;
         } else {
-          line = test;
+          cur = test;
         }
       });
-      if (line) lines.push(line);
+      if (cur) lines.push(cur);
       return lines;
     };
 
-    col('Donor Name', donor.name, 50);
-    col('WhatsApp No.', donor.phone, 230);
-    col('Towards', donor.causeName || 'Pure for Cure-Satvik Food Distribution', 380);
-    y -= 35;
-    page.drawText('Address', { x: 50, y, size: 9, font: bold, color: black });
-    const addressLines = wrapText(donor.address || 'Guwahati, Assam, India', font, 9, 290).slice(0, 2);
-    addressLines.forEach((line, i) => {
-      page.drawText(line, { x: 50, y: y - 13 - i * 12, size: 9, font, color: black });
+    // 8. Details Section (2 Columns matching official template)
+    // Row 1: Donor's Name & Whatsapp No
+    y = 445;
+    page.drawText("Donor's Name:", { x: 45, y, size: 10, font: bold, color: black });
+    page.drawText(String(donor.name || 'Anonymous'), { x: 45, y: y - 14, size: 9.5, font: font, color: black });
+
+    page.drawText("Whatsapp No:", { x: 345, y, size: 10, font: bold, color: black });
+    page.drawText(String(donor.phone || 'N/A'), { x: 345, y: y - 14, size: 9.5, font: font, color: black });
+
+    // Row 2: Address & Towards
+    y = 395;
+    page.drawText("Address:", { x: 45, y, size: 10, font: bold, color: black });
+    const addrLines = wrapCleanText(donor.address || 'Guwahati, Assam, India', font, 9.5, 275).slice(0, 2);
+    addrLines.forEach((line, i) => {
+      page.drawText(line, { x: 45, y: y - 14 - (i * 12), size: 9.5, font: font, color: black });
     });
-    y -= 13 + (addressLines.length - 1) * 12 + 22;
-    col('Email ID', donor.email, 50);
-    col('PAN', donor.pan || 'NOT_PROVIDED', 230);
-    y -= 45;
-    page.drawText('Payment Mode', { x: 380, y, size: 9, font: bold, color: black });
-    page.drawText('Razorpay (Card/UPI/NetBanking)', { x: 380, y: y - 13, size: 9, font, color: black });
-    page.drawText('Txn ID: ' + meta.txnId, { x: 380, y: y - 26, size: 8, font, color: black });
-    y -= 60;
-    page.drawText('Thank you for your generous support', { x: 190, y, size: 11, font, color: black });
-    y -= 45;
-    page.drawText('Donations to this institution are exempted u/s 80G Vide', { x: 50, y, size: 8, font, color: black });
-    page.drawText('14/80G/CIT/GHY-II/2011-12/4701-05 DTD:29/02/2012', { x: 50, y, size: 8, font, color: black });
-    page.drawText('PAN: AAATH8807J', { x: 50, y: y - 22, size: 8, font, color: black });
+
+    page.drawText("Towards:", { x: 345, y, size: 10, font: bold, color: black });
+    const causeText = String(donor.causeName || 'Pure for Cure - Sattvik Food Distribution');
+    const causeLines = wrapCleanText(causeText, font, 9.5, 220).slice(0, 2);
+    causeLines.forEach((line, i) => {
+      page.drawText(line, { x: 345, y: y - 14 - (i * 12), size: 9.5, font: font, color: black });
+    });
+
+    // Row 3: Email ID & PAN No
+    y = 338;
+    page.drawText("Email ID:", { x: 45, y, size: 10, font: bold, color: black });
+    page.drawText(String(donor.email || 'N/A'), { x: 45, y: y - 14, size: 9.5, font: font, color: black });
+
+    page.drawText("PAN No:", { x: 345, y, size: 10, font: bold, color: black });
+    page.drawText(String(donor.pan || 'NOT_PROVIDED'), { x: 345, y: y - 14, size: 9.5, font: font, color: black });
+
+    // Row 4: Payment Mode
+    y = 282;
+    page.drawText("Payment Mode:", { x: 45, y, size: 10, font: bold, color: black });
+    const modeStr = (donor.paymentMode || 'Razorpay Online Seva') + (meta.txnId ? ` (Txn ID: ${meta.txnId})` : '');
+    page.drawText(modeStr, { x: 45, y: y - 14, size: 9.5, font: font, color: black });
+
+    // 9. Centered: Thank you for your generous support
+    y = 228;
+    const tyText = 'Thank you for your generous support';
+    const tyW = font.widthOfTextAtSize(tyText, 13);
+    page.drawText(tyText, { x: (612 - tyW) / 2, y, size: 13, font: font, color: greenHeader });
+
+    // 10. Statutory Exemption & Authorized Signatory
+    y = 185;
+    page.drawText('Donations to this institution are exempted u/s', { x: 45, y, size: 8.5, font: font, color: black });
+    page.drawText('80G Vide 14/80G/CIT/GHY-II/2011-12/4701-05', { x: 45, y: y - 11, size: 8.5, font: font, color: black });
+    page.drawText('DTD:29/02/2012 PAN: AAATH8807J', { x: 45, y: y - 22, size: 8.5, font: font, color: black });
 
     // Signature
     try {
@@ -680,20 +810,49 @@ async function generateReceiptPdfBlob(donor, meta) {
       if (sigResp.ok) {
         const sigBytes = await sigResp.arrayBuffer();
         const sigImg = await pdfDoc.embedPng(sigBytes);
-        const sigDims = sigImg.scaleToFit(80, 35);
-        page.drawImage(sigImg, { x: 440, y: y + 2, width: sigDims.width, height: sigDims.height });
+        const sigDims = sigImg.scaleToFit(85, 38);
+        page.drawImage(sigImg, { x: 435, y: y - 10, width: sigDims.width, height: sigDims.height });
       }
     } catch (e) {
       console.warn('Signature embed error:', e);
     }
-    page.drawText('Janardan Dasa', { x: 440, y: y - 22, size: 10, font: bold, color: black });
-    page.drawText('President', { x: 440, y: y - 34, size: 9, font, color: black });
+    page.drawText('Janardhana Dasa', { x: 435, y: y - 22, size: 10, font: bold, color: black });
+    page.drawText('President', { x: 435, y: y - 34, size: 9, font: font, color: black });
 
-    y = 90;
-    page.drawLine({ start: { x: 50, y: y + 10 }, end: { x: 562, y: y + 10 }, thickness: 0.5, color: black });
-    col('Contact', '+917099039770', 50);
-    col('Email', 'info@hkmguwahati.org', 220);
-    col('Address', 'Hare Krishna Mandir Road, Ghorajan, Guwahati 781031, Assam', 380);
+    // 11. Dark Green Bottom Footer Bar
+    const footerY = 68;
+    const footerH = 46;
+    page.drawRectangle({
+      x: 0,
+      y: footerY,
+      width: 612,
+      height: footerH,
+      color: greenFooter
+    });
+
+    // Contact
+    page.drawText('Contact', { x: 45, y: footerY + 28, size: 8, font: bold, color: white });
+    page.drawText('+917099039770', { x: 45, y: footerY + 14, size: 8, font: font, color: white });
+
+    // Email
+    page.drawText('Email', { x: 235, y: footerY + 28, size: 8, font: bold, color: white });
+    page.drawText('info@pureforcure.org', { x: 235, y: footerY + 14, size: 8, font: font, color: white });
+
+    // Address
+    page.drawText('Address', { x: 395, y: footerY + 28, size: 8, font: bold, color: white });
+    page.drawText('Hare Krishna Mandir Marg, Ghorajan,', { x: 395, y: footerY + 16, size: 7.5, font: font, color: white });
+    page.drawText('Guwahati 781031, Assam', { x: 395, y: footerY + 6, size: 7.5, font: font, color: white });
+
+    // 12. Mahamantra Sub-footer
+    const mahaText = 'Hare Krishna Hare Krishna Krishna Krishna Hare Hare | Hare Ram Hare Ram Ram Ram Hare Hare';
+    const mahaW = font.widthOfTextAtSize(mahaText, 7.8);
+    page.drawText(mahaText, {
+      x: (612 - mahaW) / 2,
+      y: 42,
+      size: 7.8,
+      font: font,
+      color: black
+    });
 
     const pdfBytes = await pdfDoc.save();
     return new Blob([pdfBytes], { type: 'application/pdf' });
@@ -737,54 +896,59 @@ async function sendEmailReceipt(donor, meta, receiptUrl) {
   }
   try {
     const formattedAmount = '₹' + Number(donor.amount).toLocaleString('en-IN');
-    const emailSubject = `Official 80G Tax Exemption Donation Receipt (${meta.refNo}) - Pure for Cure`;
+    const emailSubject = `Official 80G Tax Exemption Donation Receipt (${meta.refNo}) - Pure for Cure [${formattedAmount}]`;
+    const donorSalutation = donor.name ? `Dear ${donor.name},` : 'Dear Donor,';
+    
+    // Official donor acknowledgment message matching Pure For Cure specifications
     const emailBody = [
-      `Hare Krishna, Respected ${donor.name}!`,
-      ``,
-      `Please accept our heartfelt gratitude and humble greetings from Pure for Cure (Hare Krishna Movement, Guwahati).`,
-      ``,
-      `We have gratefully received your kind contribution of ${formattedAmount} towards "${donor.causeName}". Your selfless support directly sponsors warm, wholesome, nutritious Sattvik meals for patients and their devoted attendants outside government hospitals across Assam.`,
-      ``,
-      `--------------------------------------------------`,
-      `OFFICIAL SECTION 80G DONATION RECEIPT SUMMARY`,
-      `--------------------------------------------------`,
-      `• Receipt Number: ${meta.refNo}`,
+      donorSalutation,
+      '',
+      'Hare Krishna!',
+      '',
+      'Thank you for your generous contribution to Pure For Cure, a mission dedicated to serving the vision and teachings of His Divine Grace Vishwaguru A.C. Bhaktivedanta Swami Srila Prabhupada.',
+      '',
+      'Your support helps us continue our mission of service and share Srila Prabhupada’s teachings with more people.',
+      '',
+      'Please find your donation receipt attached for your records.',
+      '',
+      '--------------------------------------------------',
+      'OFFICIAL 80G DONATION RECEIPT SUMMARY',
+      '--------------------------------------------------',
+      `• Receipt Reference: ${meta.refNo}`,
       `• Receipt Date: ${meta.dateStr}`,
-      `• Contributor Name: ${donor.name}`,
+      `• Contributor Name: ${donor.name || 'Donor'}`,
       `• Contributor Contact: ${donor.phone || 'N/A'}`,
       `• Contributor Email: ${donor.email}`,
       `• Contributor PAN: ${donor.pan || 'NOT_PROVIDED'}`,
-      `• Contribution Amount: ${formattedAmount}`,
+      `• Contributed Amount: ${formattedAmount}`,
+      `• Payment Mode: ${donor.paymentMode || 'Razorpay (Online Seva)'}`,
       `• Payment Gateway Txn ID: ${meta.txnId}`,
-      `• Seva Initiative: ${donor.causeName}`,
-      `• Tax Exemption: 50% Tax Exemption u/s 80G(5)(vi) of Income Tax Act`,
-      `• 80G Order No: 14/80G/CIT/GHY-II/2011-12/4701-05 DTD:29/02/2012`,
-      `• Institution PAN: AAATH8807J`,
-      `--------------------------------------------------`,
+      `• Seva Initiative / Towards: ${donor.causeName || 'Pure for Cure - Sattvik Food Relief'}`,
+      '• Statutory Exemption: Exempted u/s 80G Vide 14/80G/CIT/GHY-II/2011-12/4701-05 DTD:29/02/2012',
+      '• Institution PAN: AAATH8807J',
+      '--------------------------------------------------',
       receiptUrl ? `📄 Official Signed 80G PDF Receipt Download:\n${receiptUrl}\n` : '',
-      `Your noble support brings critical nourishment and comfort to economically vulnerable caregivers staying day and night at hospital corridors of AIIMS Guwahati, GMCH, and Dr. B. Borooah Cancer Institute (BBCI).`,
-      ``,
-      `HELPLINE & SUPPORT DESK:`,
-      `📞 Phone: +91 7099039770 / +91 9678007302`,
-      `✉️ Email: info@pureforcure.org | info@hkmguwahati.org`,
-      `🏛️ Address: c/o Hare Krishna Movement, Ghorajan, Near IIT Guwahati, North Guwahati, Assam - 781031`,
-      ``,
-      `May Lord Sri Krishna shower His supreme blessings of health, joy, and peace upon you and your loved ones.`,
-      ``,
-      `With heartfelt gratitude & prayers,`,
-      `Janardan Dasa (President)`,
-      `Pure for Cure - Hare Krishna Movement Guwahati`,
-      `https://pureforcure.org`
+      'We sincerely appreciate your kindness and support. May Lord Krishna bless you and your family with peace, happiness, and spiritual well-being.',
+      '',
+      'With gratitude and best wishes,',
+      'Team Pure For Cure',
+      'Hare Krishna Movement, Guwahati',
+      'Email: info@pureforcure.org',
+      'Phone: +91 70990 39770'
     ].filter(Boolean).join('\n');
 
     await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+      from_name: 'Team Pure For Cure',
+      from_email: 'info@pureforcure.org',
+      reply_to: 'info@pureforcure.org',
+      sender_email: 'info@pureforcure.org',
       donor_email: donor.email, // Required by EmailJS template recipient field
       to_email: donor.email,
       email: donor.email,
       recipient_email: donor.email,
-      to_name: donor.name,
-      donor_name: donor.name,
-      name: donor.name,
+      to_name: donor.name || 'Donor',
+      donor_name: donor.name || 'Donor',
+      name: donor.name || 'Donor',
       amount: formattedAmount,
       donation_amount: formattedAmount,
       formatted_amount: formattedAmount,
@@ -796,8 +960,8 @@ async function sendEmailReceipt(donor, meta, receiptUrl) {
       transaction_id: meta.txnId,
       date: meta.dateStr,
       receipt_date: meta.dateStr,
-      cause: donor.causeName,
-      cause_name: donor.causeName,
+      cause: donor.causeName || 'Pure for Cure - Sattvik Food Relief',
+      cause_name: donor.causeName || 'Pure for Cure - Sattvik Food Relief',
       pan: donor.pan || 'NOT_PROVIDED',
       donor_pan: donor.pan || 'NOT_PROVIDED',
       phone: donor.phone || '',
@@ -807,9 +971,10 @@ async function sendEmailReceipt(donor, meta, receiptUrl) {
       download_link: receiptUrl || 'https://pureforcure.org/donate.html',
       subject: emailSubject,
       message: emailBody,
-      notes: `80G Donation Receipt issued on ${meta.dateStr} for ${donor.name}`
+      brief_message: `${donorSalutation}\n\nHare Krishna!\nThank you for your generous contribution to Pure For Cure, a mission dedicated to serving the vision and teachings of His Divine Grace Vishwaguru A.C. Bhaktivedanta Swami Srila Prabhupada.\nYour support helps us continue our mission of service and share Srila Prabhupada’s teachings with more people.\nPlease find your donation receipt attached for your records.\nAmount: ${formattedAmount} | Receipt No: ${meta.refNo}\n\nWe sincerely appreciate your kindness and support. May Lord Krishna bless you and your family with peace, happiness, and spiritual well-being.\n\nWith gratitude and best wishes,\nTeam Pure For Cure\nHare Krishna Movement, Guwahati\nEmail: info@pureforcure.org\nPhone: +91 70990 39770`,
+      notes: `80G Donation Receipt issued on ${meta.dateStr} for ${donor.name || 'Donor'} with amount ${formattedAmount}`
     });
-    console.log('✓ Automated email receipt dispatched via EmailJS to:', donor.email, 'for donor:', donor.name, 'amount:', formattedAmount);
+    console.log('✓ Automated email receipt dispatched via info@pureforcure.org to:', donor.email, 'for donor:', donor.name, 'amount:', formattedAmount, 'ref:', meta.refNo);
     return true;
   } catch (err) {
     console.warn('EmailJS send error:', err);
