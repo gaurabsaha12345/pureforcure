@@ -6162,6 +6162,18 @@ input[type="submit"] {
   .metric-label {
     font-size: 0.78rem !important;
   }
+
+  /* Center Rs 80 meal card across columns in mobile & tablet view */
+  .metrics-grid .metric-card-meal-cost,
+  .metric-card.metric-card-meal-cost {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    width: 100% !important;
+    max-width: 250px !important;
+    margin: 0.5rem auto 0 auto !important;
+    border: 2px solid #16A34A !important;
+    border-right: 2px solid #16A34A !important;
+  }
 }
 
 /* Mobile: Compact 2x2 Grid, Zero Horizontal Overflow, Non-wrapping Numbers */
@@ -6197,6 +6209,21 @@ input[type="submit"] {
     font-size: 0.68rem !important;
     letter-spacing: 0.05em !important;
   }
+
+  .metrics-grid .metric-card-meal-cost,
+  .metric-card.metric-card-meal-cost {
+    max-width: 220px !important;
+    margin: 0.35rem auto 0 auto !important;
+    padding: 0.6rem 0.75rem !important;
+  }
+
+  .metric-card-meal-cost .metric-number {
+    font-size: 1.85rem !important;
+  }
+
+  .metric-card-meal-cost .metric-label {
+    font-size: 0.72rem !important;
+  }
 }
 
 /* Extra Small Mobile (<= 380px screens e.g. iPhone SE / Galaxy S) */
@@ -6224,6 +6251,21 @@ input[type="submit"] {
   .metric-label {
     font-size: 0.62rem !important;
     letter-spacing: 0.02em !important;
+  }
+
+  .metrics-grid .metric-card-meal-cost,
+  .metric-card.metric-card-meal-cost {
+    max-width: 195px !important;
+    margin: 0.25rem auto 0 auto !important;
+    padding: 0.45rem 0.5rem !important;
+  }
+
+  .metric-card-meal-cost .metric-number {
+    font-size: 1.55rem !important;
+  }
+
+  .metric-card-meal-cost .metric-label {
+    font-size: 0.65rem !important;
   }
 }
 
