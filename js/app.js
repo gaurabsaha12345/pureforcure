@@ -1210,62 +1210,9 @@ async function renderRecentDonations(containerId, causeKey) {
 
   const effectiveCauseKey = causeKey || container.getAttribute('data-cause-key') || 'all';
 
-  // 1. Render immediately from local session donations if present
+  // Render from fresh session donations (keeps section empty until a donation is made)
   const localDonations = getStoredDonations(effectiveCauseKey);
   _renderContributorsHtml(container, localDonations, effectiveCauseKey);
-
-  // 2. Fetch live from Supabase table `donations`
-  try {
-    const remoteList = await fetchSupabaseDonations();
-    if (remoteList && remoteList.length > 0) {
-      // Map remote rows to contributor objects
-      const remoteFormatted = remoteList.map(r => {
-        let extractedCause = '';
-        if (r.notes && r.notes.includes('Cause: ')) {
-          const match = r.notes.match(/Cause:\s*([^|]+)/);
-          if (match && match[1]) extractedCause = match[1].trim();
-        }
-        return {
-          name: r.name,
-          amount: r.amount,
-          causeName: extractedCause || getCauseNameFromLocation(r.location),
-          location: r.location,
-          timeAgo: formatRelativeDate(r.date || r.created_at),
-          timestamp: r.created_at ? new Date(r.created_at).getTime() : 0,
-          paymentMode: r.method || 'Razorpay',
-          paymentId: r.txn_id,
-          causeKey: r.location
-        };
-      });
-
-      // Deduplicate: merge local and remote by payment ID
-      const seenIds = new Set();
-      const combined = [];
-
-      localDonations.forEach(l => {
-        const id = l.paymentId || l.txn_id;
-        if (id) seenIds.add(id);
-        combined.push(l);
-      });
-
-      remoteFormatted.forEach(r => {
-        const id = r.paymentId || r.txn_id;
-        if (!id || !seenIds.has(id)) {
-          if (id) seenIds.add(id);
-          combined.push(r);
-        }
-      });
-
-      // Sort newest first
-      combined.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-      // Filter strictly for this particular causeKey!
-      const filtered = combined.filter(d => matchesCauseLocation(d.location || d.causeKey, effectiveCauseKey));
-      _renderContributorsHtml(container, filtered, effectiveCauseKey);
-    }
-  } catch (err) {
-    console.warn('Error fetching live donors:', err);
-  }
 }
 
 function _renderContributorsHtml(container, donations, causeKey) {
@@ -1315,50 +1262,8 @@ async function renderFooterRecentDonations() {
   const container = document.getElementById('footer-recent-contributions');
   if (!container) return;
 
-  let donations = [];
-  try {
-    const remote = await fetchSupabaseDonations();
-    if (remote && remote.length > 0) {
-      donations = remote.map(r => ({
-        name: r.name,
-        amount: r.amount,
-        causeName: getCauseNameFromLocation(r.location),
-        timeAgo: formatRelativeDate(r.date || r.created_at)
-      }));
-    }
-  } catch (e) {}
-
-  if (!donations || donations.length === 0) {
-    donations = getStoredDonations('all');
-  }
-
-  if (!donations || donations.length === 0) {
-    donations = [
-      { name: 'Arunjyoti Buragohain', amount: 4800, causeName: 'GMCH Attendant Meals', timeAgo: 'Recent' },
-      { name: 'Sagar Baruah', amount: 800, causeName: 'Assam Flood Relief Seva', timeAgo: 'Recent' },
-      { name: 'Santana Haloi', amount: 800, causeName: 'BBCI Hospital Food Distribution', timeAgo: 'Recent' },
-      { name: 'Bhanwar Singh', amount: 80, causeName: 'Hospital Food Distribution', timeAgo: 'Recent' }
-    ];
-  }
-
-  let html = '';
-  donations.slice(0, 4).forEach(d => {
-    const initial = (d.name || 'D').charAt(0).toUpperCase();
-    const formattedAmount = parseInt(d.amount).toLocaleString('en-IN');
-    html += `
-      <div class="footer-contrib-card">
-        <div class="footer-contrib-left">
-          <div class="footer-contrib-avatar">${initial}</div>
-          <div>
-            <div class="footer-contrib-name">${d.name}</div>
-            <div class="footer-contrib-cause">${d.causeName || 'Hospital Food Distribution'} &bull; ${d.timeAgo || 'Recent'}</div>
-          </div>
-        </div>
-        <div class="footer-contrib-amount">&#8377;${formattedAmount}</div>
-      </div>
-    `;
-  });
-  container.innerHTML = html;
+  // Keep empty as requested: remove live payments displayed
+  container.innerHTML = '';
 }
 
 // Track and update Monthly Donation Goal (10,000 Meals / Rs 8,00,000) configured with Razorpay
