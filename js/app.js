@@ -2863,9 +2863,30 @@ window.handleCSRFormSubmit = function(e, form) {
   const contactPerson = formEl.querySelector('[name="contact_person"]')?.value || '';
   const email = formEl.querySelector('[name="email"]')?.value || '';
   const phone = formEl.querySelector('[name="phone"]')?.value || '';
-  const initiative = formEl.querySelector('[name="partnership_type"]')?.value || '';
+  let initiative = formEl.querySelector('[name="partnership_type"]')?.value || '';
   const budget = formEl.querySelector('[name="budget_range"]')?.value || '';
   const message = formEl.querySelector('[name="message"]')?.value || '';
+
+  const vehicleCount = formEl.querySelector('[name="vehicle_count"]')?.value || '';
+  const kioskCount = formEl.querySelector('[name="kiosk_count"]')?.value || '';
+  const kitchenSupport = formEl.querySelector('[name="kitchen_support"]')?.value || '';
+  const vesselsCount = formEl.querySelector('[name="vessels_count"]')?.value || '';
+
+  let countDetails = '';
+  if (vehicleCount) countDetails += `Vehicles: ${vehicleCount}. `;
+  if (kioskCount) countDetails += `Kiosks: ${kioskCount}. `;
+  if (kitchenSupport) countDetails += `Kitchen Support: ${kitchenSupport}. `;
+  if (vesselsCount) countDetails += `Serving Vessels: ${vesselsCount}. `;
+
+  if (!initiative) {
+    if (vehicleCount) initiative = 'vehicle_sponsorship';
+    else if (kioskCount) initiative = 'kiosk_adoption';
+    else if (kitchenSupport) initiative = 'kitchen_automation';
+    else if (vesselsCount) initiative = 'vessels_sponsorship';
+    else initiative = 'csr_general';
+  }
+
+  const finalMessage = (countDetails ? `[Quantity: ${countDetails}] ` : '') + message;
 
   if (typeof SUPABASE_BACKEND !== 'undefined' && SUPABASE_BACKEND.insertRecord) {
     SUPABASE_BACKEND.insertRecord('csr_inquiries', {
@@ -2875,7 +2896,7 @@ window.handleCSRFormSubmit = function(e, form) {
       phone: phone,
       partnership_type: initiative,
       budget_range: budget,
-      message: message,
+      message: finalMessage,
       status: 'pending'
     });
   }

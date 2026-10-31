@@ -7269,7 +7269,7 @@ input[type="submit"] {
 /* CSR Cards Grid (2-column layout centered for high-impact sponsorship) */
 .donate-campaigns-grid.csr-campaigns-grid {
   grid-template-columns: repeat(2, 1fr) !important;
-  max-width: 860px;
+  max-width: 980px;
   margin: 0 auto;
 }
 

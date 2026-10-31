@@ -317,100 +317,71 @@
 
         <!-- Right: Interactive Donation Form with Presets & Instant Receipt -->
         <div class="product-sidebar-card">
-          <div style="border-bottom:2px solid #F1F5F9; padding-bottom:1rem; margin-bottom:1.5rem;">
-            <span style="font-size:0.8rem; font-weight:700; color:#1A8C4E; text-transform:uppercase;">Direct Support</span>
-            <h3 style="font-size:1.5rem; color:var(--dark); margin:0.25rem 0 0;">Donate now!</h3>
+          <div style="border-bottom:2px solid #F1F5F9; padding-bottom:1rem; margin-bottom:1.5rem; text-align:left;">
+            <span style="font-size:0.8rem; font-weight:700; color:#1A8C4E; text-transform:uppercase;"><i class="fa-solid fa-utensils"></i> Distribution Assets CSR Partnership</span>
+            <h3 style="font-size:1.5rem; color:var(--dark); margin:0.25rem 0 0; font-family:'Playfair Display', serif;">Food Serving Vessels &amp; Utensils Donation</h3>
+            <p style="color:#64748B; font-size:0.88rem; margin-top:0.35rem; line-height:1.5;">
+              Sponsor commercial-grade stainless steel thermal insulated food delivery urns, cauldrons, and serving sets for hygienic hospital meal distribution.
+            </p>
           </div>
 
-          <form class="pfc-donation-form" id="product-donation-form">
-            <input type="hidden" class="cause-name-hidden" value="Sponsor Food Distribution Vessels & Utensils">
-            <input type="hidden" class="cause-key-hidden" value="vessels">
-            <input type="hidden" class="selected-gateway-mode" value="UPI">
-
-          <div class="donation-form-group">
-              <label><i class="fa-solid fa-bowl-rice" style="color:var(--primary);"></i> Select Donation Option:</label>
-              <div class="meal-preset-grid">
-                <div class="meal-preset-btn product-preset-btn" data-amount="2500">
-                  <div class="preset-meals-text">Serving Ladle Set</div>
-                  <div class="preset-rupees-text">&#8377;2,500</div>
-                </div>
-                <div class="meal-preset-btn product-preset-btn active" data-amount="5000">
-                  <div class="preset-meals-text">Thermal Canister</div>
-                  <div class="preset-rupees-text">&#8377;5,000</div>
-                </div>
-                <div class="meal-preset-btn product-preset-btn" data-amount="10000">
-                  <div class="preset-meals-text">Insulated Cauldron</div>
-                  <div class="preset-rupees-text">&#8377;10,000</div>
-                </div>
-                <div class="meal-preset-btn product-preset-btn" data-amount="25000">
-                  <div class="preset-meals-text">Kiosk Vessel Set</div>
-                  <div class="preset-rupees-text">&#8377;25,000</div>
-                </div>
-                <div class="meal-preset-btn product-preset-btn" data-amount="50000">
-                  <div class="preset-meals-text">Hospital Kit</div>
-                  <div class="preset-rupees-text">&#8377;50,000</div>
-                </div>
-                <div class="meal-preset-btn product-preset-btn" data-amount="100000">
-                  <div class="preset-meals-text">Complete Wing Set</div>
-                  <div class="preset-rupees-text">&#8377;1,00,000</div>
-                </div>
-              </div>
+          <form id="csr-inquiry-form" onsubmit="return handleCSRFormSubmit(event, this);">
+            <div class="donation-form-group">
+              <label for="csr-company-name" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-building" style="color:#1A8C4E;"></i> Organization / Company Name *</label>
+              <input type="text" id="csr-company-name" name="company_name" class="donation-input" placeholder="e.g. GAIL (India) Limited" required>
+            </div>
+            <div class="donation-form-group">
+              <label for="csr-contact-person" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-user" style="color:#1A8C4E;"></i> Contact Person &amp; Designation *</label>
+              <input type="text" id="csr-contact-person" name="contact_person" class="donation-input" placeholder="e.g. Debojit Barua, CSR Lead" required>
             </div>
 
             <div class="donation-form-group">
-              <label for="p-amount-input">Custom Vessel Contribution:</label>
-              <div style="position:relative;">
-                <span style="position:absolute; left:14px; top:12px; font-weight:800; color:#64748B;">&#8377;</span>
-                <input type="number" id="p-amount-input" value="5000" min="500" class="donation-input p-amount-input" style="padding-left:2rem; font-weight:800; font-size:1.15rem; color:#1A8C4E;" required>
-              </div>
-              <div style="text-align:right; font-size:0.8rem; color:#15803D; font-weight:700; margin-top:0.3rem;">
-                Equivalent to: <span class="p-meals-count">Groceries &amp; Fresh Vegetables Service</span>
-              </div>
+              <label for="csr-email" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-envelope" style="color:#1A8C4E;"></i> Corporate Email Address *</label>
+              <input type="email" id="csr-email" name="email" class="donation-input" placeholder="e.g. debojit.b@company.com" required>
+            </div>
+            <div class="donation-form-group">
+              <label for="csr-phone" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-phone" style="color:#1A8C4E;"></i> Official Phone / Mobile *</label>
+              <input type="tel" id="csr-phone" name="phone" class="donation-input" placeholder="+91 98765 43210" pattern="[0-9]{10}" maxlength="10" required>
             </div>
 
             <div class="donation-form-group">
-              <label for="donor-name"><i class="fa-solid fa-user"></i> Full Name (as per PAN):</label>
-              <input type="text" id="donor-name" placeholder="e.g. Ramesh Chandra Sharma" class="donation-input donor-name" required>
+              <label for="csr-vessels-count" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-utensils" style="color:#1A8C4E;"></i> Number of Serving Vessel Sets to Donate *</label>
+              <select id="csr-vessels-count" name="vessels_count" class="donation-input" style="background:#FFF;" required>
+                <option value="5_sets" selected>5 Heavy-Duty Insulated Distribution Sets (&#8377;50,000)</option>
+                <option value="10_sets">10 Insulated Distribution Sets (&#8377;1,00,000)</option>
+                <option value="25_sets">25 Insulated Distribution Sets (&#8377;2,50,000)</option>
+                <option value="50_sets_complete">50 Sets (Complete Multi-Hospital Fleet Setup - &#8377;5,00,000)</option>
+                <option value="custom_utensils_grant">Custom Utensils &amp; Serving Equipment Grant</option>
+              </select>
             </div>
 
             <div class="donation-form-group">
-              <label for="donor-email"><i class="fa-solid fa-envelope"></i> Email (For Donation Receipt):</label>
-              <input type="email" id="donor-email" placeholder="e.g. ramesh.sharma@gmail.com" class="donation-input donor-email" required>
+              <label for="csr-budget-range" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-coins" style="color:#1A8C4E;"></i> Estimated CSR Grant Budget</label>
+              <select id="csr-budget-range" name="budget_range" class="donation-input" style="background:#FFF;">
+                <option value="50k_to_1lakh">&#8377;50,000 &ndash; &#8377;1,00,000</option>
+                <option value="1lakh_to_5lakhs" selected>&#8377;1,00,000 &ndash; &#8377;5,00,000</option>
+                <option value="above_5lakhs">Above &#8377;5,00,000</option>
+              </select>
             </div>
 
             <div class="donation-form-group">
-              <label for="donor-phone"><i class="fa-solid fa-phone"></i> Mobile Number (+91):</label>
-              <input type="tel" id="donor-phone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10" title="Please enter a valid 10-digit mobile number" class="donation-input donor-phone" required>
+              <label for="csr-message" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-message" style="color:#1A8C4E;"></i> Project Scope / Requirements</label>
+              <textarea id="csr-message" name="message" class="donation-input" rows="3" placeholder="Mention preferred hospital distribution points or logo co-branding..."></textarea>
             </div>
 
-            <div class="donation-form-group">
-              <label for="donor-pan"><i class="fa-solid fa-id-card"></i> PAN Card Number (Mandatory for 80G):</label>
-              <input type="text" id="donor-pan" placeholder="e.g. ABCDE1234F" maxlength="10" class="donation-input donor-pan" style="text-transform:uppercase;" required>
+            <div id="csr-success-msg" style="display:none; background:#ECFDF5; border:1px solid #10B981; border-radius:8px; padding:1rem; text-align:center; color:#065F46; font-weight:700; margin-bottom:1.5rem;">
+              <i class="fa-solid fa-circle-check"></i> Thank you! Your vessels donation inquiry has been submitted. Our corporate liaison desk will connect within 24 hours.
             </div>
 
-            <!-- Payment Gateway Selector -->
-            <div class="donation-form-group">
-              <label style="font-size:0.88rem; font-weight:700; color:var(--dark); margin-bottom:0.5rem; display:block;">
-                <i class="fa-solid fa-credit-card" style="color:#1A8C4E;"></i> Payment Gateway Method:
-              </label>
-              <div class="gateway-options-grid">
-                <div class="gateway-option active" data-mode="UPI">
-                  <i class="fa-solid fa-qrcode" style="color:#1A8C4E;"></i> UPI / QR
-                </div>
-                <div class="gateway-option" data-mode="Card">
-                  <i class="fa-solid fa-credit-card" style="color:#0D80CC;"></i> Card
-                </div>
-                <div class="gateway-option" data-mode="NetBanking">
-                  <i class="fa-solid fa-building-columns" style="color:#D97706;"></i> Net Banking
-                </div>
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-lg" style="width:100%; justify-content:center; padding:1.1rem; border-radius:10px;"><i class="fa-solid fa-heart"></i> Donate &amp; Avail 80G Tax Exemption</button>
+            <button type="submit" class="btn btn-primary btn-lg" style="width:100%; justify-content:center; padding:1.1rem; border-radius:10px;"><i class="fa-solid fa-utensils"></i> Submit Vessels Donation Inquiry</button>
             <div style="text-align:center; font-size:0.78rem; color:var(--text-muted); margin-top:0.75rem;">
-              <i class="fa-solid fa-shield-halved" style="color:#1A8C4E;"></i> 256-Bit SSL Encrypted &amp; 100% Secure
+              <i class="fa-solid fa-shield-halved" style="color:#1A8C4E;"></i> 100% Statutorily Compliant with Companies Act 2013 (Section 135)
             </div>
           </form>
+
+          <div style="text-align:center; font-size:0.82rem; color:var(--text-muted); margin-top:1.25rem; border-top:1px dashed #E2E8F0; padding-top:0.85rem;">
+            Looking for individual per-meal online donations? <a href="donate.html#general-donation" style="color:#1A8C4E; font-weight:700;">Donate Online Here &rarr;</a>
+          </div>
         </div>
 
       </div>
