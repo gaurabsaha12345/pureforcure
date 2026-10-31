@@ -2915,4 +2915,67 @@ window.handleCSRFormSubmit = function(e, form) {
   return false;
 };
 
+// Global Propose Date Modal Controls (used across gallery pages)
+window.openProposeDateModal = function(e) {
+  if (e) e.preventDefault();
+  const modal = document.getElementById('proposeDateModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    const input = document.getElementById('proposedMealDateInput');
+    if (input && !input.value) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      input.value = tomorrow.toISOString().split('T')[0];
+      input.min = new Date().toISOString().split('T')[0];
+    }
+  } else {
+    window.location.href = 'donate-birthday.html';
+  }
+};
+
+window.closeProposeDateModal = function() {
+  const modal = document.getElementById('proposeDateModal');
+  if (modal) modal.style.display = 'none';
+};
+
+window.handleProposeDateSubmit = function(e) {
+  if (e) e.preventDefault();
+  const dateVal = document.getElementById('proposedMealDateInput')?.value || '';
+  const occVal = document.getElementById('proposedOccasionType')?.value || '';
+  let url = 'donate-birthday.html';
+  if (dateVal) {
+    url += '?date=' + encodeURIComponent(dateVal) + (occVal ? '&occasion=' + encodeURIComponent(occVal) : '');
+  }
+  window.location.href = url;
+  return false;
+};
+
+// Auto-fill occasion date on donate-birthday.html if query param present
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramDate = urlParams.get('date');
+  if (paramDate) {
+    const dateInput = document.getElementById('occasion-date');
+    if (dateInput) {
+      dateInput.value = paramDate;
+      dateInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      dateInput.style.outline = '2px solid #1A8C4E';
+      dateInput.style.outlineOffset = '3px';
+      setTimeout(() => { dateInput.style.outline = ''; dateInput.style.outlineOffset = ''; }, 3000);
+    }
+  }
+  const paramOccasion = urlParams.get('occasion');
+  if (paramOccasion) {
+    const occSelect = document.getElementById('occasion-type');
+    if (occSelect) {
+      for (let i = 0; i < occSelect.options.length; i++) {
+        if (occSelect.options[i].value.toLowerCase().includes(paramOccasion.toLowerCase())) {
+          occSelect.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  }
+});
+
 
