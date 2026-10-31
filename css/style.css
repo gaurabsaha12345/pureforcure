@@ -7266,6 +7266,19 @@ input[type="submit"] {
   }
 }
 
+/* CSR Cards Grid (2-column layout centered for high-impact sponsorship) */
+.donate-campaigns-grid.csr-campaigns-grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .donate-campaigns-grid.csr-campaigns-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Campaign Cards in donate-campaigns-grid */
 .donate-campaigns-grid .product-card {
   height: 100%;
