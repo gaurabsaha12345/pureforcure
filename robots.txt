@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Direct Googlebot, Bingbot and all web crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap
+Sitemap: https://pureforcure.org/sitemap.xml
