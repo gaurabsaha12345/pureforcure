@@ -364,18 +364,35 @@ function initFooterNewsletter() {
       // 3. Automated Welcome Email via EmailJS
       if (typeof window !== 'undefined' && window.emailjs && EMAILJS_CONFIG.serviceId) {
         try {
-          // Welcome email to subscriber
+          // Welcome email to subscriber (fills all template parameters)
           window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
             from_name: 'Team Pure For Cure',
             from_email: 'info@pureforcure.org',
             reply_to: 'info@pureforcure.org',
+            sender_email: 'info@pureforcure.org',
             donor_email: subscriberRecord.email,
             to_email: subscriberRecord.email,
-            to_name: subscriberRecord.name,
-            donor_name: subscriberRecord.name,
             email: subscriberRecord.email,
+            recipient_email: subscriberRecord.email,
+            user_email: subscriberRecord.email,
+            to_name: subscriberRecord.name || 'Friend of Pure for Cure',
+            donor_name: subscriberRecord.name || 'Friend of Pure for Cure',
+            name: subscriberRecord.name || 'Friend of Pure for Cure',
             subject: 'Welcome to Pure for Cure Seva Community - Hare Krishna!',
-            message: 'Hare Krishna! Thank you for subscribing to Pure for Cure. You will now receive inspirational hospital food relief stories, volunteer voices, emergency flood relief updates, and our latest blog posts.',
+            message: 'Hare Krishna! Thank you for subscribing to Pure for Cure.\n\nYou are now connected with our hospital food relief mission serving warm, nutritious Sattvik meals to patients and their family attendants outside government hospitals (BBCI, GMCH, AIIMS Guwahati).\n\nYou will receive inspirational caregiver stories, volunteer updates, emergency flood relief news, and our latest seva reports.\n\nWith heartfelt gratitude,\nTeam Pure For Cure\nHare Krishna Movement, Guwahati\nWebsite: https://www.pureforcure.org\nEmail: info@pureforcure.org',
+            amount: 'Free Seva Community Subscription',
+            formatted_amount: 'Active Member',
+            donation_amount: 'Newsletter Member',
+            receipt_no: 'PFC-NL-' + Date.now().toString().slice(-6),
+            ref_no: 'PFC-NL-' + Date.now().toString().slice(-6),
+            txn_id: 'SUBSCRIBED',
+            payment_id: 'SUBSCRIBED',
+            transaction_id: 'SUBSCRIBED',
+            date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+            cause: 'Caregiver Food Relief & Community Updates',
+            cause_name: 'Caregiver Food Relief & Community Updates',
+            receipt_url: 'https://www.pureforcure.org/stories.html',
+            pdf_url: 'https://www.pureforcure.org/stories.html',
             notes: 'Newsletter Subscription verified from ' + (window.location.pathname.split('/').pop() || 'website')
           }).catch(err => console.warn('Subscriber welcome email notice:', err));
 
@@ -2759,6 +2776,35 @@ Notes / Experience: ${volNotes || 'None'}
 
 Submitted on: ${new Date().toLocaleString('en-GB')}`;
           
+          // 1. Send confirmation acknowledgment to volunteer applicant
+          if (vEmail && vEmail.includes('@')) {
+            const volAckPayload = {
+              from_name: 'Team Pure For Cure',
+              from_email: 'info@pureforcure.org',
+              reply_to: 'info@pureforcure.org',
+              sender_email: 'info@pureforcure.org',
+              to_email: vEmail,
+              donor_email: vEmail,
+              recipient_email: vEmail,
+              email: vEmail,
+              user_email: vEmail,
+              to_name: vName,
+              donor_name: vName,
+              name: vName,
+              subject: 'Welcome to Pure for Cure Volunteer Seva Family - Hare Krishna!',
+              message: `Hare Krishna ${vName},\n\nThank you for offering your voluntary seva with Pure for Cure for "${vRole}". Your dedication helps sustain patient families outside government hospitals with daily nutritious meals.\n\nOur volunteer coordinator will review your profile and reach out shortly.\n\nWith gratitude,\nTeam Pure For Cure\nHare Krishna Movement, Guwahati\nEmail: info@pureforcure.org\nPhone: +91 70990 39770`,
+              amount: 'Volunteer Seva',
+              formatted_amount: 'Volunteer Seva',
+              receipt_no: 'PFC-VOL-' + Date.now().toString().slice(-6),
+              ref_no: 'PFC-VOL-' + Date.now().toString().slice(-6),
+              txn_id: 'VOL_REGISTERED',
+              date: new Date().toLocaleDateString('en-GB'),
+              receipt_url: 'https://www.pureforcure.org/volunteer.html'
+            };
+            window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, volAckPayload).catch(err => console.warn('Vol applicant ack notice:', err));
+          }
+
+          // 2. Alert notifications to info@pureforcure.org and harekrishnamandir.dm@gmail.com
           const volPayload = {
             from_name: vName,
             from_email: vEmail || 'info@pureforcure.org',
@@ -2883,6 +2929,35 @@ ${message}
 
 Submitted on: ${new Date().toLocaleString('en-GB')}`;
       
+      // 1. Send confirmation acknowledgment to the user who filled the form
+      if (email && email.includes('@')) {
+        const userContactAck = {
+          from_name: 'Team Pure For Cure',
+          from_email: 'info@pureforcure.org',
+          reply_to: 'info@pureforcure.org',
+          sender_email: 'info@pureforcure.org',
+          to_email: email,
+          donor_email: email,
+          recipient_email: email,
+          email: email,
+          user_email: email,
+          to_name: `${firstName} ${lastName}`.trim() || 'Devotee / Friend',
+          donor_name: `${firstName} ${lastName}`.trim() || 'Devotee / Friend',
+          name: `${firstName} ${lastName}`.trim() || 'Devotee / Friend',
+          subject: 'Thank you for contacting Pure for Cure - Hare Krishna!',
+          message: `Hare Krishna ${firstName},\n\nThank you for reaching out to Pure for Cure. We have received your inquiry regarding "${subject || 'General Inquiry'}".\n\nOur seva coordinator will review your message and get back to you shortly.\n\nWith gratitude and best wishes,\nTeam Pure For Cure\nHare Krishna Movement, Guwahati\nEmail: info@pureforcure.org\nPhone: +91 70990 39770`,
+          amount: 'Inquiry Submitted',
+          formatted_amount: 'Inquiry Submitted',
+          receipt_no: 'PFC-INQ-' + Date.now().toString().slice(-6),
+          ref_no: 'PFC-INQ-' + Date.now().toString().slice(-6),
+          txn_id: 'INQUIRY_RECEIVED',
+          date: new Date().toLocaleDateString('en-GB'),
+          receipt_url: 'https://www.pureforcure.org/contact.html'
+        };
+        window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, userContactAck).catch(err => console.warn('User contact ack notice:', err));
+      }
+
+      // 2. Alert notifications to info@pureforcure.org and harekrishnamandir.dm@gmail.com
       const pfcContactPayload = {
         from_name: `${firstName} ${lastName}`.trim() || 'Website Visitor',
         from_email: email || 'info@pureforcure.org',
@@ -3206,6 +3281,35 @@ Details: ${finalMessage}
 
 Submitted on: ${new Date().toLocaleString('en-GB')}`;
       
+      // 1. Send confirmation acknowledgment to CSR partner
+      if (email && email.includes('@')) {
+        const csrAckPayload = {
+          from_name: 'Team Pure For Cure',
+          from_email: 'info@pureforcure.org',
+          reply_to: 'info@pureforcure.org',
+          sender_email: 'info@pureforcure.org',
+          to_email: email,
+          donor_email: email,
+          recipient_email: email,
+          email: email,
+          user_email: email,
+          to_name: contactPerson || companyName || 'Partner',
+          donor_name: contactPerson || companyName || 'Partner',
+          name: contactPerson || companyName || 'Partner',
+          subject: 'Pure for Cure CSR Partnership Proposal Received - Hare Krishna!',
+          message: `Dear ${contactPerson || companyName},\n\nThank you for expressing interest in partnering with Pure for Cure for "${initiative}".\n\nOur CSR Desk has received your proposal and will review it promptly to discuss collaboration frameworks and project feasibility.\n\nWith sincere regards,\nTeam Pure For Cure\nHare Krishna Movement, Guwahati\nEmail: info@pureforcure.org\nPhone: +91 70990 39770`,
+          amount: budget || 'CSR Partnership',
+          formatted_amount: budget || 'CSR Partnership',
+          receipt_no: 'PFC-CSR-' + Date.now().toString().slice(-6),
+          ref_no: 'PFC-CSR-' + Date.now().toString().slice(-6),
+          txn_id: 'CSR_PROPOSAL',
+          date: new Date().toLocaleDateString('en-GB'),
+          receipt_url: 'https://www.pureforcure.org/csr.html'
+        };
+        window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, csrAckPayload).catch(err => console.warn('CSR partner ack notice:', err));
+      }
+
+      // 2. Alert notifications to info@pureforcure.org and harekrishnamandir.dm@gmail.com
       const csrPayload = {
         from_name: contactPerson || companyName || 'Corporate Partner',
         from_email: email || 'info@pureforcure.org',
