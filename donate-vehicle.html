@@ -462,30 +462,12 @@
           <i class="fa-solid fa-lock"></i> Pay via Razorpay Checkout
         </button>
 
-        <button id="gw-sim-btn" class="btn btn-outline" style="width:100%; justify-content:center; padding:0.65rem; font-size:0.85rem; border-radius:8px; color:var(--text-muted); border-color:#CBD5E1;" onclick="executeSimulatedPay();">
-          <i class="fa-solid fa-flask"></i> Instant Test Mode (Simulate 80G Receipt)
-        </button>
-      </div>
-
-      <!-- Razorpay Key Configuration Accordion -->
-      <div style="border-top:1px solid #E2E8F0; padding-top:0.75rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.78rem; color:var(--text-muted);" id="rzp-status-label">
-            <i class="fa-solid fa-key" style="color:#D97706;"></i> Razorpay Key: <strong id="rzp-current-key-display">Default (Test)</strong>
-          </span>
-          <button type="button" onclick="toggleRzpKeyInput()" style="background:none; border:none; color:#0D80CC; font-size:0.78rem; font-weight:700; cursor:pointer;">
-            Change Key
-          </button>
         </div>
 
-        <div id="rzp-key-input-container" style="display:none; margin-top:0.6rem; text-align:left; background:#F1F5F9; padding:0.75rem; border-radius:8px;">
-          <label style="font-size:0.75rem; font-weight:700; color:var(--dark); display:block; margin-bottom:0.25rem;">Paste Razorpay Key ID (rzp_live_... or rzp_test_...):</label>
-          <div style="display:flex; gap:0.4rem;">
-            <input type="text" id="rzp-custom-key-input" placeholder="e.g. rzp_live_xxxxxxxxxxxx" style="flex:1; padding:0.45rem 0.6rem; font-size:0.8rem; border:1px solid #CBD5E1; border-radius:4px;">
-            <button type="button" class="btn btn-sm btn-primary" onclick="saveCustomRzpKey()">Save</button>
-          </div>
-          <p style="font-size:0.72rem; color:var(--text-muted); margin:0.35rem 0 0;">Found in your Razorpay Dashboard &rarr; Settings &rarr; API Keys.</p>
-                </div>
+      <div style="border-top:1px solid #E2E8F0; padding-top:0.75rem; text-align:center;">
+        <span style="font-size:0.78rem; color:#16A34A; display:inline-flex; align-items:center; gap:0.4rem; justify-content:center; font-weight:600;">
+          <i class="fa-solid fa-shield-halved"></i> 256-Bit SSL Encrypted Official Payment via Razorpay
+        </span>
       </div>
 
       <p style="font-size:0.8rem; color:#64748B; margin:0.75rem 0 0; text-align:center;">

@@ -10,17 +10,11 @@ const DONATIONS_STORAGE_KEY = 'pfc_recent_donations_v5';
 const RAZORPAY_ENGINE = {
   defaultKey: 'rzp_live_ysKJLc5VAgvM7W',
   getKeyId: function() {
-    const saved = localStorage.getItem('pfc_razorpay_key_id');
-    if (saved && saved.trim() && saved !== 'rzp_test_placeholder') {
-      return saved.trim();
-    }
+    // Locked permanently to verified official live Razorpay API key
     return this.defaultKey;
   },
-  setKeyId: function(key) {
-    if (key && key.trim()) {
-      localStorage.setItem('pfc_razorpay_key_id', key.trim());
-      console.log('Razorpay Key ID configured:', key.trim());
-    }
+  setKeyId: function() {
+    // Tamper-proof: external overrides disabled
   },
   merchantName: 'Pure for Cure - Hare Krishna Movement Guwahati',
   description: 'Sattvik Meals Food Relief Sponsorship',
@@ -709,26 +703,30 @@ async function generateReceiptPdfBlob(donor, meta) {
       borderWidth: 1.2
     });
 
-    // Draw Vector Rupee Glyph inside box
+    // Draw Official Crisp Vector Rupee Glyph (₹) inside box
     const amtStr = Number(donor.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
     const numWidth = bold.widthOfTextAtSize(amtStr, 23);
-    const rupeeW = 18;
-    const totalAmtW = rupeeW + 8 + numWidth;
+    const rupeeW = 14;
+    const rupeeGap = 8;
+    const totalAmtW = rupeeW + rupeeGap + numWidth;
     const amtStartX = (612 - totalAmtW) / 2;
     const amtY = y + 18;
 
-    // Crisp Vector Rupee Glyph (₹)
-    const rx = amtStartX;
-    const ry = amtY + 2;
-    page.drawLine({ start: { x: rx, y: ry + 16 }, end: { x: rx + 14, y: ry + 16 }, thickness: 2.2, color: black });
-    page.drawLine({ start: { x: rx, y: ry + 10 }, end: { x: rx + 13, y: ry + 10 }, thickness: 2.2, color: black });
-    page.drawLine({ start: { x: rx + 3.2, y: ry + 16 }, end: { x: rx + 3.2, y: ry + 4 }, thickness: 2.2, color: black });
-    page.drawLine({ start: { x: rx + 3.2, y: ry + 16 }, end: { x: rx + 12.5, y: ry + 13 }, thickness: 1.8, color: black });
-    page.drawLine({ start: { x: rx + 12.5, y: ry + 13 }, end: { x: rx + 3.2, y: ry + 10 }, thickness: 1.8, color: black });
-    page.drawLine({ start: { x: rx + 4, y: ry + 10 }, end: { x: rx + 14, y: ry - 2 }, thickness: 2.4, color: black });
+    // Official crisp Indian Rupee symbol SVG glyph
+    const rupeeSvg = 'M0 64C0 46.3 14.3 32 32 32l64 0 16 0 176 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-56.2 0c9.6 14.4 16.7 30.6 20.7 48l35.6 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-35.6 0c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256l80 0c32.8 0 61-19.7 73.3-48L32 208c-17.7 0-32-14.3-32-32s14.3-32 32-32l153.3 0C173 115.7 144.8 96 112 96L96 96 32 96C14.3 96 0 81.7 0 64z';
+    try {
+      page.drawSvgPath(rupeeSvg, {
+        x: amtStartX,
+        y: amtY + 18.8,
+        scale: 0.0407,
+        color: black
+      });
+    } catch (e) {
+      page.drawText('Rs.', { x: amtStartX, y: amtY, size: 21, font: bold, color: black });
+    }
 
     page.drawText(amtStr, {
-      x: amtStartX + rupeeW + 8,
+      x: amtStartX + rupeeW + rupeeGap,
       y: amtY,
       size: 23,
       font: bold,
@@ -1029,15 +1027,7 @@ function executeRazorpayPay() {
     rzp.open();
     document.getElementById('payment-gateway-modal')?.classList.remove('active');
   } else {
-    // If no live key is saved, prompt or let user simulate
-    const userKey = prompt('Please enter your Razorpay Key ID (e.g. rzp_live_... or rzp_test_...):\n(Press Cancel to test with instant simulated payment)');
-    if (userKey && userKey.trim()) {
-      RAZORPAY_ENGINE.setKeyId(userKey.trim());
-      updateRzpKeyDisplay();
-      executeRazorpayPay();
-    } else {
-      executeSimulatedPay();
-    }
+    alert('Payment gateway is initializing. Please verify your connection or refresh the page.');
   }
 }
 
@@ -1065,10 +1055,7 @@ async function logFailedOrAbandonedDonation(reason, failedPaymentId) {
 }
 
 function executeSimulatedPay() {
-  if (!currentDonationData) return;
-  currentDonationData._completed = true;
-  const simPayId = 'pay_sim_' + Math.random().toString(36).substring(2, 10).toUpperCase();
-  completeSuccessfulDonation(simPayId);
+  console.warn('Simulated test mode is disabled in production.');
 }
 
 async function completeSuccessfulDonation(paymentId) {
@@ -1336,28 +1323,15 @@ function ensureModalsExist() {
           <button id="gw-pay-razorpay-btn" type="button" class="btn btn-primary" style="width:100%; justify-content:center; padding:0.9rem; font-size:1rem; border-radius:8px; box-shadow:0 4px 14px rgba(252,160,40,0.35);" onclick="executeRazorpayPay();">
             <i class="fa-solid fa-lock"></i> Pay via Razorpay Checkout
           </button>
-          <button id="gw-sim-btn" type="button" class="btn btn-outline" style="width:100%; justify-content:center; padding:0.65rem; font-size:0.85rem; border-radius:8px; color:var(--text-muted); border-color:#CBD5E1;" onclick="executeSimulatedPay();">
-            <i class="fa-solid fa-flask"></i> Instant Test Mode (Simulate 80G Receipt)
-          </button>
         </div>
-        <div style="border-top:1px solid #E2E8F0; padding-top:0.75rem;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:0.78rem; color:var(--text-muted);" id="rzp-status-label">
-              <i class="fa-solid fa-key" style="color:#D97706;"></i> Razorpay Key: <strong id="rzp-current-key-display">Default (Test)</strong>
-            </span>
-            <button type="button" onclick="toggleRzpKeyInput()" style="background:none; border:none; color:#0D80CC; font-size:0.78rem; font-weight:700; cursor:pointer;">
-              Change Key
-            </button>
-          </div>
-          <div id="rzp-key-input-container" style="display:none; margin-top:0.6rem; text-align:left; background:#F1F5F9; padding:0.75rem; border-radius:8px;">
-            <label style="font-size:0.75rem; font-weight:700; color:var(--dark); display:block; margin-bottom:0.25rem;">Paste Razorpay Key ID (rzp_live_... or rzp_test_...):</label>
-            <div style="display:flex; gap:0.4rem;">
-              <input type="text" id="rzp-custom-key-input" placeholder="e.g. rzp_live_xxxxxxxxxxxx" style="flex:1; padding:0.45rem 0.6rem; font-size:0.8rem; border:1px solid #CBD5E1; border-radius:4px;">
-              <button type="button" class="btn btn-sm btn-primary" onclick="saveCustomRzpKey()">Save</button>
-            </div>
-            <p style="font-size:0.72rem; color:var(--text-muted); margin:0.35rem 0 0;">Found in your Razorpay Dashboard &rarr; Settings &rarr; API Keys.</p>
-          </div>
+        <div style="border-top:1px solid #E2E8F0; padding-top:0.75rem; text-align:center;">
+          <span style="font-size:0.78rem; color:#16A34A; display:inline-flex; align-items:center; gap:0.4rem; justify-content:center; font-weight:600;">
+            <i class="fa-solid fa-shield-halved"></i> 256-Bit SSL Encrypted Official Payment via Razorpay
+          </span>
         </div>
+        <p style="font-size:0.8rem; color:#64748B; margin:0.75rem 0 0; text-align:center;">
+          <i class="fa-solid fa-lock" style="color:#16A34A;"></i> Verifying with your bank / UPI provider... Please do not refresh.
+        </p>
       </div>
     `;
     document.body.appendChild(gwDiv);

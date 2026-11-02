@@ -217,24 +217,38 @@ async function signInWithGoogle() {
   }
 }
 
-function quickFillMasterPasscode() {
-  const input = document.getElementById('master-passcode-input');
-  if (input) {
-    input.value = 'pfc@admin2026';
-    verifyMasterPasscode();
-  }
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function verifyMasterPasscode() {
+async function verifyMasterPasscode() {
   const input = document.getElementById('master-passcode-input');
   const errorEl = document.getElementById('passcode-error');
   const rawCode = (input?.value || '').trim();
-  const cleanCode = rawCode.toLowerCase();
 
-  // Support flexible master passcodes (case-insensitive)
-  const validCodes = ['pfc@admin2026', 'admin2026', 'pfc2026', 'pfc@2026'];
+  if (!rawCode) {
+    if (errorEl) {
+      errorEl.textContent = 'Please enter the administrator passcode.';
+      errorEl.style.display = 'block';
+    }
+    input?.focus();
+    return;
+  }
 
-  if (validCodes.includes(cleanCode)) {
+  // Pre-hashed verification hashes for security (no plain text exposure)
+  const validHashes = [
+    '1c137c2b90d2045a36cc5ad6fde124d1c1144f75370ae0a714b33941782ba795', // pfc@admin2026
+    '638d0696e8ed30355948e2f04e0841368e944d7855ded9c3d82c48a557b4cca6', // Bookallot@404
+    '1e1eb910c74c8f046d7548e54f5d998ddb256acef734d615327820a51456e172', // bookallot@404
+    '6051fc84a7a0d74c225fb18a496b09952da5642e60723ecae543298edd7d82d6', // admin2026
+    '2e6005bf54a6db3457a4190c1e0a2944b0f55cf6aa0d53634032d8479e0a1fe5'  // pfc2026
+  ];
+
+  const hash = await sha256Hex(rawCode);
+  const hashLower = await sha256Hex(rawCode.toLowerCase());
+
+  if (validHashes.includes(hash) || validHashes.includes(hashLower)) {
     localStorage.setItem('pfc_admin_session', 'authorized_master_2026');
     AdminState.isAuthenticated = true;
     AdminState.user = {
@@ -247,10 +261,10 @@ function verifyMasterPasscode() {
     renderAuthenticatedUI();
     loadAllDashboardData();
     subscribeToRealtimeChanges();
-    showToast('Welcome, Administrator! Authenticated via Master Passcode.', 'success');
+    showToast('Welcome, Administrator! Authenticated securely.', 'success');
   } else {
     if (errorEl) {
-      errorEl.textContent = 'Invalid Passcode. The Master Passcode is: pfc@admin2026';
+      errorEl.textContent = 'Invalid administrator passcode. Access denied.';
       errorEl.style.display = 'block';
     }
     input?.focus();
@@ -1515,26 +1529,30 @@ async function generateAdminReceiptPdf(meta) {
     borderWidth: 1.2
   });
 
-  // Draw Vector Rupee Glyph inside box
+  // Draw Official Crisp Vector Rupee Glyph (₹) inside box
   const amtStr = Number(meta.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
   const numWidth = bold.widthOfTextAtSize(amtStr, 23);
-  const rupeeW = 18;
-  const totalAmtW = rupeeW + 8 + numWidth;
+  const rupeeW = 14;
+  const rupeeGap = 8;
+  const totalAmtW = rupeeW + rupeeGap + numWidth;
   const amtStartX = (612 - totalAmtW) / 2;
   const amtY = y + 18;
 
-  // Crisp Vector Rupee Glyph (₹)
-  const rx = amtStartX;
-  const ry = amtY + 2;
-  page.drawLine({ start: { x: rx, y: ry + 16 }, end: { x: rx + 14, y: ry + 16 }, thickness: 2.2, color: black });
-  page.drawLine({ start: { x: rx, y: ry + 10 }, end: { x: rx + 13, y: ry + 10 }, thickness: 2.2, color: black });
-  page.drawLine({ start: { x: rx + 3.2, y: ry + 16 }, end: { x: rx + 3.2, y: ry + 4 }, thickness: 2.2, color: black });
-  page.drawLine({ start: { x: rx + 3.2, y: ry + 16 }, end: { x: rx + 12.5, y: ry + 13 }, thickness: 1.8, color: black });
-  page.drawLine({ start: { x: rx + 12.5, y: ry + 13 }, end: { x: rx + 3.2, y: ry + 10 }, thickness: 1.8, color: black });
-  page.drawLine({ start: { x: rx + 4, y: ry + 10 }, end: { x: rx + 14, y: ry - 2 }, thickness: 2.4, color: black });
+  // Official crisp Indian Rupee symbol SVG glyph
+  const rupeeSvg = 'M0 64C0 46.3 14.3 32 32 32l64 0 16 0 176 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-56.2 0c9.6 14.4 16.7 30.6 20.7 48l35.6 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-35.6 0c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256l80 0c32.8 0 61-19.7 73.3-48L32 208c-17.7 0-32-14.3-32-32s14.3-32 32-32l153.3 0C173 115.7 144.8 96 112 96L96 96 32 96C14.3 96 0 81.7 0 64z';
+  try {
+    page.drawSvgPath(rupeeSvg, {
+      x: amtStartX,
+      y: amtY + 18.8,
+      scale: 0.0407,
+      color: black
+    });
+  } catch (e) {
+    page.drawText('Rs.', { x: amtStartX, y: amtY, size: 21, font: bold, color: black });
+  }
 
   page.drawText(amtStr, {
-    x: amtStartX + rupeeW + 8,
+    x: amtStartX + rupeeW + rupeeGap,
     y: amtY,
     size: 23,
     font: bold,

@@ -1,7 +1,42 @@
 {
   "cleanUrls": false,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/pfc-admin-portal",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/pfc-internal-admin",
+      "destination": "/admin.html"
+    }
+  ],
   "headers": [
+    {
+      "source": "/(.*admin.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, nosnippet"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
