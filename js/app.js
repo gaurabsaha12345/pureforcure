@@ -547,6 +547,7 @@ function mapCauseKeyToLocation(causeKey) {
   if (k === 'vehicle') return 'vehicle';
   if (k === 'kitchen') return 'kitchen';
   if (k === 'birthday') return 'birthday';
+  if (k === 'amavasya' || k.includes('amavasya') || k.includes('pitru')) return 'amavasya';
   if (k === 'vessels' || k === 'vessel') return 'vessels';
   if (k === 'programs') return 'programs';
   if (k === 'stories') return 'stories';
@@ -1275,6 +1276,11 @@ const BASELINE_RECENT_DONATIONS = {
     { name: 'Saurav', amount: 80, causeName: 'Birthday Seva Meal Distribution', timeAgo: 'Just now', paymentMode: 'UPI' },
     { name: 'Rohit & Neha Barua', amount: 4000, causeName: 'Anniversary Celebration Annadan (50 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
     { name: 'Mr. & Mrs. P. K. Agarwal', amount: 8000, causeName: 'Wedding Anniversary Memorial Annadan (100 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' }
+  ],
+  amavasya: [
+    { name: 'Gauri Shankar Sarma & Family', amount: 8000, causeName: 'Amavasya Pitru Tarpana Annadanam (100 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
+    { name: 'Manoj Agarwal & Sons', amount: 4000, causeName: 'Somvati Amavasya Seva (50 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' },
+    { name: 'Ananya Hazarika', amount: 2000, causeName: 'Auspicious Amavasya Annadan (25 Meals)', timeAgo: '2 days ago', paymentMode: 'UPI' }
   ],
   borooah: [
     { name: 'GAURAB Saha', amount: 80, causeName: 'BBCI Hospital Food Distribution', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
