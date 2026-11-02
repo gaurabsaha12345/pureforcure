@@ -183,8 +183,8 @@ const SUPABASE_BACKEND = {
 
 // EmailJS Official Configuration
 const EMAILJS_CONFIG = {
-  publicKey: '7rlSIRoybWU_Exkf9',
-  serviceId: 'service_ssdg1kh',
+  publicKey: '4FsfZ9hK5ZyFeWgEO',
+  serviceId: 'service_mxks5if',
   templateId: 'template_uk3p639'
 };
 
