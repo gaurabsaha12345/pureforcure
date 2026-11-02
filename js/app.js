@@ -1333,6 +1333,31 @@ async function renderFooterRecentDonations() {
   container.innerHTML = html;
 }
 
+// Standalone reliable initializer for all recent donation containers (strictly 3 cards)
+function initAllRecentDonations() {
+  try {
+    renderFooterRecentDonations();
+  } catch (err) {
+    console.warn('Footer donations render error:', err);
+  }
+  try {
+    const dynRecent = document.getElementById('dynamic-recent-contributors');
+    if (dynRecent) {
+      const causeKey = dynRecent.getAttribute('data-cause-key') || 'all';
+      renderRecentDonations('dynamic-recent-contributors', causeKey);
+    }
+  } catch (err) {
+    console.warn('Dynamic recent donations render error:', err);
+  }
+}
+window.initAllRecentDonations = initAllRecentDonations;
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAllRecentDonations);
+} else {
+  initAllRecentDonations();
+}
+
 // Track and update Monthly Donation Goal (10,000 Meals / Rs 8,00,000) configured with Razorpay
 function updateMonthlyTargetTracker() {
   const trackerEls = document.querySelectorAll('.monthly-goal-tracker');
