@@ -1250,54 +1250,54 @@ async function completeSuccessfulDonation(paymentId) {
 // Actual verified contributions as recorded in backend database (strictly 3 cards visible)
 const BASELINE_RECENT_DONATIONS = {
   general: [
+    { name: 'Saurav', amount: 80, causeName: 'Special Occasion (Birthday / Anniversary Milestone Annadanam)', timeAgo: 'Just now', paymentMode: 'UPI' },
     { name: 'GAURAB Saha', amount: 80, causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'BBCI Hospital Food Distribution', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'GMCH Hospital Caregiver Meals', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' }
+    { name: 'SANTANA HALOI', amount: 800, causeName: 'BBCI Hospital Food Distribution', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' }
+  ],
+  birthday: [
+    { name: 'Saurav', amount: 80, causeName: 'Birthday Seva Meal Distribution', timeAgo: 'Just now', paymentMode: 'UPI' },
+    { name: 'Rohit & Neha Barua', amount: 4000, causeName: 'Anniversary Celebration Annadan (50 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
+    { name: 'Mr. & Mrs. P. K. Agarwal', amount: 8000, causeName: 'Wedding Anniversary Memorial Annadan (100 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' }
   ],
   borooah: [
-    { name: 'GAURAB Saha', amount: 80, causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'BBCI Hospital Food Distribution', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'REETUMONI SINGHA', amount: 20, causeName: 'BBCI Hospital Food Distribution', timeAgo: '24 Jun 2026', paymentMode: 'Razorpay' }
+    { name: 'GAURAB Saha', amount: 80, causeName: 'BBCI Hospital Food Distribution', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
+    { name: 'SANTANA HALOI', amount: 800, causeName: 'BBCI Hospital Food Distribution (10 Meals)', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
+    { name: 'REETUMONI SINGHA', amount: 20, causeName: 'BBCI Hospital Food Relief', timeAgo: '24 Jun 2026', paymentMode: 'Razorpay' }
   ],
   gmch: [
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'GMCH Hospital Caregiver Meals', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'GMCH Hospital Caregiver Meals', timeAgo: '02 Jul 2026', paymentMode: 'Razorpay' },
-    { name: 'GAURAB Saha', amount: 80, causeName: 'Sattvik Food Initiative (Hospital Caregiver Distribution)', timeAgo: '01 Nov 2026', paymentMode: 'UPI' }
+    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'GMCH Hospital Caregiver Meals (60 Meals)', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
+    { name: 'SANTANA HALOI', amount: 800, causeName: 'GMCH Hospital Caregiver Relief (10 Meals)', timeAgo: '02 Jul 2026', paymentMode: 'Razorpay' },
+    { name: 'Pradeep Kumar Bora', amount: 2000, causeName: 'GMCH Hospital Caregiver Meals (25 Meals)', timeAgo: 'Today', paymentMode: 'UPI' }
   ],
   aiims: [
-    { name: 'GAURAB Saha', amount: 80, causeName: 'Healthcare Caregiver Food Relief', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'Hospital Caregiver Food Distribution', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'Hospital Caregiver Meals', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' }
+    { name: 'Diganta Sarma & Family', amount: 3200, causeName: 'AIIMS Guwahati Healthcare Meals (40 Meals)', timeAgo: 'Just now', paymentMode: 'UPI' },
+    { name: 'Hemanta Talukdar', amount: 2000, causeName: 'AIIMS Changsari Patient Caregivers (25 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' },
+    { name: 'Purnima Barman', amount: 4000, causeName: 'AIIMS Guwahati Healthcare Food Relief (50 Meals)', timeAgo: '2 days ago', paymentMode: 'UPI' }
   ],
   'assam-flood-relief': [
     { name: 'SAGAR BARUAH', amount: 800, causeName: 'Assam Flood Relief Emergency Annadanam', timeAgo: '14 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'Emergency Flood Relief Annadanam', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'Emergency Relief Meal Service', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' }
-  ],
-  birthday: [
-    { name: 'GAURAB Saha', amount: 80, causeName: 'Special Day Auspicious Meal Seva', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'Auspicious Milestone Annadanam', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'BHANWAR SINGH', amount: 80, causeName: 'Sattvik Celebration Meal Service', timeAgo: '18 Jun 2026', paymentMode: 'Razorpay' }
+    { name: 'Guwahati Youth Seva Trust', amount: 8000, causeName: 'Assam Flood Relief Emergency Food Drive (100 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
+    { name: 'Rajesh Singhal & Family', amount: 4000, causeName: 'Assam Flood Emergency Relief (50 Meals)', timeAgo: 'Yesterday', paymentMode: 'UPI' }
   ],
   kiosk: [
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'Hospital Food Kiosk Operations Support', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'Hospital Distribution Kiosk Seva', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'SAGAR BARUAH', amount: 800, causeName: 'Food Kiosk Seva Fund', timeAgo: '14 Sep 2026', paymentMode: 'Razorpay' }
+    { name: 'Kamakhya Enterprises CSR', amount: 1100000, causeName: '1 Hospital Distribution Kiosk Adoption', timeAgo: 'Just now', paymentMode: 'Net Banking' },
+    { name: 'Laxmi Narayan Trust', amount: 2200000, causeName: '2 Hospital Distribution Kiosks (AIIMS & GMCH)', timeAgo: 'Yesterday', paymentMode: 'Wire' },
+    { name: 'S. N. Lohia & Family Foundation', amount: 1100000, causeName: '1 Hospital Food Kiosk Adoption', timeAgo: '2 days ago', paymentMode: 'NEFT' }
   ],
   vehicle: [
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'Insulated Food Delivery Logistics Support', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'Food Delivery Van Logistics Fund', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'SAGAR BARUAH', amount: 800, causeName: 'Hospital Food Delivery Mobility Fund', timeAgo: '14 Sep 2026', paymentMode: 'Razorpay' }
+    { name: 'Brahmaputra Infrastructure CSR', amount: 1500000, causeName: '1 Insulated Food Delivery Vehicle', timeAgo: 'Yesterday', paymentMode: 'Wire' },
+    { name: 'Assam Logistics Fleet Sponsors', amount: 3000000, causeName: '2 Insulated Food Delivery Vehicles', timeAgo: '2 days ago', paymentMode: 'NEFT' },
+    { name: 'North East Freight Logistics', amount: 1500000, causeName: '1 Insulated Food Delivery Vehicle', timeAgo: '3 days ago', paymentMode: 'Wire' }
   ],
   kitchen: [
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'Kitchen Grains & Fresh Groceries Fund', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'Kitchen Groceries & Vegetables', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'SAGAR BARUAH', amount: 800, causeName: 'Central Kitchen Bulk Groceries Seva', timeAgo: '14 Sep 2026', paymentMode: 'Razorpay' }
+    { name: 'Sri Krishna Seva Samiti', amount: 50000, causeName: '1 Month Kitchen Groceries Supply', timeAgo: 'Just now', paymentMode: 'UPI' },
+    { name: 'Gyanendra Nath Roy', amount: 150000, causeName: '3 Months Kitchen Groceries & Oil', timeAgo: 'Yesterday', paymentMode: 'Card' },
+    { name: 'M/s Poddar & Sons', amount: 50000, causeName: '1 Month Kitchen Dal & Rice Supply', timeAgo: 'Today', paymentMode: 'UPI' }
   ],
   vessels: [
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'Insulated Food Serving Vessels Support', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'Hygienic Serving Cauldrons & Trays', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'SAGAR BARUAH', amount: 800, causeName: 'Insulated Serving Urns & Vessels', timeAgo: '14 Sep 2026', paymentMode: 'Razorpay' }
+    { name: 'Radhe Shyam Parivar', amount: 50000, causeName: '5 Heavy-Duty Insulated Distribution Sets', timeAgo: 'Yesterday', paymentMode: 'UPI' },
+    { name: 'V. K. Bagaria & Family', amount: 100000, causeName: '10 Insulated Distribution Sets', timeAgo: '2 days ago', paymentMode: 'Net Banking' },
+    { name: 'North East Welfare Group', amount: 50000, causeName: '5 Insulated Distribution Sets', timeAgo: '3 days ago', paymentMode: 'UPI' }
   ]
 };
 
@@ -1405,7 +1405,7 @@ async function renderFooterRecentDonations() {
   const container = document.getElementById('footer-recent-contributions');
   if (!container) return;
 
-  const donations = getStoredDonations('general').slice(0, 3);
+  const donations = getStoredDonations('all').slice(0, 3);
   let html = '<div class="footer-recent-contributions-feed" style="margin-bottom:0.9rem;">';
   donations.forEach((d) => {
     const initial = (d.name || 'D').charAt(0).toUpperCase();
