@@ -364,7 +364,11 @@ function initFooterNewsletter() {
       // 3. Automated Welcome Email via EmailJS
       if (typeof window !== 'undefined' && window.emailjs && EMAILJS_CONFIG.serviceId) {
         try {
+          // Welcome email to subscriber
           window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+            from_name: 'Team Pure For Cure',
+            from_email: 'info@pureforcure.org',
+            reply_to: 'info@pureforcure.org',
             donor_email: subscriberRecord.email,
             to_email: subscriberRecord.email,
             to_name: subscriberRecord.name,
@@ -373,10 +377,46 @@ function initFooterNewsletter() {
             subject: 'Welcome to Pure for Cure Seva Community - Hare Krishna!',
             message: 'Hare Krishna! Thank you for subscribing to Pure for Cure. You will now receive inspirational hospital food relief stories, volunteer voices, emergency flood relief updates, and our latest blog posts.',
             notes: 'Newsletter Subscription verified from ' + (window.location.pathname.split('/').pop() || 'website')
-          }).then(
-            resp => console.log('✓ Newsletter welcome email sent successfully:', resp),
-            err => console.warn('EmailJS newsletter notice (handled):', err)
-          );
+          }).catch(err => console.warn('Subscriber welcome email notice:', err));
+
+          // Alert notification to info@pureforcure.org and harekrishnamandir.dm@gmail.com
+          window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+            from_name: subscriberRecord.name,
+            from_email: subscriberRecord.email,
+            reply_to: subscriberRecord.email,
+            to_email: 'info@pureforcure.org',
+            donor_email: 'info@pureforcure.org',
+            recipient_email: 'info@pureforcure.org',
+            email: 'info@pureforcure.org',
+            to_name: 'Pure for Cure Team',
+            subject: `[New Newsletter Subscriber] ${subscriberRecord.name} (${subscriberRecord.email})`,
+            message: `A new devotee / supporter has subscribed to the Pure for Cure newsletter:
+
+Name: ${subscriberRecord.name}
+Email: ${subscriberRecord.email}
+Source Page: ${subscriberRecord.source_page}
+Date: ${new Date().toLocaleString('en-GB')}`,
+            date: new Date().toLocaleDateString('en-GB')
+          }).catch(err => console.warn('Newsletter admin alert notice:', err));
+
+          window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+            from_name: subscriberRecord.name,
+            from_email: subscriberRecord.email,
+            reply_to: subscriberRecord.email,
+            to_email: 'harekrishnamandir.dm@gmail.com',
+            donor_email: 'harekrishnamandir.dm@gmail.com',
+            recipient_email: 'harekrishnamandir.dm@gmail.com',
+            email: 'harekrishnamandir.dm@gmail.com',
+            to_name: 'HKM Temple Admin',
+            subject: `[New Newsletter Subscriber] ${subscriberRecord.name} (${subscriberRecord.email})`,
+            message: `A new devotee / supporter has subscribed to the Pure for Cure newsletter:
+
+Name: ${subscriberRecord.name}
+Email: ${subscriberRecord.email}
+Source Page: ${subscriberRecord.source_page}
+Date: ${new Date().toLocaleString('en-GB')}`,
+            date: new Date().toLocaleDateString('en-GB')
+          }).catch(err => console.warn('Newsletter HKM alert notice:', err));
         } catch (mailErr) {
           console.warn('Welcome email dispatch skipped:', mailErr);
         }
@@ -974,11 +1014,28 @@ async function sendEmailReceipt(donor, meta, receiptUrl) {
       notes: `80G Donation Receipt issued on ${meta.dateStr} for ${donor.name || 'Donor'} with amount ${formattedAmount}`
     };
 
-    // 1. Dispatch custom email receipt to donor
+    // 1. Dispatch official 80G tax receipt to donor
     await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, emailPayload);
-    console.log('✓ Automated email receipt dispatched via info@pureforcure.org to donor:', donor.email);
+    console.log('✓ Automated email receipt dispatched to donor:', donor.email);
 
-    // 2. Dispatch exact same receipt and donation notification to temple admin (harekrishnamandir.dm@gmail.com)
+    // 2. Dispatch real-time receipt & donation alert to info@pureforcure.org
+    try {
+      const pfcAlertPayload = {
+        ...emailPayload,
+        to_email: 'info@pureforcure.org',
+        donor_email: 'info@pureforcure.org',
+        recipient_email: 'info@pureforcure.org',
+        email: 'info@pureforcure.org',
+        to_name: 'Pure for Cure Operations',
+        subject: `[Donation Received] ${donor.name || 'Donor'} donated ${formattedAmount} (${meta.refNo})`
+      };
+      await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, pfcAlertPayload);
+      console.log('✓ Notification copy dispatched to info@pureforcure.org');
+    } catch (err) {
+      console.warn('info@pureforcure.org dispatch notice:', err);
+    }
+
+    // 3. Dispatch backup notification directly to harekrishnamandir.dm@gmail.com
     try {
       const adminCopyPayload = {
         ...emailPayload,
@@ -987,12 +1044,12 @@ async function sendEmailReceipt(donor, meta, receiptUrl) {
         recipient_email: 'harekrishnamandir.dm@gmail.com',
         email: 'harekrishnamandir.dm@gmail.com',
         to_name: 'HKM Temple Admin',
-        subject: `[Pure for Cure Receipt Copy] ${donor.name || 'Donor'} donated ${formattedAmount} (${meta.refNo})`
+        subject: `[Donation Alert Copy] ${donor.name || 'Donor'} donated ${formattedAmount} (${meta.refNo})`
       };
       await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, adminCopyPayload);
-      console.log('✓ Duplicate receipt copy successfully dispatched to harekrishnamandir.dm@gmail.com');
+      console.log('✓ Duplicate receipt copy dispatched to harekrishnamandir.dm@gmail.com');
     } catch (adminErr) {
-      console.warn('Admin copy email dispatch notice:', adminErr);
+      console.warn('Admin copy dispatch notice:', adminErr);
     }
 
     return true;
@@ -2685,6 +2742,45 @@ document.addEventListener('DOMContentLoaded', () => {
         status: 'pending'
       });
 
+      // Dispatch instant Volunteer application alert to info@pureforcure.org and harekrishnamandir.dm@gmail.com
+      try {
+        if (typeof window.emailjs !== 'undefined' && window.emailjs.send) {
+          const volEmailBody = `New Volunteer Seva Application Received:
+
+Name: ${vName}
+Email: ${vEmail}
+Phone: ${volPhone || 'N/A'}
+City: ${volCity || 'N/A'}
+Volunteer Type: ${volType}
+Organization: ${volOrg || 'Individual'}
+Preferred Role: ${vRole}
+Availability: ${volAvail || 'Flexible'}
+Notes / Experience: ${volNotes || 'None'}
+
+Submitted on: ${new Date().toLocaleString('en-GB')}`;
+          
+          const volPayload = {
+            from_name: vName,
+            from_email: vEmail || 'info@pureforcure.org',
+            reply_to: vEmail || 'info@pureforcure.org',
+            to_email: 'info@pureforcure.org',
+            donor_email: 'info@pureforcure.org',
+            recipient_email: 'info@pureforcure.org',
+            email: 'info@pureforcure.org',
+            to_name: 'Pure for Cure Volunteer Coordinator',
+            subject: `[New Volunteer Application] ${vName} - ${vRole}`,
+            message: volEmailBody,
+            date: new Date().toLocaleDateString('en-GB')
+          };
+          window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, volPayload).catch(err => console.warn('Vol email error:', err));
+          
+          const adminVolPayload = { ...volPayload, to_email: 'harekrishnamandir.dm@gmail.com', donor_email: 'harekrishnamandir.dm@gmail.com', recipient_email: 'harekrishnamandir.dm@gmail.com', email: 'harekrishnamandir.dm@gmail.com' };
+          window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, adminVolPayload).catch(err => console.warn('Vol admin email error:', err));
+        }
+      } catch (volMailErr) {
+        console.warn('Volunteer email alert notice:', volMailErr);
+      }
+
       if (volunteerModal) {
         volunteerModal.classList.add('active');
       } else {
@@ -2773,28 +2869,37 @@ window.handleContactFormSubmit = async function(e, form) {
   // Sync to Supabase Backend
   await SUPABASE_BACKEND.insertRecord('contact_inquiries', contactData);
 
-  // Notify Hare Krishna Movement administration immediately via email
+  // Notify administration immediately via email (info@pureforcure.org and harekrishnamandir.dm@gmail.com)
   try {
     if (typeof window.emailjs !== 'undefined' && window.emailjs.send) {
-      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
-        from_name: `${firstName} ${lastName}`.trim() || 'Website Visitor',
-        from_email: email || 'info@pureforcure.org',
-        reply_to: email || 'info@pureforcure.org',
-        to_email: 'harekrishnamandir.dm@gmail.com',
-        donor_email: 'harekrishnamandir.dm@gmail.com',
-        recipient_email: 'harekrishnamandir.dm@gmail.com',
-        to_name: 'HKM Temple Admin',
-        subject: `[Pure for Cure Contact Inquiry] ${subject || 'New Message from ' + firstName}`,
-        message: `New inquiry submitted on Pure for Cure website:
+      const contactMsg = `New inquiry submitted on Pure for Cure website:
 
 Name: ${firstName} ${lastName}
 Email: ${email}
 Subject: ${subject}
 
 Message:
-${message}`,
+${message}
+
+Submitted on: ${new Date().toLocaleString('en-GB')}`;
+      
+      const pfcContactPayload = {
+        from_name: `${firstName} ${lastName}`.trim() || 'Website Visitor',
+        from_email: email || 'info@pureforcure.org',
+        reply_to: email || 'info@pureforcure.org',
+        to_email: 'info@pureforcure.org',
+        donor_email: 'info@pureforcure.org',
+        recipient_email: 'info@pureforcure.org',
+        email: 'info@pureforcure.org',
+        to_name: 'Pure for Cure Team',
+        subject: `[Website Contact Inquiry] ${subject || 'New Message from ' + firstName}`,
+        message: contactMsg,
         date: new Date().toLocaleDateString('en-GB')
-      }).catch(err => console.warn('Contact email dispatch notice:', err));
+      };
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, pfcContactPayload).catch(err => console.warn('PFC contact email notice:', err));
+      
+      const adminContactPayload = { ...pfcContactPayload, to_email: 'harekrishnamandir.dm@gmail.com', donor_email: 'harekrishnamandir.dm@gmail.com', recipient_email: 'harekrishnamandir.dm@gmail.com', email: 'harekrishnamandir.dm@gmail.com' };
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, adminContactPayload).catch(err => console.warn('Admin contact email notice:', err));
     }
   } catch (mailErr) {
     console.warn('Contact notification notice:', mailErr);
@@ -3084,6 +3189,43 @@ window.handleCSRFormSubmit = function(e, form) {
       message: finalMessage,
       status: 'pending'
     });
+  }
+
+  // Dispatch instant CSR email alert to info@pureforcure.org and harekrishnamandir.dm@gmail.com
+  try {
+    if (typeof window.emailjs !== 'undefined' && window.emailjs.send) {
+      const csrEmailBody = `New CSR & Corporate Partnership Inquiry:
+
+Company: ${companyName}
+Contact Person: ${contactPerson}
+Email: ${email}
+Phone: ${phone}
+Initiative: ${initiative}
+Budget: ${budget || 'Not specified'}
+Details: ${finalMessage}
+
+Submitted on: ${new Date().toLocaleString('en-GB')}`;
+      
+      const csrPayload = {
+        from_name: contactPerson || companyName || 'Corporate Partner',
+        from_email: email || 'info@pureforcure.org',
+        reply_to: email || 'info@pureforcure.org',
+        to_email: 'info@pureforcure.org',
+        donor_email: 'info@pureforcure.org',
+        recipient_email: 'info@pureforcure.org',
+        email: 'info@pureforcure.org',
+        to_name: 'Pure for Cure CSR Team',
+        subject: `[CSR Partnership Inquiry] ${companyName || contactPerson} - ${initiative}`,
+        message: csrEmailBody,
+        date: new Date().toLocaleDateString('en-GB')
+      };
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, csrPayload).catch(err => console.warn('CSR email error:', err));
+      
+      const adminCsrPayload = { ...csrPayload, to_email: 'harekrishnamandir.dm@gmail.com', donor_email: 'harekrishnamandir.dm@gmail.com', recipient_email: 'harekrishnamandir.dm@gmail.com', email: 'harekrishnamandir.dm@gmail.com' };
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, adminCsrPayload).catch(err => console.warn('CSR admin email error:', err));
+    }
+  } catch (csrMailErr) {
+    console.warn('CSR email alert notice:', csrMailErr);
   }
 
   if (successMsg) {
