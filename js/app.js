@@ -935,15 +935,16 @@ async function sendEmailReceipt(donor, meta, receiptUrl) {
       'Phone: +91 70990 39770'
     ].filter(Boolean).join('\n');
 
-    await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+    const emailPayload = {
       from_name: 'Team Pure For Cure',
       from_email: 'info@pureforcure.org',
       reply_to: 'info@pureforcure.org',
       sender_email: 'info@pureforcure.org',
-      donor_email: donor.email, // Required by EmailJS template recipient field
+      donor_email: donor.email,
       to_email: donor.email,
       email: donor.email,
       recipient_email: donor.email,
+      bcc_email: 'harekrishnamandir.dm@gmail.com',
       to_name: donor.name || 'Donor',
       donor_name: donor.name || 'Donor',
       name: donor.name || 'Donor',
@@ -971,8 +972,29 @@ async function sendEmailReceipt(donor, meta, receiptUrl) {
       message: emailBody,
       brief_message: `${donorSalutation}\n\nHare Krishna!\nThank you for your generous contribution to Pure For Cure, a mission dedicated to serving the vision and teachings of His Divine Grace Vishwaguru A.C. Bhaktivedanta Swami Srila Prabhupada.\nYour support helps us continue our mission of service and share Srila Prabhupada’s teachings with more people.\nPlease find your donation receipt attached for your records.\nAmount: ${formattedAmount} | Receipt No: ${meta.refNo}\n\nWe sincerely appreciate your kindness and support. May Lord Krishna bless you and your family with peace, happiness, and spiritual well-being.\n\nWith gratitude and best wishes,\nTeam Pure For Cure\nHare Krishna Movement, Guwahati\nEmail: info@pureforcure.org\nPhone: +91 70990 39770`,
       notes: `80G Donation Receipt issued on ${meta.dateStr} for ${donor.name || 'Donor'} with amount ${formattedAmount}`
-    });
-    console.log('✓ Automated email receipt dispatched via info@pureforcure.org to:', donor.email, 'for donor:', donor.name, 'amount:', formattedAmount, 'ref:', meta.refNo);
+    };
+
+    // 1. Dispatch custom email receipt to donor
+    await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, emailPayload);
+    console.log('✓ Automated email receipt dispatched via info@pureforcure.org to donor:', donor.email);
+
+    // 2. Dispatch exact same receipt and donation notification to temple admin (harekrishnamandir.dm@gmail.com)
+    try {
+      const adminCopyPayload = {
+        ...emailPayload,
+        to_email: 'harekrishnamandir.dm@gmail.com',
+        donor_email: 'harekrishnamandir.dm@gmail.com',
+        recipient_email: 'harekrishnamandir.dm@gmail.com',
+        email: 'harekrishnamandir.dm@gmail.com',
+        to_name: 'HKM Temple Admin',
+        subject: `[Pure for Cure Receipt Copy] ${donor.name || 'Donor'} donated ${formattedAmount} (${meta.refNo})`
+      };
+      await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, adminCopyPayload);
+      console.log('✓ Duplicate receipt copy successfully dispatched to harekrishnamandir.dm@gmail.com');
+    } catch (adminErr) {
+      console.warn('Admin copy email dispatch notice:', adminErr);
+    }
+
     return true;
   } catch (err) {
     console.warn('EmailJS send error:', err);
@@ -2750,6 +2772,33 @@ window.handleContactFormSubmit = async function(e, form) {
 
   // Sync to Supabase Backend
   await SUPABASE_BACKEND.insertRecord('contact_inquiries', contactData);
+
+  // Notify Hare Krishna Movement administration immediately via email
+  try {
+    if (typeof window.emailjs !== 'undefined' && window.emailjs.send) {
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+        from_name: `${firstName} ${lastName}`.trim() || 'Website Visitor',
+        from_email: email || 'info@pureforcure.org',
+        reply_to: email || 'info@pureforcure.org',
+        to_email: 'harekrishnamandir.dm@gmail.com',
+        donor_email: 'harekrishnamandir.dm@gmail.com',
+        recipient_email: 'harekrishnamandir.dm@gmail.com',
+        to_name: 'HKM Temple Admin',
+        subject: `[Pure for Cure Contact Inquiry] ${subject || 'New Message from ' + firstName}`,
+        message: `New inquiry submitted on Pure for Cure website:
+
+Name: ${firstName} ${lastName}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}`,
+        date: new Date().toLocaleDateString('en-GB')
+      }).catch(err => console.warn('Contact email dispatch notice:', err));
+    }
+  } catch (mailErr) {
+    console.warn('Contact notification notice:', mailErr);
+  }
 
   // Show on-screen success banner
   const successBox = document.getElementById('contact-success-msg');
