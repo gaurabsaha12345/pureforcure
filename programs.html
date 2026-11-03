@@ -166,9 +166,9 @@
         </div>
       </a>
 
-      <nav>
+            <nav>
         <ul class="nav-menu">
-          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="index.html" class="nav-link ">Home</a></li>
 
           <!-- About Us Dropdown -->
           <li class="nav-item-dropdown">
@@ -177,7 +177,8 @@
               <li><a href="about.html#hkm-guwahati"><i class="fa-solid fa-gopuram"
                     style="margin-right:6px; color:#1A8C4E;"></i> Hare Krishna Movement Guwahati</a></li>
               <li><a href="about.html#pure-for-cure"><i class="fa-solid fa-leaf"
-                    style="margin-right:6px; color:#16A34A;"></i> <span class="pfc-green-text">Pure for Cure</span> (What, Why, How)</a></li>
+                    style="margin-right:6px; color:#16A34A;"></i> <span class="pfc-green-text"><span
+                      class="pfc-green-text">Pure for Cure</span></span> (What, Why, How)</a></li>
               <li><a href="about.html#srila-prabhupada"><i class="fa-solid fa-book-open-reader"
                     style="margin-right:6px; color:#D97706;"></i> Our Founder Acharya &ndash; Srila Prabhupada</a></li>
               <li><a href="about.html#philosophy"><i class="fa-solid fa-heart-pulse"
@@ -185,39 +186,42 @@
             </ul>
           </li>
 
-          <!-- Gallery Dropdown -->
+          <!-- Gallery Dropdown with Nested Hospital Annadanam -->
           <li class="nav-item-dropdown">
             <a href="gallery.html" class="nav-link ">Gallery <i class="fa-solid fa-angle-down"></i></a>
             <ul class="dropdown-menu-list">
-              <li><a href="gallery-hospital-meals.html"><i class="fa-solid fa-hospital-user"
-                    style="margin-right:6px; color:#1A8C4E;"></i> Hospital Annadanam</a></li>
-              <li><a href="gallery-borooah.html"><i class="fa-solid fa-ribbon"
-                    style="margin-right:6px; color:#D97706;"></i> BBCI Distribution Drives</a></li>
+              <li class="has-submenu">
+                <a href="gallery-hospital-meals.html" class="submenu-parent-link">
+                  <span><i class="fa-solid fa-hospital-user" style="margin-right:6px; color:#1A8C4E;"></i> Hospital Annadanam</span>
+                  <i class="fa-solid fa-angle-right submenu-arrow"></i>
+                </a>
+                <ul class="dropdown-nested-menu">
+                  <li><a href="gallery-borooah.html"><i class="fa-solid fa-ribbon" style="margin-right:6px; color:#D97706;"></i> BBCI Gallery</a></li>
+                  <li><a href="gallery-gmch.html"><i class="fa-solid fa-hospital" style="margin-right:6px; color:#1A8C4E;"></i> GMCH Gallery</a></li>
+                  <li><a href="gallery-aiims.html"><i class="fa-solid fa-square-h" style="margin-right:6px; color:#0284C7;"></i> AIIMS Gallery</a></li>
+                </ul>
+              </li>
               <li><a href="gallery-assam.html"><i class="fa-solid fa-water"
-                    style="margin-right:6px; color:#0284C7;"></i> Assam Flood Relief Drives</a></li>
+                    style="margin-right:6px; color:#0284C7;"></i> Assam Flood Relief Campaigns</a></li>
               <li><a href="gallery-namami.html"><i class="fa-solid fa-water"
-                    style="margin-right:6px; color:#0284C7;"></i> Namami Brahmaputra Mahabhog</a></li>
+                    style="margin-right:6px; color:#0284C7;"></i> Namami Brahmaputra Meals Distribution</a></li>
               <li><a href="gallery-covid.html"><i class="fa-solid fa-shield-virus"
-                    style="margin-right:6px; color:#E11D48;"></i> COVID-19 Food Relief</a></li>
+                    style="margin-right:6px; color:#E11D48;"></i> COVID-19 Food Relief Programs</a></li>
               <li><a href="gallery-rural.html"><i class="fa-solid fa-seedling"
-                    style="margin-right:6px; color:#16A34A;"></i> Rural Outreach Program</a></li>
+                    style="margin-right:6px; color:#16A34A;"></i> Rural Outreach Programs</a></li>
               <li><a href="gallery-other.html"><i class="fa-solid fa-images"
-                    style="margin-right:6px; color:#7C3AED;"></i> Special Distribution Drives</a></li>
+                    style="margin-right:6px; color:#7C3AED;"></i> Special Annadanam</a></li>
             </ul>
           </li>
 
           <!-- Initiatives Dropdown -->
           <li class="nav-item-dropdown">
-            <a href="programs.html" class="nav-link ">Initiatives <i class="fa-solid fa-angle-down"></i></a>
+            <a href="programs.html" class="nav-link active">Initiatives <i class="fa-solid fa-angle-down"></i></a>
             <ul class="dropdown-menu-list">
-              <li><a href="programs.html#hospital-feeding"><i class="fa-solid fa-hospital"
-                    style="margin-right:6px; color:#1A8C4E;"></i> Hospital Caregivers Food Distribution</a></li>
-              <li><a href="programs.html#namami-brahmaputra"><i class="fa-solid fa-water"
-                    style="margin-right:6px; color:#0284C7;"></i> Namami Brahmaputra Food Distribution</a></li>
-              <li><a href="programs.html#covid-relief"><i class="fa-solid fa-shield-virus"
-                    style="margin-right:6px; color:#E11D48;"></i> COVID-19 Food Relief</a></li>
-              <li><a href="programs.html#flood-relief"><i class="fa-solid fa-hand-holding-droplet"
-                    style="margin-right:6px; color:#16A34A;"></i> Assam Flood Relief</a></li>
+              <li><a href="programs.html#ongoing-initiatives"><i class="fa-solid fa-hand-holding-heart"
+                    style="margin-right:6px; color:#1A8C4E;"></i> On-going Initiatives</a></li>
+              <li><a href="programs.html#recent-initiatives"><i class="fa-solid fa-clock-rotate-left"
+                    style="margin-right:6px; color:#0284C7;"></i> Recent Initiatives</a></li>
             </ul>
           </li>
 
@@ -258,301 +262,330 @@
       </span>
     </div>
   </div>
-  <!-- Programs Grid Section -->
-  <section class="section" style="background:#FFFFFF;">
+    <!-- ==================== ON-GOING INITIATIVES SECTION ==================== -->
+  <section class="section" id="ongoing-initiatives" style="background:#FFFFFF; scroll-margin-top:90px; padding:4rem 0;">
     <div class="container">
       <div class="section-title-wrap">
         <span class="section-tag" style="background:#F0FDF4; color:#1A8C4E;"><i class="fa-solid fa-sparkles"></i>
-          TOUCHING LIVES DAILY</span>
-        <h2 class="section-title" style="color:#000000;"><span class="pfc-green-text">Pure For Cure</span> <span style="color:#000000;">Core Initiatives</span></h2>
-        <p class="section-desc">From premier medical institutions to remote flood-affected villages and historic
-          cultural festivals, every initiative delivers nourishing, hygienic Sattvik food with deep compassion.</p>
+          DAILY SEVA &amp; ON-GOING MISSIONS</span>
+        <h2 class="section-title" style="color:#000000;"><span class="pfc-green-text">Pure For Cure</span> <span style="color:#000000;">On-going Initiatives</span></h2>
+        <p class="section-desc">From premier medical institutions to auspicious family celebrations and sacred Amavasya Annadanam, our daily missions deliver pure, hygienic Sattvik meals with devotion and care.</p>
       </div>
 
       <div class="grid-2" style="gap:2.5rem; align-items:stretch;">
-        <!-- Program 1: Hospital Caregivers Food Distribution (AIIMS, GMCH, BBCI) -->
+
+        <!-- Card 1: B. Borooah Cancer Institute (BBCI) Support -->
         <div class="product-main-card"
           style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
-          <a href="gallery-hospital-meals.html" class="initiative-card-img-wrap"
-            title="Hospital Caregivers Food Distribution (AIIMS Guwahati, GMCH, BBCI)">
-            <img src="images/gallery/gmch_gallery/DSC_9175.jpg" alt="Hospital Caregivers Food Distribution"
+          <a href="donate-bbci.html" class="initiative-card-img-wrap"
+            title="B. Borooah Cancer Institute (BBCI) Dedicated Food Seva">
+            <img src="images/gallery/bbci-distribution.jpg" alt="B. Borooah Cancer Institute BBCI Food Distribution"
+              class="initiative-card-img" style="object-position: center 30%;"
+              loading="lazy" decoding="async">
+          </a>
+          <div
+            style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <span class="section-tag" style="background:#FFF7ED; color:#EA580C;"><i class="fa-solid fa-ribbon"></i>
+                CANCER CARE MEALS</span>
+              <div id="bbci-outreach" style="scroll-margin-top:110px;"></div>
+              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
+                <a href="donate-bbci.html" style="color:inherit; text-decoration:none;">BBCI Hospital Food Distribution</a>
+              </h3>
+              <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
+                Patients and their attendants camping outside Dr. B. Borooah Cancer Institute face intense physical and emotional trauma. <span class="pfc-green-text">Pure for Cure</span> runs a dedicated food kiosk and daily meals distribution ensuring 400+ patients and families receive comforting, nutritious, digestible Sattvik meals.
+              </p>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
+              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-heart"
+                  style="color:#EA580C;"></i> Daily Cancer Care</span>
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <a href="gallery-borooah.html" class="btn btn-secondary btn-sm" style="background:#F1F5F9; color:#334155;"><i class="fa-solid fa-images"></i> Gallery</a>
+                <a href="donate-bbci.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Donate Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: AIIMS Hospital Food Distribution -->
+        <div class="product-main-card"
+          style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
+          <a href="donate-aiims.html" class="initiative-card-img-wrap"
+            title="AIIMS Hospital Food Distribution">
+            <img src="images/gallery/aiims-kiosk.jpg" alt="AIIMS Hospital Food Distribution"
               class="initiative-card-img" style="object-position: center 35%;"
               loading="lazy" decoding="async">
           </a>
           <div
             style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
             <div>
-              <span class="section-tag" style="background:#EFF6FF; color:#0D80CC;"><i class="fa-solid fa-hospital"></i>
-                HOSPITAL FOOD DISTRIBUTION</span>
-              <div id="hospital-feeding" style="scroll-margin-top:110px;"></div>
+              <span class="section-tag" style="background:#F0FDF4; color:#166534;"><i class="fa-solid fa-square-h"></i>
+                AIIMS CAREGIVER SEVA</span>
+              <div id="aiims-feeding" style="scroll-margin-top:110px;"></div>
               <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
-                <a href="gallery-hospital-meals.html" style="color:inherit; text-decoration:none;">Hospital Caregivers Food Distribution
-                  (AIIMS Guwahati, GMCH, BBCI)</a>
+                <a href="donate-aiims.html" style="color:inherit; text-decoration:none;">AIIMS Hospital Food Distribution</a>
               </h3>
               <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
-                Over 2,000 patient attendants from rural Assam and neighboring Northeast states camp outside AIIMS
-                Guwahati,
-                Guwahati Medical College &amp; Hospital (GMCH), and B. Borooah Cancer Institute (BBCI) without cooking
-                means. <span class="pfc-green-text">Pure for Cure</span> runs mechanized food kiosks
-                and daily food vans serving wholesome fresh khichdi, rice, dal, and fresh vegetables at &#8377;80/meal or
-                free
-                of charge.
+                Located in Changsari across the Brahmaputra, AIIMS Guwahati has hundreds of caregivers traveling long distances. <span class="pfc-green-text">Pure for Cure</span> operates a dedicated distribution kiosk providing hot lunch meals daily to attendants who have no local kitchen or affordable canteen access.
               </p>
             </div>
             <div
               style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
               <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-bowl-food"
-                  style="color:var(--primary);"></i> 1,500+ Daily Meals</span>
-              <a href="gallery-hospital-meals.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Sponsor (CSR)</a>
+                  style="color:#166534;"></i> 500+ Daily Caregivers</span>
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <a href="gallery-aiims.html" class="btn btn-secondary btn-sm" style="background:#F1F5F9; color:#334155;"><i class="fa-solid fa-images"></i> Gallery</a>
+                <a href="donate-aiims.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Donate Now</a>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Program 2: Guwahati Medical College and Hospital (GMCH) Food Distribution -->
+        <!-- Card 3: Guwahati Medical College and Hospital (GMCH) Food Distribution -->
         <div class="product-main-card"
           style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
           <a href="donate-gmch.html" class="initiative-card-img-wrap"
-            title="Support GMCH Food Distribution">
-            <img src="images/gallery/gmch-distribution.jpg"
-              alt="Guwahati Medical College and Hospital (GMCH) Food Distribution"
-              class="initiative-card-img" style="object-position: center 15%;"
-              loading="lazy" decoding="async">
-          </a>
-          <div
-            style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <span class="section-tag" style="background:#ECFDF5; color:#047857;"><i
-                  class="fa-solid fa-hospital-user"></i> GMCH EMERGENCY &amp; GENERAL WARDS</span>
-              <div id="gmch-feeding" style="scroll-margin-top:110px;"></div>
-              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">Guwahati Medical College and Hospital
-                (GMCH) Food Distribution</h3>
-              <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
-                As Northeast India's largest government healthcare and apex trauma hub, GMCH sees thousands of
-                impoverished families arriving from remote districts. <span class="pfc-green-text">Pure for Cure</span> serves 600+ piping-hot, nutritious
-                Sattvik meals daily directly to emergency and general ward attendants who have no kitchen or means to
-                buy food.
-              </p>
-            </div>
-            <div
-              style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
-              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-bowl-food"
-                  style="color:var(--primary);"></i> 600+ Daily Meals</span>
-              <a href="donate-gmch.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Feed GMCH
-                Attendants</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Program 3: AIIMS Hospital Food Distribution -->
-        <div class="product-main-card"
-          style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
-          <a href="donate-aiims.html" class="initiative-card-img-wrap"
-            title="Support AIIMS Guwahati Food Distribution">
-            <img src="images/gallery/aiims-kiosk.jpg" alt="AIIMS Hospital Food Distribution"
-              class="initiative-card-img" style="object-position: center 20%;"
+            title="Guwahati Medical College &amp; Hospital (GMCH) Food Distribution">
+            <img src="images/gallery/gmch_gallery/DSC_9175.jpg" alt="Guwahati Medical College &amp; Hospital GMCH Food Distribution"
+              class="initiative-card-img" style="object-position: center 35%;"
               loading="lazy" decoding="async">
           </a>
           <div
             style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
             <div>
               <span class="section-tag" style="background:#EFF6FF; color:#1D4ED8;"><i class="fa-solid fa-hospital"></i>
-                AIIMS GUWAHATI CHANGSARI</span>
-              <div id="aiims-feeding" style="scroll-margin-top:110px;"></div>
-              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">AIIMS Hospital Food Distribution</h3>
+                GMCH TRAUMA SEVA</span>
+              <div id="gmch-feeding" style="scroll-margin-top:110px;"></div>
+              <div id="hospital-feeding" style="scroll-margin-top:110px;"></div>
+              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
+                <a href="donate-gmch.html" style="color:inherit; text-decoration:none;">GMCH Hospital Food Distribution</a>
+              </h3>
               <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
-                Located outside city boundaries in Changsari, vulnerable caregivers and patients arriving from across
-                Northeast India face an acute lack of affordable, hygienic food. <span class="pfc-green-text">Pure for Cure</span> operates an authorized
-                on-site distribution kiosk serving 400+ fresh, wholesome Sattvik lunch meals daily.
+                As the largest referral hospital in the region, GMCH handles acute emergency, casualty, and pediatric cases daily. <span class="pfc-green-text">Pure for Cure</span> serves over 600+ nutritious, hot, hygienically packed meals every single day to caregivers waiting vigilantly beside the hospital.
               </p>
             </div>
             <div
               style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
-              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-bowl-food"
-                  style="color:var(--primary);"></i> 400+ Daily Meals</span>
-              <a href="donate-aiims.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Feed AIIMS
-                Caregivers</a>
+              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-utensils"
+                  style="color:#1D4ED8;"></i> 600+ Meals Daily</span>
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <a href="gallery-gmch.html" class="btn btn-secondary btn-sm" style="background:#F1F5F9; color:#334155;"><i class="fa-solid fa-images"></i> Gallery</a>
+                <a href="donate-gmch.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Donate Now</a>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Program 4: B. Borooah Cancer Institute (BBCI) Support -->
+        <!-- Card 4: Celebrate Special Occasions (Birthdays & Anniversaries) -->
         <div class="product-main-card"
           style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
-          <a href="donate-bbci.html" class="initiative-card-img-wrap"
-            title="Support BBCI Cancer Caregivers">
-            <img src="images/gallery/bbci-distribution.jpg" alt="B. Borooah Cancer Institute (BBCI) Support"
-              class="initiative-card-img" style="object-position: center 15%;"
+          <a href="donate-birthday.html" class="initiative-card-img-wrap"
+            title="Birthday &amp; Anniversary Celebration Annadanam">
+            <img src="images/gallery/birthday_service.jpg" alt="Celebrate Special Occasion Food Seva"
+              class="initiative-card-img" style="object-position: center 30%;"
               loading="lazy" decoding="async">
           </a>
           <div
             style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
             <div>
-              <span class="section-tag" style="background:#FFFBEB; color:#D97706;"><i class="fa-solid fa-ribbon"></i>
-                ONCOLOGY CAREGIVER SUSTENANCE</span>
-              <div id="bbci-outreach" style="scroll-margin-top:110px;"></div>
-              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">B. Borooah Cancer Institute (BBCI) Care
+              <span class="section-tag" style="background:#FFFBEB; color:#B45309;"><i class="fa-solid fa-cake-candles"></i>
+                AUSPICIOUS CELEBRATIONS</span>
+              <div id="celebration-annadan" style="scroll-margin-top:110px;"></div>
+              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
+                <a href="donate-birthday.html" style="color:inherit; text-decoration:none;">Celebrate Special Occasion</a>
               </h3>
               <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
-                Cancer diagnosis places devastating financial and emotional burdens on families. Many attendants sleep
-                on
-                hospital staircases for weeks during chemotherapy cycles. <span class="pfc-green-text">Pure for Cure</span> ensures no caregiver faces their
-                loved one's treatment on an empty stomach by providing soothing, nourishing Sattvik food.
+                Transform your birthdays, wedding anniversaries, job milestones, or loved ones' memorial days into lasting blessings. Sponsor sacred feast distribution for 25 to 500+ patient caregivers and receive heartfelt photo memories of your sponsored day.
               </p>
             </div>
             <div
               style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
-              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-heart-pulse"
-                  style="color:#D97706;"></i> 400+ Daily Cancer Meals</span>
-              <a href="donate-bbci.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Feed Cancer
-                Attendants</a>
+              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-gift"
+                  style="color:#B45309;"></i> 25 to 500+ Meals</span>
+              <a href="donate-birthday.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Sponsor Meals</a>
             </div>
           </div>
         </div>
 
-        <!-- Program 5: Namami Brahmaputra Food Distribution -->
+        <!-- Card 5: Amavasya Annadanam (New Card!) -->
+        <div class="product-main-card"
+          style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
+          <a href="donate-amavasya.html" class="initiative-card-img-wrap"
+            title="Amavasya Annadanam &amp; Pitru Seva">
+            <img src="images/gallery/pitru-paksha-banner.png" alt="Amavasya Annadanam Pitru Seva"
+              class="initiative-card-img" style="object-position: center 30%;"
+              loading="lazy" decoding="async">
+          </a>
+          <div
+            style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <span class="section-tag" style="background:#FDF2F8; color:#BE185D;"><i class="fa-solid fa-moon"></i>
+                SACRED TITHI &amp; PITRU SEVA</span>
+              <div id="amavasya-annadanam" style="scroll-margin-top:110px;"></div>
+              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
+                <a href="donate-amavasya.html" style="color:inherit; text-decoration:none;">Amavasya Annadanam</a>
+              </h3>
+              <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
+                According to Vedic tradition, offering Annadanam on Amavasya brings immense peace, dispels Pitru Dosha, and bestows ancestral blessings upon the entire family. Sponsor pure Sattvik meals served to struggling caregivers outside premier government hospitals.
+              </p>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
+              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-om"
+                  style="color:#BE185D;"></i> Ancestral Blessings</span>
+              <a href="donate-amavasya.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Donate Now</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== RECENT INITIATIVES SECTION ==================== -->
+  <section class="section" id="recent-initiatives" style="background:#F8FAFC; scroll-margin-top:90px; padding:4rem 0; border-top:1px solid #E2E8F0;">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-tag" style="background:#E0F2FE; color:#0284C7;"><i class="fa-solid fa-clock-rotate-left"></i>
+          DISASTER RELIEF &amp; SPECIAL MISSIONS</span>
+        <h2 class="section-title" style="color:#000000;"><span class="pfc-green-text">Pure For Cure</span> <span style="color:#000000;">Recent Initiatives</span></h2>
+        <p class="section-desc">Frontline disaster responses, pandemic emergency relief, mass cultural pilgrim feeding, and rural tribal development drives conducted with speed, scale, and uncompromising quality.</p>
+      </div>
+
+      <div class="grid-2" style="gap:2.5rem; align-items:stretch;">
+
+        <!-- Program 1: Assam Flood Relief Emergency Annadanam -->
+        <div class="product-main-card"
+          style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
+          <a href="flood-relief.html" class="initiative-card-img-wrap"
+            title="Assam Flood Relief Emergency Annadanam">
+            <img src="images/gallery/flood_1.png" alt="Assam Flood Relief Emergency Food Operation"
+              class="initiative-card-img" style="object-position: center 30%;"
+              loading="lazy" decoding="async">
+          </a>
+          <div
+            style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <span class="section-tag" style="background:#EFF6FF; color:#0284C7;"><i class="fa-solid fa-water"></i>
+                DISASTER RESPONSE</span>
+              <div id="flood-relief" style="scroll-margin-top:110px;"></div>
+              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
+                <a href="flood-relief.html" style="color:inherit; text-decoration:none;">Assam Flood Relief</a>
+              </h3>
+              <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
+                When monsoon floods submerge thousands of villages across Assam, <span class="pfc-green-text">Pure for Cure</span> deploys motorized rescue boats, setting up mobile cooking camps to deliver fresh, piping hot meals and safe water directly to marooned families stranded on embankments and relief camps.
+              </p>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
+              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-ship"
+                  style="color:#0284C7;"></i> 1,00,000+ Meals Served</span>
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <a href="gallery-assam.html" class="btn btn-secondary btn-sm" style="background:#F1F5F9; color:#334155;"><i class="fa-solid fa-images"></i> Gallery</a>
+                <a href="flood-relief.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-hand-holding-heart"></i> View Relief</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Program 2: COVID-19 Food Relief & Emergency Response -->
+        <div class="product-main-card"
+          style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
+          <a href="gallery-covid.html" class="initiative-card-img-wrap"
+            title="COVID-19 Food Relief &amp; Emergency Response">
+            <img src="images/gallery/covid19.png" alt="COVID-19 Food Relief Pure for Cure"
+              class="initiative-card-img" style="object-position: center 30%;"
+              loading="lazy" decoding="async">
+          </a>
+          <div
+            style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <span class="section-tag" style="background:#FEF2F2; color:#DC2626;"><i class="fa-solid fa-shield-virus"></i>
+                PANDEMIC RELIEF</span>
+              <div id="covid-relief" style="scroll-margin-top:110px;"></div>
+              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
+                <a href="gallery-covid.html" style="color:inherit; text-decoration:none;">COVID-19 Food Relief</a>
+              </h3>
+              <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
+                During peak lockdown phases, our centralized kitchen operated continuously with strict safety standards, delivering over 4,00,000 cooked meals and distributing essential ration kits to stranded migrant workers, daily wage laborers, and healthcare personnel across Assam.
+              </p>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
+              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-shield-heart"
+                  style="color:#DC2626;"></i> 4,00,000+ Meals</span>
+              <a href="gallery-covid.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-images"></i> View Archive</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Program 3: Namami Brahmaputra Food Distribution -->
         <div class="product-main-card"
           style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
           <a href="gallery-namami.html" class="initiative-card-img-wrap"
-            title="View Namami Brahmaputra Gallery">
-            <img src="images/gallery/gallery_namami/namami-card.jpg" alt="Namami Brahmaputra Food Distribution"
-              class="initiative-card-img" style="object-position: center center;"
+            title="Namami Brahmaputra Food Distribution">
+            <img src="images/gallery/gallery_namami/namami-1.jpg" alt="Namami Brahmaputra Food Distribution"
+              class="initiative-card-img" style="object-position: center 30%;"
               loading="lazy" decoding="async">
           </a>
           <div
             style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
             <div>
-              <span class="section-tag" style="background:#F0FDF4; color:#16A34A;"><i class="fa-solid fa-water"></i>
-                HISTORIC RIVERINE DISTRIBUTION</span>
+              <span class="section-tag" style="background:#F0FDF4; color:#15803D;"><i class="fa-solid fa-water"></i>
+                SACRED RIVER FESTIVAL</span>
               <div id="namami-brahmaputra" style="scroll-margin-top:110px;"></div>
-              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">Namami Brahmaputra Food Distribution
+              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
+                <a href="gallery-namami.html" style="color:inherit; text-decoration:none;">Namami Brahmaputra</a>
               </h3>
               <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
-                During the landmark Namami Brahmaputra festival along the river ghats of Guwahati, <span class="pfc-green-text">Pure for Cure</span>
-                orchestrated a massive, seamless community food distribution drive. Over 1,00,000+ plates of freshly
-                cooked Sattvik Meals were distributed to pilgrims, devotees, sadhus, and families gathered to celebrate
-                the sacred
-                river.
+                During the historic river festival celebrated across Assam, <span class="pfc-green-text">Pure for Cure</span> arranged large-scale daily Mahabhog distribution along the riverfront, serving tens of thousands of pilgrims, sadhus, and visitors with divine Sattvik feast prasadam.
               </p>
             </div>
             <div
               style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
               <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-users"
-                  style="color:var(--primary);"></i> 1,00,000+ Festival Meals</span>
-              <a href="gallery-other.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-images"></i> View
-                Photo Gallery</a>
+                  style="color:#15803D;"></i> Mass Pilgrimage Feeding</span>
+              <a href="gallery-namami.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-images"></i> View Gallery</a>
             </div>
           </div>
         </div>
 
-        <!-- Program 6: COVID-19 Food Relief & Emergency Response -->
+        <!-- Program 4: Rural Outreach Program -->
         <div class="product-main-card"
           style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
-          <a href="stories.html#overnight-caregiver" class="initiative-card-img-wrap"
-            title="Read COVID-19 Food Relief Stories">
-            <img src="images/gallery/food-van-service.jpg" alt="COVID-19 Food Relief"
-              class="initiative-card-img" style="object-position: center 65%;"
+          <a href="gallery-rural.html" class="initiative-card-img-wrap"
+            title="Rural Outreach &amp; Tribal Welfare Annadanam">
+            <img src="images/gallery/gallery_other/DSC_9074.jpg" alt="Rural Outreach Food Seva"
+              class="initiative-card-img" style="object-position: center 30%;"
               loading="lazy" decoding="async">
           </a>
           <div
             style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
             <div>
-              <span class="section-tag" style="background:#FEF2F2; color:#DC2626;"><i
-                  class="fa-solid fa-shield-virus"></i>
-                PANDEMIC EMERGENCY MISSION</span>
-              <div id="covid-relief" style="scroll-margin-top:110px;"></div>
-              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">COVID-19 Food Relief &amp; Emergency
-                Response</h3>
-              <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
-                When nationwide lockdowns halted public transport and shuttered eateries, daily-wage laborers, migrant
-                workers, and attendants stranded outside emergency wards faced acute starvation. <span class="pfc-green-text">Pure for Cure</span> mobilized
-                emergency food delivery trucks and dry ration grocery kits, serving over 15,00,000+ meals across
-                containment
-                zones in Guwahati.
-              </p>
-            </div>
-            <div
-              style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
-              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-truck-medical"
-                  style="color:#DC2626;"></i> 15,00,000+ Relief Meals</span>
-              <a href="stories.html#overnight-caregiver" class="btn btn-secondary btn-sm"><i
-                  class="fa-solid fa-book-open"></i> Read Pandemic Stories</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Program 7: Assam Flood Relief Emergency Annadanam -->
-        <div class="product-main-card"
-          style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
-          <a href="donate-flood.html" class="initiative-card-img-wrap"
-            title="Support Assam Flood Relief">
-            <img src="images/gallery/flood-relief-1.jpg" alt="Assam Flood Relief Emergency Annadanam"
-              class="initiative-card-img" style="object-position: center 18%;"
-              loading="lazy" decoding="async">
-          </a>
-          <div
-            style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <span class="section-tag" style="background:#EFF6FF; color:#0284C7;"><i
-                  class="fa-solid fa-hand-holding-droplet"></i> DISASTER EMERGENCY RESPONSE</span>
-              <div id="flood-relief" style="scroll-margin-top:110px;"></div>
-              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">Assam Flood Relief Emergency Annadanam
+              <span class="section-tag" style="background:#ECFDF5; color:#047857;"><i class="fa-solid fa-seedling"></i>
+                VILLAGE &amp; TRIBAL OUTREACH</span>
+              <div id="rural-outreach" style="scroll-margin-top:110px;"></div>
+              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">
+                <a href="gallery-rural.html" style="color:inherit; text-decoration:none;">Rural Outreach Program</a>
               </h3>
               <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
-                Annual monsoon deluges submerge hundreds of riverine villages along the Brahmaputra valley. Pure for
-                Cure
-                disaster response teams navigate motorized rescue boats loaded with cooked meals, dry grains, water
-                filters,
-                and baby nourishment to families stranded on embankments and temporary relief camps.
+                Extending compassionate food support to remote forest villages, river island settlements (chars), tea garden labor communities, and grassroots children shelters, ensuring zero hunger and wholesome nutrition in underserved pockets.
               </p>
             </div>
             <div
               style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
-              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-ship" style="color:#0284C7;"></i>
-                3,00,000+ Flood Meals</span>
-              <a href="donate-flood.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Support Flood
-                Relief</a>
+              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-seedling"
+                  style="color:#047857;"></i> Village Welfare Drives</span>
+              <a href="gallery-rural.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-images"></i> View Outreach</a>
             </div>
           </div>
         </div>
 
-        <!-- Program 8: Birthday & Anniversary Annadan -->
-        <div class="product-main-card"
-          style="padding:0; overflow:hidden; display:flex; flex-direction:column; border-radius:16px;">
-          <a href="donate-birthday.html" class="initiative-card-img-wrap"
-            title="Book Birthday & Anniversary Service">
-            <img src="images/gallery/web/bday_bbci_1.jpg" alt="Birthday & Anniversary Annadan"
-              class="initiative-card-img" style="object-position: center 22%;"
-              loading="lazy" decoding="async">
-          </a>
-          <div
-            style="padding:1.75rem 2rem 2rem 2rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <span class="section-tag" style="background:#FDF2F8; color:#BE185D;"><i
-                  class="fa-solid fa-cake-candles"></i>
-                SACRED MILESTONES</span>
-              <div id="celebration-annadan" style="scroll-margin-top:110px;"></div>
-              <h3 style="font-size:1.5rem; color:var(--dark); margin:0.5rem 0;">Birthday &amp; Anniversary Milestone
-                Annadan</h3>
-              <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6; margin-bottom:1.25rem;">
-                Mark birthdays, wedding anniversaries, or the sacred memory of departed ones by sponsoring a meal
-                distribution drive. Donors receive photo updates and blessings from patients, attendants
-                whose days are brightened by your generosity.
-              </p>
-            </div>
-            <div
-              style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
-              <span style="font-weight:700; color:var(--dark);"><i class="fa-solid fa-gift" style="color:#BE185D;"></i>
-                Milestone Service</span>
-              <a href="donate-birthday.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-heart"></i> Book
-                Celebration Service</a>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
-
-  <!-- Interactive Program Donation Calculator -->
+<!-- Interactive Program Donation Calculator -->
   <section class="section" id="sponsor-program" style="background:#F4F6F8; scroll-margin-top:100px;">
     <div class="container">
       <div class="section-title-wrap">
@@ -1118,7 +1151,7 @@
   <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261103a"></script>
+  <script src="js/app.js?v=20261103b"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0"
     target="_blank" rel="noopener noreferrer" class="pfc-whatsapp-widget" id="whatsappWidget"

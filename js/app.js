@@ -1747,6 +1747,46 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Monthly Target Tracker configured with Razorpay
   updateMonthlyTargetTracker();
 
+  // Active Tab in Navigation Highlighter
+  (function initActiveNavTab() {
+    try {
+      const path = (window.location.pathname || '').toLowerCase();
+      const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+      
+      let matchedTab = null;
+      if (path.includes('about')) {
+        matchedTab = 'about';
+      } else if (path.includes('gallery') || path.includes('kiosk-')) {
+        matchedTab = 'gallery';
+      } else if (path.includes('program') || path.includes('initiatives')) {
+        matchedTab = 'programs';
+      } else if (path.includes('csr')) {
+        matchedTab = 'csr';
+      } else if (path.endsWith('/') || path.endsWith('/index.html') || path === '' || path === '/') {
+        matchedTab = 'home';
+      }
+
+      if (matchedTab) {
+        navLinks.forEach(link => {
+          const href = (link.getAttribute('href') || '').toLowerCase();
+          if (
+            (matchedTab === 'home' && href.includes('index.html')) ||
+            (matchedTab === 'about' && href.includes('about.html')) ||
+            (matchedTab === 'gallery' && href.includes('gallery.html')) ||
+            (matchedTab === 'programs' && href.includes('programs.html')) ||
+            (matchedTab === 'csr' && href.includes('csr.html'))
+          ) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('Nav active highlighter:', e);
+    }
+  })();
+
   // Mobile Nav Toggle
   const mobileToggle = document.querySelector('.mobile-toggle');
   const navMenu = document.querySelector('.nav-menu');
