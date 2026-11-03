@@ -113,7 +113,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261103d">
+  <link rel="stylesheet" href="css/style.css?v=20261103f">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
@@ -854,24 +854,34 @@
       </div>
 
       <div id="dynamic-recent-contributors" data-cause-key="volunteer">
-<div class="contributors-list">
+        <div class="contributors-tabs-wrap">
+          <button type="button" class="contrib-tab-btn active" data-tab-name="latest" onclick="window.switchContributorTab(this, 'latest')">
+            <i class="fa-solid fa-clock-rotate-left"></i> Latest
+          </button>
+          <button type="button" class="contrib-tab-btn" data-tab-name="generous" onclick="window.switchContributorTab(this, 'generous')">
+            <i class="fa-solid fa-trophy"></i> Most Generous
+          </button>
+        </div>
+
+        <div class="contributors-tab-pane pane-latest" style="display:block;">
+          <div class="contributors-list">
       <div class="contributor-row" style="background:#F0FDF4; border-left:4px solid #16A34A;">
-        <div>
+        <div class="contrib-avatar-wrap">
           <div class="contrib-initial">S.</div>
           <div class="contrib-avatar">S<span class="contrib-rank">1</span></div>
         </div>
         <div class="contrib-info">
           <div class="contrib-name-line">
-            <strong>Saurav</strong> &nbsp;Donated <span class="contrib-amount">&#8377;80.00</span><span style="background:#DCFCE7; color:#15803D; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #86EFAC;"><i class="fa-solid fa-sparkles"></i> New Seva</span>
+            <strong>Saurav</strong> &nbsp;Donated <span class="contrib-amount">&#8377;80.00</span><span class="contrib-badge badge-new-seva" style="background:#DCFCE7; color:#15803D; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #86EFAC;"><i class="fa-solid fa-sparkles"></i> New Seva</span>
           </div>
           <div class="contrib-time">
-            <i class="fa-regular fa-clock"></i> Just now &bull; <span style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">UPI</span>
-            <span style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
+            <i class="fa-regular fa-clock"></i> Just now &bull; <span class="contrib-purpose" style="color:#1A8C4E; font-weight:700;">Special Occasion (Birthday / Anniversary Milestone Annadanam)</span> &bull; <span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">UPI</span>
+            <span class="contrib-verified" style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
           </div>
         </div>
       </div>
-      <div class="contributor-row" style="">
-        <div>
+      <div class="contributor-row" >
+        <div class="contrib-avatar-wrap">
           <div class="contrib-initial">G.</div>
           <div class="contrib-avatar">G<span class="contrib-rank">2</span></div>
         </div>
@@ -880,13 +890,13 @@
             <strong>GAURAB Saha</strong> &nbsp;Donated <span class="contrib-amount">&#8377;80.00</span>
           </div>
           <div class="contrib-time">
-            <i class="fa-regular fa-clock"></i> 01 Nov 2026 &bull; <span style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">UPI</span>
-            <span style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
+            <i class="fa-regular fa-clock"></i> 01 Nov 2026 &bull; <span class="contrib-purpose" style="color:#1A8C4E; font-weight:700;">BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)</span> &bull; <span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">UPI</span>
+            <span class="contrib-verified" style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
           </div>
         </div>
       </div>
-      <div class="contributor-row" style="">
-        <div>
+      <div class="contributor-row" >
+        <div class="contrib-avatar-wrap">
           <div class="contrib-initial">S.</div>
           <div class="contrib-avatar">S<span class="contrib-rank">3</span></div>
         </div>
@@ -895,13 +905,64 @@
             <strong>SANTANA HALOI</strong> &nbsp;Donated <span class="contrib-amount">&#8377;800.00</span>
           </div>
           <div class="contrib-time">
-            <i class="fa-regular fa-clock"></i> 10 Oct 2026 &bull; <span style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">Razorpay</span>
-            <span style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
+            <i class="fa-regular fa-clock"></i> 10 Oct 2026 &bull; <span class="contrib-purpose" style="color:#1A8C4E; font-weight:700;">BBCI Hospital Food Distribution</span> &bull; <span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">Razorpay</span>
+            <span class="contrib-verified" style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
           </div>
         </div>
       </div>
+          </div>
+        </div>
+
+        <div class="contributors-tab-pane pane-generous" style="display:none;">
+          <div class="contributors-list">
+      <div class="contributor-row" >
+        <div class="contrib-avatar-wrap">
+          <div class="contrib-initial">A.</div>
+          <div class="contrib-avatar">A<span class="contrib-rank">1</span></div>
+        </div>
+        <div class="contrib-info">
+          <div class="contrib-name-line">
+            <strong>ARUNJYOTI BURAGOHAIN</strong> &nbsp;Donated <span class="contrib-amount">&#8377;4,800.00</span><span class="contrib-badge badge-generous" style="background:#FEF3C7; color:#B45309; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #FCD34D;"><i class="fa-solid fa-crown"></i> Generous Seva</span>
+          </div>
+          <div class="contrib-time">
+            <i class="fa-regular fa-clock"></i> 25 Sep 2026 &bull; <span class="contrib-purpose" style="color:#1A8C4E; font-weight:700;">GMCH Hospital Caregiver Meals (60 Meals)</span> &bull; <span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">Razorpay</span>
+            <span class="contrib-verified" style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
+          </div>
+        </div>
       </div>
-    </div>
+      <div class="contributor-row" >
+        <div class="contrib-avatar-wrap">
+          <div class="contrib-initial">P.</div>
+          <div class="contrib-avatar">P<span class="contrib-rank">2</span></div>
+        </div>
+        <div class="contrib-info">
+          <div class="contrib-name-line">
+            <strong>Pranab Kumar Sarmah</strong> &nbsp;Donated <span class="contrib-amount">&#8377;2,000.00</span><span class="contrib-badge badge-generous" style="background:#FEF3C7; color:#B45309; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #FCD34D;"><i class="fa-solid fa-crown"></i> Generous Seva</span>
+          </div>
+          <div class="contrib-time">
+            <i class="fa-regular fa-clock"></i> 3 Weeks Ago &bull; <span class="contrib-purpose" style="color:#1A8C4E; font-weight:700;">Hospital Annadanam Caregiver Relief (25 Meals)</span> &bull; <span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">UPI</span>
+            <span class="contrib-verified" style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
+          </div>
+        </div>
+      </div>
+      <div class="contributor-row" >
+        <div class="contrib-avatar-wrap">
+          <div class="contrib-initial">R.</div>
+          <div class="contrib-avatar">R<span class="contrib-rank">3</span></div>
+        </div>
+        <div class="contrib-info">
+          <div class="contrib-name-line">
+            <strong>Rajib Goswami</strong> &nbsp;Donated <span class="contrib-amount">&#8377;2,000.00</span><span class="contrib-badge badge-generous" style="background:#FEF3C7; color:#B45309; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #FCD34D;"><i class="fa-solid fa-crown"></i> Generous Seva</span>
+          </div>
+          <div class="contrib-time">
+            <i class="fa-regular fa-clock"></i> 4 Weeks Ago &bull; <span class="contrib-purpose" style="color:#1A8C4E; font-weight:700;">Special Occasion Meals Distribution (25 Meals)</span> &bull; <span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">UPI</span>
+            <span class="contrib-verified" style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
+          </div>
+        </div>
+      </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1208,7 +1269,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261103d"></script>
+  <script src="js/app.js?v=20261103f"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 
