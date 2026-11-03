@@ -9409,6 +9409,8 @@ input[type="submit"] {
 
   position: absolute;
 
+  pointer-events: none;
+
   inset: 0;
 
   width: 100%;
@@ -9437,6 +9439,10 @@ input[type="submit"] {
 
   visibility: visible;
 
+  pointer-events: auto;
+
+  z-index: 2;
+
 }
 
 
@@ -9444,6 +9450,8 @@ input[type="submit"] {
 .slide-banner-link {
 
   display: block;
+
+  cursor: pointer;
 
   width: 100%;
 
