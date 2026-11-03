@@ -1747,11 +1747,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Monthly Target Tracker configured with Razorpay
   updateMonthlyTargetTracker();
 
-  // Active Tab in Navigation Highlighter
-  (function initActiveNavTab() {
+  // Active Tab in Navigation Highlighter & Hash Listener
+  function updateActiveNavTab() {
     try {
       const path = (window.location.pathname || '').toLowerCase();
       const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+      if (!navLinks || !navLinks.length) return;
       
       let matchedTab = null;
       if (path.includes('about')) {
@@ -1773,8 +1774,8 @@ document.addEventListener('DOMContentLoaded', () => {
             (matchedTab === 'home' && href.includes('index.html')) ||
             (matchedTab === 'about' && href.includes('about.html')) ||
             (matchedTab === 'gallery' && href.includes('gallery.html')) ||
-            (matchedTab === 'programs' && href.includes('programs.html')) ||
-            (matchedTab === 'csr' && href.includes('csr.html'))
+            (matchedTab === 'programs' && (href.includes('programs.html') || href.includes('program') || href.includes('initiatives'))) ||
+            (matchedTab === 'csr' && (href.includes('csr.html') || href.includes('csr')))
           ) {
             link.classList.add('active');
           } else {
@@ -1785,7 +1786,21 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.warn('Nav active highlighter:', e);
     }
-  })();
+  }
+  updateActiveNavTab();
+  window.addEventListener('hashchange', updateActiveNavTab);
+
+  // Smooth scroll to targeted donation form anchor if present in URL hash
+  if (window.location.hash) {
+    setTimeout(() => {
+      try {
+        const hashEl = document.querySelector(window.location.hash);
+        if (hashEl) {
+          hashEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } catch (e) {}
+    }, 250);
+  }
 
   // Mobile Nav Toggle
   const mobileToggle = document.querySelector('.mobile-toggle');
