@@ -1415,21 +1415,154 @@ async function generateAdminReceiptPdf(meta) {
   }
 
   const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([612, 792]); // US Letter standard
+  let pdfDoc = null;
+  let page = null;
+  let isOfficialTemplate = false;
+
+  try {
+    const templateResp = await fetch('images/Receipt_Format_PFC-NEW.pdf');
+    if (templateResp.ok) {
+      const templateBytes = await templateResp.arrayBuffer();
+      pdfDoc = await PDFDocument.load(templateBytes);
+      page = pdfDoc.getPages()[0];
+      isOfficialTemplate = true;
+    }
+  } catch (tErr) {
+    console.info('Could not fetch template PDF, falling back to vector layout:', tErr);
+  }
+
+  const wrapCleanText = (text, f, size, maxWidth) => {
+    const cleanStr = String(text || '').replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\s+/g, ' ').trim();
+    const words = cleanStr.split(' ');
+    const lines = [];
+    let cur = '';
+    words.forEach(w => {
+      const test = cur ? cur + ' ' + w : w;
+      if (f.widthOfTextAtSize(test, size) > maxWidth && cur) {
+        lines.push(cur);
+        cur = w;
+      } else {
+        cur = test;
+      }
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  };
+
+  if (isOfficialTemplate && page) {
+    const { width, height } = page.getSize();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const black = rgb(0.12, 0.12, 0.12);
+
+    page.drawText(String(meta.refNo || ''), {
+      x: 105,
+      y: 736,
+      size: 10,
+      font: bold,
+      color: black
+    });
+
+    page.drawText(String(meta.dateStr || ''), {
+      x: 480,
+      y: 736,
+      size: 10,
+      font: bold,
+      color: black
+    });
+
+    const amtStr = Number(meta.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+    page.drawText(amtStr, {
+      x: 232,
+      y: 504,
+      size: 28,
+      font: bold,
+      color: black
+    });
+
+    // Entries strictly from NEXT LINE below each form question:
+    page.drawText(String(meta.name || 'Anonymous'), {
+      x: 103.6,
+      y: 435,
+      size: 10,
+      font: bold,
+      color: black
+    });
+
+    page.drawText(String(meta.phone || 'N/A'), {
+      x: 401.9,
+      y: 435,
+      size: 10,
+      font: font,
+      color: black
+    });
+
+    const addrLines = wrapCleanText(meta.address || 'Guwahati, Assam, India', font, 9.5, 270).slice(0, 2);
+    addrLines.forEach((line, i) => {
+      page.drawText(line, {
+        x: 103.6,
+        y: 360 - (i * 12),
+        size: 9.5,
+        font: font,
+        color: black
+      });
+    });
+
+    const causeText = String(meta.causeName || 'Pure for Cure - Sattvik Food Distribution');
+    const causeLines = wrapCleanText(causeText, font, 9.5, 175).slice(0, 2);
+    causeLines.forEach((line, i) => {
+      page.drawText(line, {
+        x: 401.9,
+        y: 360 - (i * 12),
+        size: 9.5,
+        font: font,
+        color: black
+      });
+    });
+
+    page.drawText(String(meta.email || 'N/A'), {
+      x: 103.6,
+      y: 278,
+      size: 9.5,
+      font: font,
+      color: black
+    });
+
+    page.drawText(String(meta.pan || 'NOT_PROVIDED'), {
+      x: 401.9,
+      y: 278,
+      size: 9.5,
+      font: font,
+      color: black
+    });
+
+    const modeStr = (meta.paymentMode || 'Razorpay Online Seva') + (meta.txnId ? ` (Txn ID: ${meta.txnId})` : '');
+    const modeW = font.widthOfTextAtSize(modeStr, 9.5);
+    page.drawText(modeStr, {
+      x: (width - modeW) / 2,
+      y: 224,
+      size: 9.5,
+      font: font,
+      color: black
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    return new Blob([pdfBytes], { type: 'application/pdf' });
+  }
+
+  // Fallback vector generation
+  pdfDoc = await PDFDocument.create();
+  page = pdfDoc.addPage([612, 792]);
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   
-  // Palette matching official template
-  const greenHeader = rgb(0.06, 0.42, 0.22); // #0F6B38
-  const darkGreenBadge = rgb(0.06, 0.22, 0.13); // #0F3822
-  const greenFooter = rgb(0.05, 0.35, 0.20); // #0D5933
+  const greenHeader = rgb(0.06, 0.42, 0.22);
+  const darkGreenBadge = rgb(0.06, 0.22, 0.13);
+  const greenFooter = rgb(0.05, 0.35, 0.20);
   const black = rgb(0.12, 0.12, 0.12);
   const white = rgb(1, 1, 1);
 
   let y = 745;
-
-  // 1. Top Left: HKM Logo
   try {
     let logoResp = await fetch('images/logo/hkm-logo.png');
     if (logoResp.ok) {
@@ -1437,20 +1570,9 @@ async function generateAdminReceiptPdf(meta) {
       const logoImg = await pdfDoc.embedPng(logoBytes);
       const dims = logoImg.scaleToFit(85, 45);
       page.drawImage(logoImg, { x: 45, y: y - 35, width: dims.width, height: dims.height });
-    } else {
-      logoResp = await fetch('images/pur-for-cure-logo-clean.jpg');
-      if (logoResp.ok) {
-        const logoBytes = await logoResp.arrayBuffer();
-        const logoImg = await pdfDoc.embedJpg(logoBytes);
-        const dims = logoImg.scaleToFit(85, 45);
-        page.drawImage(logoImg, { x: 45, y: y - 35, width: dims.width, height: dims.height });
-      }
     }
-  } catch (e) {
-    console.warn('Logo embed error:', e);
-  }
+  } catch (e) {}
 
-  // 2. Top Center: Organization Title & Subtitle
   page.drawText('HARE KRISHNA MOVEMENT,GUWAHATI', {
     x: 140,
     y: y - 8,
@@ -1466,70 +1588,54 @@ async function generateAdminReceiptPdf(meta) {
     color: black
   });
 
-  // 3. Top Right: PURE FOR CURE Badge
   const badgeX = 502;
   const badgeY = y - 35;
-  const badgeW = 65;
-  const badgeH = 44;
   page.drawRectangle({
     x: badgeX,
     y: badgeY,
-    width: badgeW,
-    height: badgeH,
-    color: darkGreenBadge,
-    borderColor: darkGreenBadge,
-    borderWidth: 1
+    width: 65,
+    height: 44,
+    color: darkGreenBadge
   });
   page.drawText('PURE', { x: badgeX + 11, y: badgeY + 28, size: 10, font: bold, color: white });
   page.drawText('FOR', { x: badgeX + 26, y: badgeY + 19, size: 6.5, font: bold, color: white });
   page.drawText('CURE', { x: badgeX + 11, y: badgeY + 8, size: 10, font: bold, color: white });
 
-  // 4. Reference Number & Date
   y = 675;
-  page.drawText('DR No: ', { x: 45, y, size: 11, font: bold, color: black });
-  page.drawText(String(meta.refNo || ''), { x: 92, y, size: 10.5, font: font, color: black });
+  page.drawText('Refercence No: ', { x: 45, y, size: 11, font: bold, color: black });
+  page.drawText(String(meta.refNo || ''), { x: 140, y, size: 10.5, font: font, color: black });
 
   page.drawText('Date: ', { x: 430, y, size: 11, font: bold, color: black });
   page.drawText(String(meta.dateStr || ''), { x: 465, y, size: 10.5, font: font, color: black });
 
-  // 5. Title: DONATION RECEIPT
   y = 620;
   const titleText = 'DONATION RECEIPT';
-  const titleWidth = bold.widthOfTextAtSize(titleText, 25);
   page.drawText(titleText, {
-    x: (612 - titleWidth) / 2,
+    x: (612 - bold.widthOfTextAtSize(titleText, 25)) / 2,
     y,
     size: 25,
     font: bold,
     color: greenHeader
   });
 
-  // 6. Centered Acknowledgment
   y = 588;
   const ack1 = 'This is to acknowledge that HARE KRISHNA MOVEMENT, GUWAHATI';
-  const ack1W = font.widthOfTextAtSize(ack1, 10.5);
-  page.drawText(ack1, { x: (612 - ack1W) / 2, y, size: 10.5, font: font, color: black });
+  page.drawText(ack1, { x: (612 - font.widthOfTextAtSize(ack1, 10.5)) / 2, y, size: 10.5, font: font, color: black });
 
   y = 574;
   const ack2 = 'has received a contribution of';
-  const ack2W = font.widthOfTextAtSize(ack2, 10.5);
-  page.drawText(ack2, { x: (612 - ack2W) / 2, y, size: 10.5, font: font, color: black });
+  page.drawText(ack2, { x: (612 - font.widthOfTextAtSize(ack2, 10.5)) / 2, y, size: 10.5, font: font, color: black });
 
-  // 7. Amount Box with Vector Rupee Symbol
   y = 502;
-  const boxW = 300;
-  const boxH = 55;
-  const boxX = (612 - boxW) / 2;
   page.drawRectangle({
-    x: boxX,
+    x: (612 - 300) / 2,
     y,
-    width: boxW,
-    height: boxH,
+    width: 300,
+    height: 55,
     borderColor: black,
     borderWidth: 1.2
   });
 
-  // Draw Official Crisp Vector Rupee Glyph (₹) inside box
   const amtStr = Number(meta.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
   const numWidth = bold.widthOfTextAtSize(amtStr, 23);
   const rupeeW = 14;
@@ -1538,7 +1644,6 @@ async function generateAdminReceiptPdf(meta) {
   const amtStartX = (612 - totalAmtW) / 2;
   const amtY = y + 18;
 
-  // Official crisp Indian Rupee symbol SVG glyph
   const rupeeSvg = 'M0 64C0 46.3 14.3 32 32 32l64 0 16 0 176 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-56.2 0c9.6 14.4 16.7 30.6 20.7 48l35.6 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-35.6 0c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256l80 0c32.8 0 61-19.7 73.3-48L32 208c-17.7 0-32-14.3-32-32s14.3-32 32-32l153.3 0C173 115.7 144.8 96 112 96L96 96 32 96C14.3 96 0 81.7 0 64z';
   try {
     page.drawSvgPath(rupeeSvg, {
@@ -1559,128 +1664,100 @@ async function generateAdminReceiptPdf(meta) {
     color: black
   });
 
-  // Helper: Clean Address Wrap
-  const wrapCleanText = (text, f, size, maxWidth) => {
-    const cleanStr = String(text || '').replace(/\\n/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ');
-    const words = cleanStr.split(' ');
-    const lines = [];
-    let cur = '';
-    words.forEach(w => {
-      const test = cur ? cur + ' ' + w : w;
-      if (f.widthOfTextAtSize(test, size) > maxWidth && cur) {
-        lines.push(cur);
-        cur = w;
-      } else {
-        cur = test;
-      }
-    });
-    if (cur) lines.push(cur);
-    return lines;
-  };
-
-  // 8. Details Section (2 Columns matching official template)
-  // Row 1: Donor's Name & Whatsapp No
   y = 445;
   page.drawText("Donor's Name:", { x: 45, y, size: 10, font: bold, color: black });
-  page.drawText(String(meta.name || 'Anonymous'), { x: 45, y: y - 14, size: 9.5, font: font, color: black });
+  page.drawText(String(meta.name || 'Anonymous'), { x: 45, y: y - 16, size: 9.5, font: bold, color: black });
 
   page.drawText("Whatsapp No:", { x: 345, y, size: 10, font: bold, color: black });
-  page.drawText(String(meta.phone || 'N/A'), { x: 345, y: y - 14, size: 9.5, font: font, color: black });
+  page.drawText(String(meta.phone || 'N/A'), { x: 345, y: y - 16, size: 9.5, font: font, color: black });
 
-  // Row 2: Address & Towards
   y = 395;
   page.drawText("Address:", { x: 45, y, size: 10, font: bold, color: black });
   const addrLines = wrapCleanText(meta.address || 'Guwahati, Assam, India', font, 9.5, 275).slice(0, 2);
   addrLines.forEach((line, i) => {
-    page.drawText(line, { x: 45, y: y - 14 - (i * 12), size: 9.5, font: font, color: black });
+    page.drawText(line, { x: 45, y: y - 16 - (i * 12), size: 9.5, font: font, color: black });
   });
 
   page.drawText("Towards:", { x: 345, y, size: 10, font: bold, color: black });
   const causeText = String(meta.causeName || 'Pure for Cure - Sattvik Food Distribution');
   const causeLines = wrapCleanText(causeText, font, 9.5, 220).slice(0, 2);
   causeLines.forEach((line, i) => {
-    page.drawText(line, { x: 345, y: y - 14 - (i * 12), size: 9.5, font: font, color: black });
+    page.drawText(line, { x: 345, y: y - 16 - (i * 12), size: 9.5, font: font, color: black });
   });
 
-  // Row 3: Email ID & PAN No
   y = 338;
   page.drawText("Email ID:", { x: 45, y, size: 10, font: bold, color: black });
-  page.drawText(String(meta.email || 'N/A'), { x: 45, y: y - 14, size: 9.5, font: font, color: black });
+  page.drawText(String(meta.email || 'N/A'), { x: 45, y: y - 16, size: 9.5, font: font, color: black });
 
   page.drawText("PAN No:", { x: 345, y, size: 10, font: bold, color: black });
-  page.drawText(String(meta.pan || 'NOT_PROVIDED'), { x: 345, y: y - 14, size: 9.5, font: font, color: black });
+  page.drawText(String(meta.pan || 'NOT_PROVIDED'), { x: 345, y: y - 16, size: 9.5, font: font, color: black });
 
-  // Row 4: Payment Mode
   y = 282;
   page.drawText("Payment Mode:", { x: 45, y, size: 10, font: bold, color: black });
   const modeStr = (meta.paymentMode || 'Razorpay Online Seva') + (meta.txnId ? ` (Txn ID: ${meta.txnId})` : '');
-  page.drawText(modeStr, { x: 45, y: y - 14, size: 9.5, font: font, color: black });
+  page.drawText(modeStr, { x: 45, y: y - 16, size: 9.5, font: font, color: black });
 
-  // 9. Centered: Thank you for your generous support
   y = 228;
   const tyText = 'Thank you for your generous support';
-  const tyW = font.widthOfTextAtSize(tyText, 13);
-  page.drawText(tyText, { x: (612 - tyW) / 2, y, size: 13, font: font, color: greenHeader });
+  page.drawText(tyText, { x: (612 - font.widthOfTextAtSize(tyText, 13)) / 2, y, size: 13, font: font, color: greenHeader });
 
-  // 10. Statutory Exemption & Authorized Signatory
   y = 185;
   page.drawText('Donations to this institution are exempted u/s', { x: 45, y, size: 8.5, font: font, color: black });
   page.drawText('80G Vide 14/80G/CIT/GHY-II/2011-12/4701-05', { x: 45, y: y - 11, size: 8.5, font: font, color: black });
   page.drawText('DTD:29/02/2012 PAN: AAATH8807J', { x: 45, y: y - 22, size: 8.5, font: font, color: black });
 
-  // Signature
   try {
     const sigResp = await fetch('images/signature-janardan-dasa.png');
     if (sigResp.ok) {
       const sigBytes = await sigResp.arrayBuffer();
       const sigImg = await pdfDoc.embedPng(sigBytes);
-      const sigDims = sigImg.scaleToFit(85, 38);
-      page.drawImage(sigImg, { x: 435, y: y - 10, width: sigDims.width, height: sigDims.height });
+      const sigDims = sigImg.scaleToFit(140, 48);
+      page.drawImage(sigImg, { x: 420, y: y - 20, width: sigDims.width, height: sigDims.height });
     }
-  } catch (e) {
-    console.warn('Signature embed error:', e);
-  }
-  page.drawText('Janardhana Dasa', { x: 435, y: y - 22, size: 10, font: bold, color: black });
-  page.drawText('President', { x: 435, y: y - 34, size: 9, font: font, color: black });
+  } catch (e) {}
 
-  // 11. Dark Green Bottom Footer Bar
-  const footerY = 68;
-  const footerH = 46;
+  page.drawText('Janardhana Dasa', { x: 435, y: y - 30, size: 9.5, font: bold, color: black });
+  page.drawText('President', { x: 455, y: y - 42, size: 9, font: font, color: black });
+
   page.drawRectangle({
     x: 0,
-    y: footerY,
+    y: 0,
     width: 612,
-    height: footerH,
+    height: 70,
     color: greenFooter
   });
 
-  // Contact
-  page.drawText('Contact', { x: 45, y: footerY + 28, size: 8, font: bold, color: white });
-  page.drawText('+917099039770', { x: 45, y: footerY + 14, size: 8, font: font, color: white });
+  const footContact = 'Contact: +91 7099039770   |   Email: info@pureforcure.org';
+  page.drawText(footContact, {
+    x: (612 - font.widthOfTextAtSize(footContact, 8.5)) / 2,
+    y: 48,
+    size: 8.5,
+    font: font,
+    color: white
+  });
 
-  // Email
-  page.drawText('Email', { x: 235, y: footerY + 28, size: 8, font: bold, color: white });
-  page.drawText('info@pureforcure.org', { x: 235, y: footerY + 14, size: 8, font: font, color: white });
+  const footAddress = 'Hare Krishna Mandir Marg, Ghorajan, Guwahati 781031, Assam';
+  page.drawText(footAddress, {
+    x: (612 - font.widthOfTextAtSize(footAddress, 8)) / 2,
+    y: 34,
+    size: 8,
+    font: font,
+    color: white
+  });
 
-  // Address
-  page.drawText('Address', { x: 395, y: footerY + 28, size: 8, font: bold, color: white });
-  page.drawText('Hare Krishna Mandir Marg, Ghorajan,', { x: 395, y: footerY + 16, size: 7.5, font: font, color: white });
-  page.drawText('Guwahati 781031, Assam', { x: 395, y: footerY + 6, size: 7.5, font: font, color: white });
-
-  // 12. Mahamantra Sub-footer
-  const mahaText = 'Hare Krishna Hare Krishna Krishna Krishna Hare Hare | Hare Ram Hare Ram Ram Ram Hare Hare';
-  const mahaW = font.widthOfTextAtSize(mahaText, 7.8);
-  page.drawText(mahaText, {
-    x: (612 - mahaW) / 2,
-    y: 42,
+  const footMaha = 'Hare Krishna Hare Krishna Krishna Krishna Hare Hare | Hare Ram Hare Ram Ram Ram Hare Hare';
+  page.drawText(footMaha, {
+    x: (612 - footMaha.length * 4.3) / 2,
+    y: 18,
     size: 7.8,
     font: font,
-    color: black
+    color: white
   });
 
   const pdfBytes = await pdfDoc.save();
   return new Blob([pdfBytes], { type: 'application/pdf' });
 }
+
 
 // Bulk Receipts Download (sequential triggered downloads)
 async function downloadAllReceipts() {
