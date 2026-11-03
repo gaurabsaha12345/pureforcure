@@ -113,7 +113,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261103g">
+  <link rel="stylesheet" href="css/style.css?v=20261103i">
   <style>
     .gp-hero {
       background: linear-gradient(135deg, #132D1F 0%, #1A4D2E 50%, #0F2318 100%);
@@ -508,7 +508,7 @@
       <div class="cal-bar-wrap">
         <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
           <label for="calInput" style="font-weight:700; color:var(--dark); font-size:0.9rem; display:flex; align-items:center; gap:0.4rem;">
-            <i class="fa-solid fa-calendar-day text-primary"></i> browse distribution by date:
+            <i class="fa-solid fa-calendar-day text-primary"></i> Check Gallery by date:
           </label>
           <select id="calInput" style="padding:0.45rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px; font-family:inherit; font-size:0.88rem; background:#FFFFFF; font-weight:600; color:var(--dark); cursor:pointer;">
             <option value="">All Distribution Dates (4 Memories)</option>
@@ -526,23 +526,6 @@
 
       <!-- Container where donor cards render (Photo cards placed above video) -->
       <div id="galleryContainer"></div>
-
-      <!-- Assam Flood Relief Video Showcase -->
-      <div style="margin-bottom:2.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:16px; padding:1.75rem; text-align:center;">
-        <span style="display:inline-block; background:#E0F2FE; color:#0369A1; font-size:0.8rem; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:0.75rem;">
-          <i class="fa-solid fa-video"></i> ON-GROUND RESCUE OPERATIONS
-        </span>
-        <h3 style="font-size:1.5rem; color:#132D1F; margin-bottom:1.25rem; font-family:'Playfair Display', serif;">Assam Flood Relief Motorboat &amp; Embankment Food Drives</h3>
-        <div style="max-width:680px; margin:0 auto; background:#000; border-radius:12px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,0.12);">
-          <iframe src="https://www.youtube.com/embed/mGfopydVtqM" title="Assam Flood Relief & Riverine Annadanam Video Coverage" style="width:100%; aspect-ratio:16/9; border:none; display:block; border-radius:12px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
-          <div style="padding:0.6rem 0.8rem; background:#1E293B; color:#fff; font-size:0.82rem; font-weight:600; text-align:left;">
-            <i class="fa-solid fa-water" style="color:#38BDF8; margin-right:6px;"></i> Emergency Riverine Rescue &amp; Hot Meal Provision
-          </div>
-        </div>
-      </div>
-
-      <!-- Container where donor cards render -->
-
 
       <!-- Sponsor Callout Banner -->
       <div style="background:linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border:1px solid #BBF7D0; border-radius:16px; padding:2.5rem; text-align:center; margin-top:3rem;">
@@ -885,6 +868,7 @@
         </div>
       `;
     }).join('');
+    if (window.initCardSliders) window.initCardSliders();
   }
 
   function openGpLightbox(src, caption) {
@@ -943,6 +927,7 @@
       const val = cal.value;
       if (!val) {
         renderGallery(donations);
+    if (window.initCardSliders) window.initCardSliders();
         if (info) info.textContent = 'Showing all ' + donations.length + ' Distribution Memories';
         return;
       }
@@ -979,6 +964,7 @@
     if ($('dayCount')) $('dayCount').textContent = uniqueDates.length;
 
     renderGallery(donations);
+    if (window.initCardSliders) window.initCardSliders();
     setupCalendar();
     scrollToHash();
   });
@@ -991,7 +977,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261103h"></script>
+  <script src="js/app.js?v=20261103i"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 

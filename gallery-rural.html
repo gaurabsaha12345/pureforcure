@@ -224,7 +224,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <link rel="stylesheet" href="css/style.css?v=20261103g">
+  <link rel="stylesheet" href="css/style.css?v=20261103i">
 
   <style>
 
@@ -933,7 +933,7 @@
 
           <label for="calInput" style="font-weight:700; color:var(--dark); font-size:0.9rem; display:flex; align-items:center; gap:0.4rem;">
 
-            <i class="fa-solid fa-calendar-day text-primary"></i> browse distribution by date:
+            <i class="fa-solid fa-calendar-day text-primary"></i> Check Gallery by date:
 
           </label>
 
@@ -1424,6 +1424,7 @@
 
 
 
+    setTimeout(() => { if (window.initCardSliders) window.initCardSliders(); }, 150);
     container.innerHTML = list.map(d => {
 
       const id = makeid(d);
@@ -1647,6 +1648,7 @@
       if (!val) {
 
         renderGallery(donations);
+    if (window.initCardSliders) window.initCardSliders();
 
         if (info) info.textContent = 'Showing all ' + donations.length + ' Distribution Memories';
 
@@ -1719,6 +1721,7 @@
 
 
     renderGallery(donations);
+    if (window.initCardSliders) window.initCardSliders();
 
     setupCalendar();
 
@@ -1744,7 +1747,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  <script src="js/app.js?v=20261103h"></script>
+  <script src="js/app.js?v=20261103i"></script>
 
   <!-- Floating WhatsApp Widget (Bottom Left) -->
 

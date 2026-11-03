@@ -113,7 +113,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261103g">
+  <link rel="stylesheet" href="css/style.css?v=20261103i">
   <style>
     .gp-hero {
       background: linear-gradient(135deg, #132D1F 0%, #1A4D2E 50%, #0F2318 100%);
@@ -511,7 +511,7 @@
       <div class="cal-bar-wrap">
         <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
           <label for="calInput" style="font-weight:700; color:var(--dark); font-size:0.9rem; display:flex; align-items:center; gap:0.4rem;">
-            <i class="fa-solid fa-calendar-day text-primary"></i> browse distribution by date:
+            <i class="fa-solid fa-calendar-day text-primary"></i> Check Gallery by date:
           </label>
           <select id="calInput" style="padding:0.45rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px; font-family:inherit; font-size:0.88rem; background:#FFFFFF; font-weight:600; color:var(--dark); cursor:pointer;">
             <option value="">All Distribution Dates (6 Memories)</option>
@@ -940,6 +940,7 @@
         </div>
       `;
     }).join('');
+    if (window.initCardSliders) window.initCardSliders();
   }
 
   function openGpLightbox(src, caption) {
@@ -998,6 +999,7 @@
       const val = cal.value;
       if (!val) {
         renderGallery(donations);
+    if (window.initCardSliders) window.initCardSliders();
         if (info) info.textContent = 'Showing all ' + donations.length + ' Distribution Memories';
         return;
       }
@@ -1034,6 +1036,7 @@
     if ($('dayCount')) $('dayCount').textContent = uniqueDates.length;
 
     renderGallery(donations);
+    if (window.initCardSliders) window.initCardSliders();
     setupCalendar();
     scrollToHash();
   });
@@ -1046,7 +1049,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261103h"></script>
+  <script src="js/app.js?v=20261103i"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 

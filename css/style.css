@@ -3969,25 +3969,41 @@ img {
 }
 
 .contributors-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.15rem;
+  align-items: stretch;
   border-top: none;
+}
+
+@media (max-width: 991px) {
+  .contributors-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .contributors-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Landscape View Cards */
 .contributor-row {
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 1.15rem 1.4rem;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 0.85rem;
+  padding: 1.25rem 1.25rem;
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-left: 4px solid #16A34A;
-  border-radius: 12px;
+  border-top: 4px solid #16A34A;
+  border-radius: 14px;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   cursor: default;
+  min-height: 145px;
 }
 
 .contributor-row:nth-child(even) {
@@ -4005,6 +4021,8 @@ img {
 .contributor-row:hover,
 .contributor-row:hover strong,
 .contributor-row:hover span,
+.contributor-row:hover div,
+.contributor-row:hover p,
 .contributor-row:hover i,
 .contributor-row:hover .contrib-name-line,
 .contributor-row:hover .contrib-amount,

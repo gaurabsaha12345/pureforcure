@@ -1391,126 +1391,92 @@ async function completeSuccessfulDonation(paymentId) {
 
 // Baseline verified contributions for initial display (strictly 3 per cause)
 // Actual verified contributions as recorded in backend database (strictly 3 cards visible)
-const BASELINE_RECENT_DONATIONS = {
-  general: [
-    { name: 'Saurav', amount: 80, causeName: 'Special Occasion (Birthday / Anniversary Milestone Annadanam)', timeAgo: 'Just now', paymentMode: 'UPI' },
-    { name: 'GAURAB Saha', amount: 80, causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'BBCI Hospital Food Distribution', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' }
-  ],
-  birthday: [
-    { name: 'Saurav', amount: 80, causeName: 'Birthday Seva Meal Distribution', timeAgo: 'Just now', paymentMode: 'UPI' },
-    { name: 'Rohit & Neha Barua', amount: 4000, causeName: 'Anniversary Celebration Annadan (50 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
-    { name: 'Mr. & Mrs. P. K. Agarwal', amount: 8000, causeName: 'Wedding Anniversary Memorial Annadan (100 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' }
-  ],
-  amavasya: [
-    { name: 'Gauri Shankar Sarma & Family', amount: 8000, causeName: 'Amavasya Pitru Tarpana Annadanam (100 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
-    { name: 'Manoj Agarwal & Sons', amount: 4000, causeName: 'Somvati Amavasya Seva (50 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' },
-    { name: 'Ananya Hazarika', amount: 2000, causeName: 'Auspicious Amavasya Annadan (25 Meals)', timeAgo: '2 days ago', paymentMode: 'UPI' }
-  ],
-  borooah: [
-    { name: 'GAURAB Saha', amount: 80, causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'BBCI Hospital Food Distribution (10 Meals)', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'REETUMONI SINGHA', amount: 20, causeName: 'BBCI Hospital Food Relief', timeAgo: '24 Jun 2026', paymentMode: 'Razorpay' }
-  ],
-  gmch: [
-    { name: 'Pradeep Kumar Bora', amount: 2000, causeName: 'GMCH Hospital Caregiver Meals (25 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'GMCH Hospital Caregiver Meals (60 Meals)', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'GMCH Hospital Caregiver Relief (10 Meals)', timeAgo: '02 Jul 2026', paymentMode: 'Razorpay' }
-  ],
-  aiims: [
-    { name: 'Diganta Sarma & Family', amount: 3200, causeName: 'AIIMS Guwahati Healthcare Meals (40 Meals)', timeAgo: 'Just now', paymentMode: 'UPI' },
-    { name: 'Hemanta Talukdar', amount: 2000, causeName: 'AIIMS Changsari Patient Caregivers (25 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' },
-    { name: 'Purnima Barman', amount: 4000, causeName: 'AIIMS Guwahati Healthcare Food Relief (50 Meals)', timeAgo: '2 days ago', paymentMode: 'UPI' }
-  ],
-  'assam-flood-relief': [
-    { name: 'Guwahati Youth Seva Trust', amount: 8000, causeName: 'Assam Flood Relief Emergency Food Drive (100 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
-    { name: 'Rajesh Singhal & Family', amount: 4000, causeName: 'Assam Flood Emergency Relief (50 Meals)', timeAgo: 'Yesterday', paymentMode: 'UPI' },
-    { name: 'SAGAR BARUAH', amount: 800, causeName: 'Assam Flood Relief Emergency Annadanam', timeAgo: '14 Sep 2026', paymentMode: 'Razorpay' }
-  ],
-  kiosk: [
-    { name: 'Kamakhya Enterprises CSR', amount: 1100000, causeName: '1 Hospital Distribution Kiosk Adoption', timeAgo: 'Just now', paymentMode: 'Net Banking' },
-    { name: 'Laxmi Narayan Trust', amount: 2200000, causeName: '2 Hospital Distribution Kiosks (AIIMS & GMCH)', timeAgo: 'Yesterday', paymentMode: 'Wire' },
-    { name: 'S. N. Lohia & Family Foundation', amount: 1100000, causeName: '1 Hospital Food Kiosk Adoption', timeAgo: '2 days ago', paymentMode: 'NEFT' }
-  ],
-  vehicle: [
-    { name: 'Brahmaputra Infrastructure CSR', amount: 1500000, causeName: '1 Insulated Food Delivery Vehicle', timeAgo: 'Yesterday', paymentMode: 'Wire' },
-    { name: 'Assam Logistics Fleet Sponsors', amount: 3000000, causeName: '2 Insulated Food Delivery Vehicles', timeAgo: '2 days ago', paymentMode: 'NEFT' },
-    { name: 'North East Freight Logistics', amount: 1500000, causeName: '1 Insulated Food Delivery Vehicle', timeAgo: '3 days ago', paymentMode: 'Wire' }
-  ],
-  kitchen: [
-    { name: 'Sri Krishna Seva Samiti', amount: 50000, causeName: '1 Month Kitchen Groceries Supply', timeAgo: 'Just now', paymentMode: 'UPI' },
-    { name: 'Gyanendra Nath Roy', amount: 150000, causeName: '3 Months Kitchen Groceries & Oil', timeAgo: 'Yesterday', paymentMode: 'Card' },
-    { name: 'M/s Poddar & Sons', amount: 50000, causeName: '1 Month Kitchen Dal & Rice Supply', timeAgo: 'Today', paymentMode: 'UPI' }
-  ],
-  vessels: [
-    { name: 'Radhe Shyam Parivar', amount: 50000, causeName: '5 Heavy-Duty Insulated Distribution Sets', timeAgo: 'Yesterday', paymentMode: 'UPI' },
-    { name: 'V. K. Bagaria & Family', amount: 100000, causeName: '10 Insulated Distribution Sets', timeAgo: '2 days ago', paymentMode: 'Net Banking' },
-    { name: 'North East Welfare Group', amount: 50000, causeName: '5 Insulated Distribution Sets', timeAgo: '3 days ago', paymentMode: 'UPI' }
-  ]
-};
+// =============================================================
+// VERIFIED SUPABASE DATABASE DONATIONS (100% ACCURATE REAL DATA)
+// =============================================================
+const VERIFIED_SUPABASE_DONATIONS = [
+  {
+    name: 'Sarvajna Chaitanya Dasa',
+    amount: 80,
+    causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)',
+    timeAgo: '03 Nov 2026',
+    paymentMode: 'UPI',
+    location: 'borooah'
+  },
+  {
+    name: 'Saurav',
+    amount: 80,
+    causeName: 'Special Occasion (Birthday / Anniversary Milestone Annadanam)',
+    timeAgo: '02 Nov 2026',
+    paymentMode: 'UPI',
+    location: 'birthday'
+  },
+  {
+    name: 'GAURAB Saha',
+    amount: 80,
+    causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)',
+    timeAgo: '01 Nov 2026',
+    paymentMode: 'UPI',
+    location: 'borooah'
+  },
+  {
+    name: 'SANTANA HALOI',
+    amount: 800,
+    causeName: 'BBCI Hospital Food Distribution',
+    timeAgo: '10 Oct 2026',
+    paymentMode: 'Razorpay',
+    location: 'borooah'
+  },
+  {
+    name: 'ARUNJYOTI BURAGOHAIN',
+    amount: 4800,
+    causeName: 'GMCH Hospital Caregiver Meals',
+    timeAgo: '25 Sep 2026',
+    paymentMode: 'Razorpay',
+    location: 'gmch'
+  },
+  {
+    name: 'SAGAR BARUAH',
+    amount: 800,
+    causeName: 'Assam Flood Relief',
+    timeAgo: '14 Sep 2026',
+    paymentMode: 'Razorpay',
+    location: 'assam-flood-relief'
+  },
+  {
+    name: 'SANTANA HALOI',
+    amount: 800,
+    causeName: 'BBCI Hospital Food Distribution',
+    timeAgo: '02 Sep 2026',
+    paymentMode: 'Razorpay',
+    location: 'borooah'
+  },
+  {
+    name: 'SANTANA HALOI',
+    amount: 800,
+    causeName: 'GMCH Hospital Caregiver Relief',
+    timeAgo: '02 Jul 2026',
+    paymentMode: 'Razorpay',
+    location: 'gmch'
+  },
+  {
+    name: 'REETUMONI SINGHA',
+    amount: 20,
+    causeName: 'BBCI Hospital Food Relief',
+    timeAgo: '24 Jun 2026',
+    paymentMode: 'Razorpay',
+    location: 'borooah'
+  },
+  {
+    name: 'BHANWAR SINGH',
+    amount: 80,
+    causeName: 'Sattvik Food Relief',
+    timeAgo: '18 Jun 2026',
+    paymentMode: 'Razorpay',
+    location: 'general'
+  }
+];
 
-// Verified higher amounts for Most Generous tab (sorted by amount descending)
-const BASELINE_GENEROUS_DONATIONS = {
-  general: [
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'GMCH Hospital Caregiver Meals (60 Meals)', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'Pranab Kumar Sarmah', amount: 2000, causeName: 'Hospital Annadanam Caregiver Relief (25 Meals)', timeAgo: '12 Oct 2026', paymentMode: 'UPI' },
-    { name: 'Rajib Goswami', amount: 2000, causeName: 'Special Occasion Meals Distribution (25 Meals)', timeAgo: '05 Oct 2026', paymentMode: 'UPI' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'BBCI Hospital Food Distribution (10 Meals)', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'Dibyasri Das', amount: 400, causeName: 'Sattvik Food Initiative (5 Meals)', timeAgo: '14 Oct 2026', paymentMode: 'UPI' }
-  ],
-  birthday: [
-    { name: 'Mr. & Mrs. P. K. Agarwal', amount: 8000, causeName: 'Wedding Anniversary Memorial Annadan (100 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' },
-    { name: 'Rohit & Neha Barua', amount: 4000, causeName: 'Anniversary Celebration Annadan (50 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
-    { name: 'Rajib Goswami', amount: 2000, causeName: 'Special Occasion Milestone Annadanam (25 Meals)', timeAgo: '4 Weeks Ago', paymentMode: 'UPI' }
-  ],
-  amavasya: [
-    { name: 'Gauri Shankar Sarma & Family', amount: 8000, causeName: 'Amavasya Pitru Tarpana Annadanam (100 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
-    { name: 'Manoj Agarwal & Sons', amount: 4000, causeName: 'Somvati Amavasya Seva (50 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' },
-    { name: 'Ananya Hazarika', amount: 2000, causeName: 'Auspicious Amavasya Annadan (25 Meals)', timeAgo: '2 days ago', paymentMode: 'UPI' }
-  ],
-  borooah: [
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'BBCI Hospital Food Distribution (10 Meals)', timeAgo: '10 Oct 2026', paymentMode: 'Razorpay' },
-    { name: 'GAURAB Saha', amount: 80, causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)', timeAgo: '01 Nov 2026', paymentMode: 'UPI' },
-    { name: 'REETUMONI SINGHA', amount: 20, causeName: 'BBCI Hospital Food Relief', timeAgo: '24 Jun 2026', paymentMode: 'Razorpay' }
-  ],
-  gmch: [
-    { name: 'ARUNJYOTI BURAGOHAIN', amount: 4800, causeName: 'GMCH Hospital Caregiver Meals (60 Meals)', timeAgo: '25 Sep 2026', paymentMode: 'Razorpay' },
-    { name: 'Pradeep Kumar Bora', amount: 2000, causeName: 'GMCH Hospital Caregiver Meals (25 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
-    { name: 'SANTANA HALOI', amount: 800, causeName: 'GMCH Hospital Caregiver Relief (10 Meals)', timeAgo: '02 Jul 2026', paymentMode: 'Razorpay' }
-  ],
-  aiims: [
-    { name: 'Purnima Barman', amount: 4000, causeName: 'AIIMS Guwahati Healthcare Food Relief (50 Meals)', timeAgo: '2 days ago', paymentMode: 'UPI' },
-    { name: 'Diganta Sarma & Family', amount: 3200, causeName: 'AIIMS Guwahati Healthcare Meals (40 Meals)', timeAgo: 'Just now', paymentMode: 'UPI' },
-    { name: 'Hemanta Talukdar', amount: 2000, causeName: 'AIIMS Changsari Patient Caregivers (25 Meals)', timeAgo: 'Yesterday', paymentMode: 'Card' }
-  ],
-  'assam-flood-relief': [
-    { name: 'Guwahati Youth Seva Trust', amount: 8000, causeName: 'Assam Flood Relief Emergency Food Drive (100 Meals)', timeAgo: 'Today', paymentMode: 'UPI' },
-    { name: 'Rajesh Singhal & Family', amount: 4000, causeName: 'Assam Flood Emergency Relief (50 Meals)', timeAgo: 'Yesterday', paymentMode: 'UPI' },
-    { name: 'SAGAR BARUAH', amount: 800, causeName: 'Assam Flood Relief Emergency Annadanam', timeAgo: '14 Sep 2026', paymentMode: 'Razorpay' }
-  ],
-  kiosk: [
-    { name: 'Laxmi Narayan Trust', amount: 2200000, causeName: '2 Hospital Distribution Kiosks (AIIMS & GMCH)', timeAgo: 'Yesterday', paymentMode: 'Wire' },
-    { name: 'Kamakhya Enterprises CSR', amount: 1100000, causeName: '1 Hospital Distribution Kiosk Adoption', timeAgo: 'Just now', paymentMode: 'Net Banking' },
-    { name: 'S. N. Lohia & Family Foundation', amount: 1100000, causeName: '1 Hospital Food Kiosk Adoption', timeAgo: '2 days ago', paymentMode: 'NEFT' }
-  ],
-  vehicle: [
-    { name: 'Assam Logistics Fleet Sponsors', amount: 3000000, causeName: '2 Insulated Food Delivery Vehicles', timeAgo: '2 days ago', paymentMode: 'NEFT' },
-    { name: 'Brahmaputra Infrastructure CSR', amount: 1500000, causeName: '1 Insulated Food Delivery Vehicle', timeAgo: 'Yesterday', paymentMode: 'Wire' },
-    { name: 'North East Freight Logistics', amount: 1500000, causeName: '1 Insulated Food Delivery Vehicle', timeAgo: '3 days ago', paymentMode: 'Wire' }
-  ],
-  kitchen: [
-    { name: 'Gyanendra Nath Roy', amount: 150000, causeName: '3 Months Kitchen Groceries & Oil', timeAgo: 'Yesterday', paymentMode: 'Card' },
-    { name: 'Sri Krishna Seva Samiti', amount: 50000, causeName: '1 Month Kitchen Groceries Supply', timeAgo: 'Just now', paymentMode: 'UPI' },
-    { name: 'M/s Poddar & Sons', amount: 50000, causeName: '1 Month Kitchen Dal & Rice Supply', timeAgo: 'Today', paymentMode: 'UPI' }
-  ],
-  vessels: [
-    { name: 'V. K. Bagaria & Family', amount: 100000, causeName: '10 Insulated Distribution Sets', timeAgo: '2 days ago', paymentMode: 'Net Banking' },
-    { name: 'Radhe Shyam Parivar', amount: 50000, causeName: '5 Heavy-Duty Insulated Distribution Sets', timeAgo: 'Yesterday', paymentMode: 'UPI' },
-    { name: 'North East Welfare Group', amount: 50000, causeName: '5 Insulated Distribution Sets', timeAgo: '3 days ago', paymentMode: 'UPI' }
-  ]
-};
-
-// Dynamic LocalStorage & Live Donation Query (supports Latest vs Most Generous)
 function getStoredDonations(causeKey, mode = 'latest') {
   let stored = [];
   try {
@@ -1520,33 +1486,34 @@ function getStoredDonations(causeKey, mode = 'latest') {
     stored = [];
   }
 
-  const normalizedKey = mapCauseKeyToLocation(causeKey || 'general');
-  const baseList = (mode === 'generous')
-    ? (BASELINE_GENEROUS_DONATIONS[normalizedKey] || BASELINE_GENEROUS_DONATIONS['general'])
-    : (BASELINE_RECENT_DONATIONS[normalizedKey] || BASELINE_RECENT_DONATIONS['general']);
+  // Base list is exclusively real records from Supabase
+  let allRealDonations = [...VERIFIED_SUPABASE_DONATIONS];
 
-  let matchedStored = stored;
-  if (causeKey && causeKey !== 'all' && causeKey !== 'general') {
-    matchedStored = stored.filter(d => matchesCauseLocation(d.location || d.causeKey, causeKey));
-  }
-
-  let matchedLive = [];
   if (window._liveSupabaseDonations && Array.isArray(window._liveSupabaseDonations)) {
-    if (causeKey && causeKey !== 'all' && causeKey !== 'general') {
-      matchedLive = window._liveSupabaseDonations.filter(d => matchesCauseLocation(d.location || d.causeKey, causeKey));
-    } else {
-      matchedLive = window._liveSupabaseDonations;
-    }
+    allRealDonations = [...window._liveSupabaseDonations, ...allRealDonations];
   }
 
-  // Combine live user donations, verified database donations, and verified actual baselines
-  const combined = [...matchedStored, ...matchedLive, ...baseList];
+  // Merge any real donations stored in current session
+  const combined = [...stored, ...allRealDonations];
 
-  // Deduplicate by name and amount if identical
+  // Filter out any test amounts (< 10) or test names
+  const validOnly = combined.filter(d => {
+    const amt = parseInt(d.amount) || 0;
+    const nm = (d.name || '').toUpperCase();
+    return amt >= 10 && !nm.includes('TEST') && !nm.includes('MAYANK');
+  });
+
+  // Filter strictly by requested cause / location
+  let filtered = validOnly;
+  if (causeKey && causeKey !== 'all' && causeKey !== 'general') {
+    filtered = validOnly.filter(d => matchesCauseLocation(d.location || d.causeKey, causeKey));
+  }
+
+  // Deduplicate by name and amount and date
   const unique = [];
   const seen = new Set();
-  for (const d of combined) {
-    const key = `${d.name}_${d.amount}_${d.location || ''}`;
+  for (const d of filtered) {
+    const key = `${d.name}_${d.amount}_${d.timeAgo || ''}`;
     if (!seen.has(key)) {
       seen.add(key);
       unique.push(d);
@@ -1557,7 +1524,7 @@ function getStoredDonations(causeKey, mode = 'latest') {
     unique.sort((a, b) => (parseInt(b.amount) || 0) - (parseInt(a.amount) || 0));
   }
 
-  // Strictly return top 3 contributions as requested
+  // Strictly return top 3 contributions in 3 columns
   return unique.slice(0, 3);
 }
 
@@ -1591,25 +1558,36 @@ window.switchContributorTab = function(btn, tabName) {
 };
 
 // Render single landscape contributor card
-function _renderCardHtml(d, idx, isGenerousTab, showCause) {
+function _renderCardHtml(d, idx, isGenerousTab) {
   const initial = (d.name || 'D').charAt(0).toUpperCase();
   const isVeryRecent = !isGenerousTab && (d.timeAgo === 'Just now' || d.timeAgo === 'Today');
 
   return `
-    <div class="contributor-row" style="${isVeryRecent ? 'background:#F0FDF4; border-left:4px solid #16A34A;' : ''}">
-      <div class="contrib-avatar-wrap">
-        <div class="contrib-initial">${initial}.</div>
-        <div class="contrib-avatar">${initial}<span class="contrib-rank">${idx + 1}</span></div>
-      </div>
-      <div class="contrib-info">
-        <div class="contrib-name-line">
-          <strong>${d.name}</strong> &nbsp;Donated <span class="contrib-amount">&#8377;${parseInt(d.amount).toLocaleString('en-IN')}.00</span>
-          ${isVeryRecent ? '<span class="contrib-badge badge-new-seva" style="background:#DCFCE7; color:#15803D; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #86EFAC;"><i class="fa-solid fa-sparkles"></i> New Seva</span>' : ''}
-          ${isGenerousTab ? '<span class="contrib-badge badge-generous" style="background:#FEF3C7; color:#B45309; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; border:1px solid #FCD34D;"><i class="fa-solid fa-crown"></i> Generous Seva</span>' : ''}
+    <div class="contributor-row">
+      <div style="display:flex; align-items:center; gap:0.85rem; width:100%;">
+        <div class="contrib-avatar-wrap">
+          <div class="contrib-initial">${initial}.</div>
+          <div class="contrib-avatar">${initial}<span class="contrib-rank">${idx + 1}</span></div>
         </div>
-        <div class="contrib-time">
-          <i class="fa-regular fa-clock"></i> ${d.timeAgo || 'Recent'}${d.causeName ? ` &bull; <span class="contrib-purpose" style="color:#1A8C4E; font-weight:700;">${d.causeName}</span>` : ''}${d.paymentMode ? ` &bull; <span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.75rem; background:#E2E8F0; padding:2px 6px; border-radius:4px;">${d.paymentMode}</span>` : ''}
-          <span class="contrib-verified" style="color:#059669; font-size:0.75rem; margin-left:4px;"><i class="fa-solid fa-shield-halved"></i> 80G Verified</span>
+        <div style="flex:1; overflow:hidden;">
+          <div class="contrib-name-line" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px;">
+            <strong style="white-space:nowrap; text-overflow:ellipsis; overflow:hidden; max-width:180px;">${d.name}</strong>
+            <span class="contrib-amount" style="font-weight:800; color:#1A8C4E;">&#8377;${parseInt(d.amount).toLocaleString('en-IN')}.00</span>
+          </div>
+          ${isVeryRecent ? '<span class="contrib-badge badge-new-seva" style="background:#DCFCE7; color:#15803D; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:12px; border:1px solid #86EFAC; display:inline-block; margin-top:2px;"><i class="fa-solid fa-sparkles"></i> New Seva</span>' : ''}
+          ${isGenerousTab ? '<span class="contrib-badge badge-generous" style="background:#FEF3C7; color:#B45309; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:12px; border:1px solid #FCD34D; display:inline-block; margin-top:2px;"><i class="fa-solid fa-crown"></i> Generous Seva</span>' : ''}
+        </div>
+      </div>
+
+      <div class="contrib-purpose" style="font-size:0.85rem; color:#15803D; font-weight:700; line-height:1.4; border-top:1px solid #F1F5F9; border-bottom:1px solid #F1F5F9; padding:0.4rem 0; width:100%;">
+        <i class="fa-solid fa-bowl-rice" style="margin-right:5px; color:#16A34A;"></i>${d.causeName || 'Pure for Cure - Sattvik Food Distribution'}
+      </div>
+
+      <div class="contrib-time" style="font-size:0.76rem; color:#64748B; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; width:100%;">
+        <span><i class="fa-regular fa-clock"></i> ${d.timeAgo || 'Recent'}</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          ${d.paymentMode ? '<span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.7rem; background:#F1F5F9; padding:2px 6px; border-radius:4px; font-weight:600;">' + d.paymentMode + '</span>' : ''}
+          <span class="contrib-verified" style="color:#059669; font-weight:600; font-size:0.75rem;"><i class="fa-solid fa-shield-halved"></i> 80G</span>
         </div>
       </div>
     </div>
@@ -1628,9 +1606,20 @@ async function renderRecentDonations(containerId, causeKey) {
 }
 
 function _renderContributorsHtml(container, latestList, generousList, causeKey) {
-  const showCause = !causeKey || causeKey === 'all' || causeKey === 'general';
   const latestVisible = (latestList || []).slice(0, 3);
   const generousVisible = (generousList || []).slice(0, 3);
+
+  // Empty state HTML
+  const emptyStateHtml = `
+    <div class="no-donations-box" style="grid-column: 1 / -1; width:100%; text-align:center; padding:2.5rem 1.5rem; background:#F0FDF4; border:1.5px dashed #86EFAC; border-radius:14px;">
+      <p style="font-size:1.15rem; color:#15803D; font-weight:700; margin-bottom:0.75rem;">
+        <i class="fa-solid fa-heart" style="color:#16A34A; margin-right:8px;"></i> Be the first to Sponsor Meals
+      </p>
+      <a href="#product-donation-form" class="btn btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:0.5rem;">
+        <i class="fa-solid fa-hand-holding-heart"></i> Sponsor Meals Now
+      </a>
+    </div>
+  `;
 
   // Preserve active tab state if user was already on generous
   const currentlyActiveBtn = container.querySelector('.contrib-tab-btn.active');
@@ -1648,19 +1637,18 @@ function _renderContributorsHtml(container, latestList, generousList, causeKey) 
     
     <div class="contributors-tab-pane pane-latest" style="display:${activeTab === 'latest' ? 'block' : 'none'};">
       <div class="contributors-list">
-        ${latestVisible.map((d, i) => _renderCardHtml(d, i, false, showCause)).join('')}
+        ${latestVisible.length > 0 ? latestVisible.map((d, i) => _renderCardHtml(d, i, false)).join('') : emptyStateHtml}
       </div>
     </div>
     
     <div class="contributors-tab-pane pane-generous" style="display:${activeTab === 'generous' ? 'block' : 'none'};">
       <div class="contributors-list">
-        ${generousVisible.map((d, i) => _renderCardHtml(d, i, true, showCause)).join('')}
+        ${generousVisible.length > 0 ? generousVisible.map((d, i) => _renderCardHtml(d, i, true)).join('') : emptyStateHtml}
       </div>
     </div>
   `;
   container.innerHTML = html;
 }
-
 
 // Render footer recent contributions feed (strictly last 3 cards, without admin links)
 async function renderFooterRecentDonations() {
@@ -3803,3 +3791,18 @@ window.addEventListener('resize', () => {
     slideGpPhotoCard(cardId, 0);
   });
 });
+
+
+// Automatically initialize card sliders on load & mutation
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof initCardSliders === 'function') {
+      initCardSliders();
+    }
+  });
+  window.addEventListener('load', () => {
+    if (typeof initCardSliders === 'function') {
+      initCardSliders();
+    }
+  });
+}
