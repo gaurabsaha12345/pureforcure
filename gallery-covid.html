@@ -113,7 +113,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=2.8">
+  <link rel="stylesheet" href="css/style.css?v=2.9">
   <style>
     .gp-hero {
       background: linear-gradient(135deg, #132D1F 0%, #1A4D2E 50%, #0F2318 100%);
@@ -538,9 +538,6 @@
         </p>
         <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
           <a href="donate.html" class="btn btn-green btn-lg"><i class="fa-solid fa-hand-holding-heart"></i> Sponsor Nutritious Meals</a>
-          <a href="https://api.whatsapp.com/send?text=View%20Pure%20for%20Cure%20hospital%20feeding%20photo%20memories:%20https://pureforcure.org/gallery-covid.html" target="_blank" class="btn btn-secondary btn-lg" style="background:#25D366; color:#fff; border:none;">
-            <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
-          </a>
         </div>
       </div>
 
@@ -840,8 +837,18 @@
             </div>
           </div>
 
-          <div class="gp-grid">
-            ${photosHtml}
+          <div class="gp-slider-container" id="slider-wrap-${id}">
+            <button type="button" class="gp-slider-arrow gp-slider-prev" onclick="slideGpPhotoCard('${id}', -1)" aria-label="Previous Photos">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="gp-slider-viewport">
+              <div class="gp-slider-track" id="track-${id}" data-current-index="0">
+                ${photosHtml}
+              </div>
+            </div>
+            <button type="button" class="gp-slider-arrow gp-slider-next" onclick="slideGpPhotoCard('${id}', 1)" aria-label="Next Photos">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
 
           <div class="donor-ftr">
@@ -966,7 +973,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261103b"></script>
+  <script src="js/app.js?v=20261103c"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 

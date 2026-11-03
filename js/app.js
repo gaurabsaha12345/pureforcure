@@ -1841,7 +1841,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetTimer(); });
     if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetTimer(); });
 
-    function startTimer() { slideInterval = setInterval(nextSlide, 10000); }
+    const isHomePage = window.location.pathname.endsWith('/index.html') || window.location.pathname.endsWith('/') || window.location.pathname === '' || window.location.pathname.endsWith('/index');
+    const heroIntervalMs = isHomePage ? 8000 : 5000;
+    function startTimer() { slideInterval = setInterval(nextSlide, heroIntervalMs); }
     function resetTimer() { clearInterval(slideInterval); startTimer(); }
 
     startTimer();
@@ -1916,7 +1918,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (volNext) volNext.addEventListener('click', () => { nextVol(); resetVolTimer(); });
     if (volPrev) volPrev.addEventListener('click', () => { prevVol(); resetVolTimer(); });
 
-    function startVolTimer() { volInterval = setInterval(nextVol, 10000); }
+    function startVolTimer() { volInterval = setInterval(nextVol, 5000); }
     function resetVolTimer() { clearInterval(volInterval); startVolTimer(); }
 
     createDots();
@@ -1982,7 +1984,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    function startInitTimer() { initInterval = setInterval(nextInit, 10000); }
+    function startInitTimer() { initInterval = setInterval(nextInit, 5000); }
     function resetInitTimer() { clearInterval(initInterval); startInitTimer(); }
 
     startInitTimer();
@@ -2766,6 +2768,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Volunteer & CSR Form Submit Handler
+  
+  // ==================== GROUP VOLUNTEER FORM SETUP ====================
+  const addMemberBtn = document.getElementById('add-member-btn');
+  const membersContainer = document.getElementById('members-container');
+  if (addMemberBtn && membersContainer) {
+    addMemberBtn.addEventListener('click', () => {
+      const currentCount = membersContainer.querySelectorAll('.member-row').length + 1;
+      const row = document.createElement('div');
+      row.className = 'member-row';
+      row.style.cssText = 'display:flex; gap:0.5rem; align-items:center;';
+      row.innerHTML = `
+        <input type="text" name="member_names[]" class="donation-input member-input" placeholder="Member ${currentCount} Name" required style="margin:0; flex:1;">
+        <button type="button" class="btn btn-sm btn-outline remove-member-btn" style="padding:0.4rem 0.75rem; color:#DC2626; border-color:#FCA5A5; border-radius:6px; cursor:pointer;" title="Remove Member">&times;</button>
+      `;
+      row.querySelector('.remove-member-btn').addEventListener('click', () => row.remove());
+      membersContainer.appendChild(row);
+    });
+  }
+
+  const volDateInput = document.getElementById('vol-date-select');
+  if (volDateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    volDateInput.setAttribute('min', today);
+  }
+
   const volunteerForm = document.getElementById('volunteer-reg-form');
   const volunteerModal = document.getElementById('volunteer-success-modal');
 
@@ -3126,7 +3153,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       function startTimer() {
         if (!autoTimer) {
-          autoTimer = setInterval(nextSlide, 10000);
+          autoTimer = setInterval(nextSlide, 5000);
         }
       }
 
@@ -3218,7 +3245,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       function startMandirTimer() {
         if (!mandirTimer) {
-          mandirTimer = setInterval(nextMandirSlide, 10000);
+          mandirTimer = setInterval(nextMandirSlide, 5000);
         }
       }
 
@@ -3456,3 +3483,69 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+
+// ==========================================================================
+// GALLERY PHOTO CARDS SLIDER (3 Cards visible on Desktop, 5s Auto-Sliding)
+// ==========================================================================
+let gpCardInterval = null;
+
+function getVisibleThumbsCount() {
+  if (window.innerWidth > 900) return 3;
+  if (window.innerWidth > 580) return 2;
+  return 1;
+}
+
+function slideGpPhotoCard(cardId, direction) {
+  const track = document.getElementById('track-' + cardId);
+  if (!track) return;
+  const thumbs = track.querySelectorAll('.gp-thumb');
+  const total = thumbs.length;
+  const visible = getVisibleThumbsCount();
+  const maxIndex = Math.max(0, total - visible);
+  
+  if (maxIndex <= 0) {
+    track.style.transform = 'translateX(0px)';
+    track.setAttribute('data-current-index', '0');
+    return;
+  }
+
+  let currentIndex = parseInt(track.getAttribute('data-current-index') || '0', 10);
+  if (direction > 0) {
+    currentIndex = (currentIndex >= maxIndex) ? 0 : currentIndex + 1;
+  } else if (direction < 0) {
+    currentIndex = (currentIndex <= 0) ? maxIndex : currentIndex - 1;
+  }
+
+  track.setAttribute('data-current-index', currentIndex);
+  const thumbWidth = thumbs[0].offsetWidth;
+  const gap = 16;
+  const offset = currentIndex * (thumbWidth + gap);
+  track.style.transform = `translateX(-${offset}px)`;
+}
+
+function initCardSliders() {
+  if (gpCardInterval) clearInterval(gpCardInterval);
+
+  // Auto-slide every 5 seconds (5000ms)
+  gpCardInterval = setInterval(() => {
+    const tracks = document.querySelectorAll('.gp-slider-track');
+    tracks.forEach(track => {
+      const card = track.closest('.donor-card-box');
+      if (card && card.matches(':hover')) return;
+
+      const cardId = track.id.replace('track-', '');
+      slideGpPhotoCard(cardId, 1);
+    });
+  }, 5000);
+}
+
+window.slideGpPhotoCard = slideGpPhotoCard;
+window.initCardSliders = initCardSliders;
+
+window.addEventListener('resize', () => {
+  document.querySelectorAll('.gp-slider-track').forEach(track => {
+    const cardId = track.id.replace('track-', '');
+    slideGpPhotoCard(cardId, 0);
+  });
+});

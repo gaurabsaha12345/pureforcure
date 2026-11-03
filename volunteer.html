@@ -365,98 +365,117 @@
     </div>
   </section>
 
-  <!-- Interactive Volunteer & CSR Application Form -->
+  <!-- Interactive Volunteer Application Form -->
   <section class="section" style="background:#F8FAFC;" id="volunteer-apply-form">
     <div class="container">
       <div class="section-title-wrap">
-        <span class="section-tag" style="background:#F0FDF4; color:#1A8C4E;"><i class="fa-solid fa-clipboard-check"></i> Registration Portal</span>
-        <h2 class="section-title">Sign Up to <em>Volunteer or Partner</em></h2>
-        <p class="section-desc">Fill out the quick form below. Our Service Volunteer Coordinator will connect with you within 24 hours.</p>
+        <span class="section-tag" style="background:#F0FDF4; color:#1A8C4E;"><i class="fa-solid fa-users-rays"></i> Registration Portal</span>
+        <h2 class="section-title">Sign up for <br> Group Volunteer Oppurtunity</h2>
+        <p class="section-desc">Join our on-ground food distribution seva as a corporate team, student council, organization, or family group.</p>
       </div>
 
       <div class="volunteer-app-container">
-        <!-- Toggle Selector -->
-        <div class="volunteer-type-toggle">
-          <button type="button" class="volunteer-toggle-btn active" data-type="individual">
-            <i class="fa-solid fa-user"></i> Individual Volunteer
-          </button>
-          <button type="button" class="volunteer-toggle-btn" data-type="corporate">
-            <i class="fa-solid fa-building"></i> Corporate CSR Partner
-          </button>
-        </div>
-
         <form id="volunteer-reg-form">
-          <input type="hidden" id="volunteer-type-input" value="individual">
+          <input type="hidden" id="volunteer-type-input" value="group">
+
+          <div class="donation-form-group">
+            <label for="vol-org" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-building" style="color:#1A8C4E;"></i> Company / Organization / Group Name:</label>
+            <input type="text" id="vol-org" class="donation-input" placeholder="e.g. Tata Consultancy Services, Gauhati University, Sharma Family" required>
+          </div>
 
           <div class="donation-form-grid-2">
             <div class="donation-form-group" style="margin-bottom:0;">
-              <label for="vol-name" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-user" style="color:var(--secondary);"></i> Full Name:</label>
+              <label for="vol-name" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-user-tie" style="color:#1A8C4E;"></i> Group Lead / Coordinator Full Name:</label>
               <input type="text" id="vol-name" class="donation-input" placeholder="e.g. Ramesh Chandra Sharma" required>
             </div>
             <div class="donation-form-group" style="margin-bottom:0;">
-              <label for="vol-phone" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-phone" style="color:var(--secondary);"></i> Mobile Number (+91):</label>
+              <label for="vol-phone" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-phone" style="color:#1A8C4E;"></i> Coordinator Mobile Number (+91):</label>
               <input type="tel" id="vol-phone" class="donation-input" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10" title="Please enter a valid 10-digit mobile number" required>
             </div>
           </div>
 
           <div class="donation-form-grid-2">
             <div class="donation-form-group" style="margin-bottom:0;">
-              <label for="vol-email" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-envelope" style="color:var(--secondary);"></i> Email Address:</label>
-              <input type="email" id="vol-email" class="donation-input" placeholder="e.g. ramesh.sharma@gmail.com" required>
+              <label for="vol-email" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-envelope" style="color:#1A8C4E;"></i> Email Address:</label>
+              <input type="email" id="vol-email" class="donation-input" placeholder="e.g. coordinator@example.com" required>
             </div>
             <div class="donation-form-group" style="margin-bottom:0;">
-              <label for="vol-city" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-city" style="color:var(--secondary);"></i> City / Locality:</label>
-              <input type="text" id="vol-city" class="donation-input" placeholder="e.g. Guwahati (Jalukbari, Panbazar, etc.)" required>
+              <label for="vol-city" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-city" style="color:#1A8C4E;"></i> City / Locality:</label>
+              <input type="text" id="vol-city" class="donation-input" placeholder="e.g. Guwahati (Jalukbari, Panbazar, Dispur)" required>
             </div>
           </div>
 
-          <!-- Corporate Organization Field (Visible on Corporate CSR toggle) -->
-          <div class="donation-form-group" id="volunteer-org-group" style="display:none;">
-            <label for="vol-org" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-building" style="color:#D97706;"></i> Company / Organization / College Name:</label>
-            <input type="text" id="vol-org" class="donation-input" placeholder="e.g. Tata Consultancy Services / Gauhati University">
+          <!-- Members Name with '+' on corner to add more members -->
+          <div class="donation-form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.45rem;">
+              <label style="font-size:0.88rem; font-weight:700; margin-bottom:0;">
+                <i class="fa-solid fa-users" style="color:#1A8C4E;"></i> Members Name:
+              </label>
+              <button type="button" id="add-member-btn" class="btn btn-sm btn-secondary" style="padding:0.25rem 0.75rem; font-size:0.8rem; border-radius:6px; display:inline-flex; align-items:center; gap:5px; font-weight:700; cursor:pointer;" title="Add another group member">
+                <i class="fa-solid fa-plus"></i> Add Member
+              </button>
+            </div>
+            <div id="members-container" style="display:flex; flex-direction:column; gap:0.6rem;">
+              <div class="member-row" style="display:flex; gap:0.5rem; align-items:center;">
+                <input type="text" name="member_names[]" class="donation-input member-input" placeholder="Member 1 Name" required style="margin:0; flex:1;">
+              </div>
+            </div>
+            <span style="font-size:0.75rem; color:#64748B; margin-top:0.35rem; display:block;">
+              <i class="fa-solid fa-circle-info"></i> Click '+' on the top-right corner to add more members or one member.
+            </span>
           </div>
 
+          <!-- Purpose and Preferred Date Grid -->
           <div class="donation-form-grid-2">
             <div class="donation-form-group" style="margin-bottom:0;">
-              <label for="vol-role-select" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-hand-holding-hand" style="color:#1A8C4E;"></i> Preferred Service Role / Location:</label>
-              <select id="vol-role-select" class="donation-input" style="font-weight:700; color:var(--dark);">
-                <option value="Hospital Kiosk Distribution (AIIMS Guwahati Changsari)">Hospital Kiosk Distribution (AIIMS Guwahati Changsari)</option>
-                <option value="Hospital Outreach Distribution - Guwahati Medical College & Hospital (GMCH)">Hospital Outreach Distribution - Guwahati Medical College & Hospital (GMCH)</option>
-                <option value="Cancer Care Kiosk (Dr. B. Borooah Cancer Inst.)">Cancer Care Kiosk (Dr. B. Borooah Cancer Inst.)</option>
-                <option value="Automated Central Kitchen Preparation Service">Automated Central Kitchen Preparation Service (North Guwahati)</option>
-                <option value="Disaster & Flood Relief Taskforce">Disaster &amp; Flood Relief Emergency Taskforce</option>
-                <option value="Campus / Corporate Ambassador">Campus / Corporate CSR Ambassador</option>
+              <label for="vol-purpose-select" style="font-size:0.88rem; font-weight:700;">
+                <i class="fa-solid fa-bullseye" style="color:#1A8C4E;"></i> Purpose:
+              </label>
+              <select id="vol-purpose-select" class="donation-input" style="font-weight:700; color:var(--dark);" required>
+                <option value="BBCI Guwahati">BBCI Guwahati</option>
+                <option value="AIIMS">AIIMS</option>
+                <option value="GMCH">GMCH</option>
+                <option value="Special Ocassion">Special Ocassion</option>
               </select>
             </div>
 
             <div class="donation-form-group" style="margin-bottom:0;">
-              <label for="vol-avail-select" style="font-size:0.88rem; font-weight:700;"><i class="fa-regular fa-calendar-days" style="color:#1A8C4E;"></i> Availability:</label>
-              <select id="vol-avail-select" class="donation-input" style="font-weight:700; color:var(--dark);">
-                <option value="Weekends (Saturday / Sunday)">Weekends (Saturday / Sunday)</option>
-                <option value="Weekdays (Monday – Friday)">Weekdays (Monday – Friday)</option>
-                <option value="Morning Shifts Only (6:30 AM – 9:30 AM)">Morning Shifts Only (6:30 AM – 9:30 AM)</option>
-                <option value="Evening Shifts Only (5:30 PM – 8:00 PM)">Evening Shifts Only (5:30 PM – 8:00 PM)</option>
-                <option value="Emergency Calls / Seasonal Flood Relief">Emergency Calls / Seasonal Flood Relief</option>
-              </select>
+              <label for="vol-date-select" style="font-size:0.88rem; font-weight:700;">
+                <i class="fa-regular fa-calendar-check" style="color:#1A8C4E;"></i> Select Preferred Date:
+              </label>
+              <input type="date" id="vol-date-select" class="donation-input" style="font-weight:700; color:var(--dark);" required>
             </div>
           </div>
 
           <div class="donation-form-group">
-            <label for="vol-msg" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-comment-dots" style="color:var(--secondary);"></i> Message or Motivation (Optional):</label>
-            <textarea id="vol-msg" class="donation-input" rows="3" placeholder="Tell us why you wish to volunteer or any specific skills you'd love to share..."></textarea>
+            <label for="vol-msg" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-comment-dots" style="color:#1A8C4E;"></i> Additional Message / Notes (Optional):</label>
+            <textarea id="vol-msg" class="donation-input" rows="3" placeholder="Tell us more about your group, any specific date preferences or requirements..."></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-lg" style="width:100%; justify-content:center; padding:1.1rem; border-radius:10px;"><i class="fa-solid fa-heart"></i> Donate &amp; Avail 80G Tax Exemption</button>
+          <button type="submit" class="btn btn-primary btn-lg" style="width:100%; justify-content:center; padding:1.1rem; border-radius:10px; font-weight:800;">
+            <i class="fa-solid fa-users"></i> Sign up for Group Volunteer Oppurtunity
+          </button>
           
           <div style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:0.85rem;">
-            <i class="fa-solid fa-shield-halved" style="color:#1A8C4E;"></i> Your contact information is kept strictly confidential and used solely for Service coordination.
+            <i class="fa-solid fa-shield-halved" style="color:#1A8C4E;"></i> Group information is kept strictly confidential and used solely for Seva coordination.
+          </div>
+
+          <!-- Timings Notice Below the Form -->
+          <div style="background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:12px; padding:1rem 1.25rem; text-align:center; margin-top:1.5rem;">
+            <p style="margin:0; font-size:1.02rem; font-weight:800; color:#14532D;">
+              <i class="fa-solid fa-clock" style="color:#16A34A; margin-right:8px; font-size:1.1rem;"></i>
+              Timings of Volunteer Oppurtunity: from 12 PM (Noon) to 2 PM on mentioned date.
+            </p>
+            <p style="margin:0.35rem 0 0; font-size:0.85rem; color:#166534;">
+              All group members are requested to assemble 15 minutes before 12:00 PM for distribution orientation and aprons/gloves setup.
+            </p>
           </div>
         </form>
       </div>
     </div>
   </section>
 
-    <!-- Volunteer Voices Reviews Slideshow (6 Cards as per pureforcure.org, 3 visible on Desktop) -->
+  <!-- Volunteer Voices Reviews Slideshow (6 Cards as per pureforcure.org, 3 visible on Desktop) -->
   <section class="volunteer-stories-section">
     <div class="container">
       <div class="section-title-wrap">
@@ -1183,7 +1202,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261103b"></script>
+  <script src="js/app.js?v=20261103c"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 

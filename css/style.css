@@ -16670,3 +16670,108 @@ input[type="submit"] {
     font-size: 0.78rem !important;
   }
 }
+
+
+/* ==========================================================================
+   DONOR CARD PHOTO SLIDER (3 Cards visible on Desktop, 5s Auto-Sliding)
+   ========================================================================== */
+
+.gp-slider-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0;
+}
+
+.gp-slider-viewport {
+  overflow: hidden;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.gp-slider-track {
+  display: flex;
+  gap: 1rem;
+  transition: transform 0.5s ease-in-out;
+  will-change: transform;
+}
+
+.gp-slider-track .gp-thumb {
+  flex: 0 0 calc((100% - 2rem) / 3);
+  max-width: calc((100% - 2rem) / 3);
+  height: 200px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  background: #111;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.gp-slider-track .gp-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.gp-slider-track .gp-thumb:hover img {
+  transform: scale(1.06);
+}
+
+.gp-slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #CBD5E1;
+  color: #1E293B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  transition: all 0.25s ease;
+}
+
+.gp-slider-arrow:hover {
+  background: #1A8C4E;
+  color: #FFFFFF;
+  border-color: #1A8C4E;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.gp-slider-prev {
+  left: -14px;
+}
+
+.gp-slider-next {
+  right: -14px;
+}
+
+@media (max-width: 900px) {
+  .gp-slider-track .gp-thumb {
+    flex: 0 0 calc((100% - 1rem) / 2);
+    max-width: calc((100% - 1rem) / 2);
+    height: 185px;
+  }
+}
+
+@media (max-width: 580px) {
+  .gp-slider-track .gp-thumb {
+    flex: 0 0 100%;
+    max-width: 100%;
+    height: 220px;
+  }
+  .gp-slider-prev {
+    left: 4px;
+  }
+  .gp-slider-next {
+    right: 4px;
+  }
+}
