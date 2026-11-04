@@ -1,0 +1,16 @@
+# Security Ignore Rules for Vercel Deployments
+# Exclude database schemas, server binaries, archives, and local development scripts
+
+cloudflared.exe
+*.exe
+*.zip
+*.sql
+*.py
+*.bat
+*.log
+scratch/
+.system_generated/
+.git/
+.env*
+backup_receipts/
+backup_*.json

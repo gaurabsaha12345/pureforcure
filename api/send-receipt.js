@@ -1,16 +1,90 @@
 // Vercel Serverless Function: Official 80G Tax Exemption Receipt Dispatch via Resend API
-// Domain: pureforcure.org | Sender: info@pureforcure.org
+// Hardened Security: Strict CORS, Anti-Abuse Rate Limiting, Email Syntax Validation,
+// Anti-CRLF Injection, HTML Sanitization, and Payload Guard.
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY || Buffer.from('cmVfRzZ5d3pZb3FfQldwNkZ3a3VRZDNlaExTdHBiY2g4SHVx', 'base64').toString('utf-8');
 const SENDER_EMAIL = 'Pure for Cure <info@pureforcure.org>';
 const AUDIT_BCC = ['info@pureforcure.org', 'harekrishnamandir.dm@gmail.com'];
 
+// 1. Sliding Window IP Rate Limiter (Max 10 receipts/min per IP)
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const MAX_REQUESTS_PER_WINDOW = 10;
+
+function isRateLimited(clientIp) {
+  const now = Date.now();
+  const timestamps = (rateLimitMap.get(clientIp) || []).filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+  if (timestamps.length >= MAX_REQUESTS_PER_WINDOW) {
+    return true;
+  }
+  timestamps.push(now);
+  rateLimitMap.set(clientIp, timestamps);
+
+  // Periodic pruning
+  if (rateLimitMap.size > 500) {
+    for (const [ip, list] of rateLimitMap.entries()) {
+      const active = list.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+      if (active.length === 0) rateLimitMap.delete(ip);
+      else rateLimitMap.set(ip, active);
+    }
+  }
+  return false;
+}
+
+// 2. Strict HTML Escaper (Anti-HTML/XSS Injection in Emails)
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// 3. Strict RFC 5322 Email Validation + Anti-CRLF Check
+function isValidEmail(email) {
+  if (!email || typeof email !== 'string') return false;
+  if (email.length > 254) return false;
+  // Disallow carriage return or newline characters (prevents SMTP header injection)
+  if (/[\r\n]/.test(email)) return false;
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+  return emailRegex.test(email.trim());
+}
+
+// 4. Allowed Origins for CORS Protection
+const ALLOWED_ORIGINS = [
+  'https://pureforcure.org',
+  'https://www.pureforcure.org',
+  'http://localhost:3000',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+  'http://127.0.0.1:8000',
+  'http://localhost:8000'
+];
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true; // Direct same-site / server-side fetch
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  if (origin.endsWith('.vercel.app')) return true;
+  return false;
+}
+
 export default async function handler(req, res) {
-  // CORS Configuration
+  const origin = req.headers.origin || '';
+  const clientIp = (req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
+
+  // CORS Headers
+  if (isAllowedOrigin(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin || 'https://pureforcure.org');
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', 'https://pureforcure.org');
+  }
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -18,6 +92,12 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+  }
+
+  // Rate Limiting Check
+  if (isRateLimited(clientIp)) {
+    console.warn(`[Security Alert] Rate limit exceeded for IP: ${clientIp}`);
+    return res.status(429).json({ error: 'Too many receipt dispatch requests. Please try again in 1 minute.' });
   }
 
   try {
@@ -32,20 +112,38 @@ export default async function handler(req, res) {
 
     const { donor = {}, meta = {}, receiptUrl = '', pdfBase64 = '' } = body || {};
 
-    if (!donor.email) {
-      return res.status(400).json({ error: 'Missing donor email' });
+    const rawEmail = String(donor.email || '').trim();
+    if (!isValidEmail(rawEmail)) {
+      return res.status(400).json({ error: 'Invalid or missing donor email address format' });
     }
 
-    const donorName = donor.name || 'Kind Contributor';
-    const refNo = meta.refNo || `PFC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-GEN`;
-    const dateStr = meta.dateStr || new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-    const txnId = meta.txnId || 'N/A';
-    const amtNumber = Number(donor.amount) || 0;
+    // Attachment Size Safety Guard (Max ~6MB decoded)
+    if (pdfBase64 && typeof pdfBase64 === 'string' && pdfBase64.length > 8 * 1024 * 1024) {
+      return res.status(413).json({ error: 'Receipt attachment exceeds allowable size limit (max 6MB)' });
+    }
+
+    // Sanitize and escape all user variables before rendering in HTML
+    const donorName = escapeHtml(String(donor.name || 'Kind Contributor').trim().slice(0, 100));
+    const refNo = escapeHtml(String(meta.refNo || `PFC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-GEN`).trim().slice(0, 50));
+    const dateStr = escapeHtml(String(meta.dateStr || new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })).trim().slice(0, 50));
+    const txnId = escapeHtml(String(meta.txnId || 'N/A').trim().slice(0, 60));
+    const amtNumber = Math.max(0, Math.min(Number(donor.amount) || 0, 100000000));
     const formattedAmount = '₹' + amtNumber.toLocaleString('en-IN');
-    const causeName = donor.causeName || 'Pure for Cure - Daily Sattvik Meal Distribution';
-    const pan = donor.pan || 'NOT_PROVIDED';
-    const phone = donor.phone || 'N/A';
-    const paymentMode = donor.paymentMode || 'Online Payment (Razorpay)';
+    const causeName = escapeHtml(String(donor.causeName || 'Pure for Cure - Daily Sattvik Meal Distribution').trim().slice(0, 150));
+    const pan = escapeHtml(String(donor.pan || 'NOT_PROVIDED').trim().toUpperCase().slice(0, 20));
+    const phone = escapeHtml(String(donor.phone || 'N/A').trim().slice(0, 20));
+    const paymentMode = escapeHtml(String(donor.paymentMode || 'Online Payment (Razorpay)').trim().slice(0, 50));
+    
+    // Validate receipt download URL if provided
+    let safeReceiptUrl = '';
+    if (receiptUrl && typeof receiptUrl === 'string') {
+      try {
+        const parsed = new URL(receiptUrl);
+        if (parsed.protocol === 'https:' && (parsed.hostname.includes('supabase.co') || parsed.hostname.includes('pureforcure.org'))) {
+          safeReceiptUrl = escapeHtml(receiptUrl);
+        }
+      } catch (uErr) {}
+    }
 
     const emailSubject = `Official 80G Tax Exemption Donation Receipt (${refNo}) - Pure for Cure [${formattedAmount}]`;
 
@@ -159,12 +257,12 @@ export default async function handler(req, res) {
                 </tr>
               </table>
 
-              ${receiptUrl ? `
+              ${safeReceiptUrl ? `
               <!-- CTA Button to Download PDF Receipt -->
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 24px;">
                 <tr>
                   <td align="center">
-                    <a href="${receiptUrl}" target="_blank" style="background-color: #F59E0B; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
+                    <a href="${safeReceiptUrl}" target="_blank" rel="noopener noreferrer" style="background-color: #F59E0B; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
                       📄 Download Official PDF Receipt
                     </a>
                   </td>
@@ -188,7 +286,7 @@ export default async function handler(req, res) {
                 NH-31, Amingaon, Guwahati, Assam 781031<br>
                 Email: <a href="mailto:info@pureforcure.org" style="color: #1D4ED8; text-decoration: none;">info@pureforcure.org</a> | 
                 Phone: <a href="tel:+917099039770" style="color: #1D4ED8; text-decoration: none;">+91 70990 39770</a><br>
-                Website: <a href="https://pureforcure.org" target="_blank" style="color: #1D4ED8; text-decoration: none;">www.pureforcure.org</a>
+                Website: <a href="https://pureforcure.org" target="_blank" rel="noopener noreferrer" style="color: #1D4ED8; text-decoration: none;">www.pureforcure.org</a>
               </div>
             </td>
           </tr>
@@ -211,7 +309,7 @@ export default async function handler(req, res) {
     // Prepare Resend payload
     const resendPayload = {
       from: SENDER_EMAIL,
-      to: [donor.email],
+      to: [rawEmail],
       bcc: AUDIT_BCC,
       subject: emailSubject,
       html: htmlEmail,
@@ -220,9 +318,11 @@ export default async function handler(req, res) {
     // Attach PDF if base64 provided
     if (pdfBase64 && typeof pdfBase64 === 'string') {
       const cleanBase64 = pdfBase64.replace(/^data:[^;]+;base64,/, '');
+      // Sanitize refNo in filename
+      const safeFilenameRef = refNo.replace(/[^a-zA-Z0-9_-]/g, '_');
       resendPayload.attachments = [
         {
-          filename: `PureForCure_80G_Receipt_${refNo}.pdf`,
+          filename: `PureForCure_80G_Receipt_${safeFilenameRef}.pdf`,
           content: cleanBase64
         }
       ];
@@ -248,13 +348,13 @@ export default async function handler(req, res) {
     }
 
     const data = await resendResponse.json();
-    console.log('✓ Successfully sent receipt email via Resend to:', donor.email, data);
+    console.log('✓ Successfully sent receipt email via Resend to:', rawEmail, data);
 
     return res.status(200).json({
       success: true,
       message: 'Receipt email dispatched successfully via Resend',
       id: data.id,
-      recipient: donor.email,
+      recipient: rawEmail,
       refNo: refNo
     });
 

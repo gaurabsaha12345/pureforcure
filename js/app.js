@@ -52,6 +52,21 @@ const RAZORPAY_ENGINE = {
 
 // =============================================================
 
+
+// =============================================================
+// GLOBAL SECURITY UTILITY: HTML Sanitization (Anti-XSS Protection)
+// =============================================================
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+window.escapeHtml = escapeHtml;
+
 const SUPABASE_BACKEND = {
 
   DEFAULT_URL: 'https://jhlxeyegakyvxtxqvrsz.supabase.co',
@@ -3420,7 +3435,7 @@ function _renderCardHtml(d, idx, isGenerousTab) {
 
           <div class="contrib-name-line" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px;">
 
-            <strong style="white-space:nowrap; text-overflow:ellipsis; overflow:hidden; max-width:180px;">${d.name}</strong>
+            <strong style="white-space:nowrap; text-overflow:ellipsis; overflow:hidden; max-width:180px;">${escapeHtml(d.name)}</strong>
 
             <span class="contrib-amount" style="font-weight:800; color:#1A8C4E;">&#8377;${parseInt(d.amount).toLocaleString('en-IN')}.00</span>
 
@@ -3438,7 +3453,7 @@ function _renderCardHtml(d, idx, isGenerousTab) {
 
       <div class="contrib-purpose" style="font-size:0.85rem; color:#15803D; font-weight:700; line-height:1.4; border-top:1px solid #F1F5F9; border-bottom:1px solid #F1F5F9; padding:0.4rem 0; width:100%;">
 
-        <i class="fa-solid fa-bowl-rice" style="margin-right:5px; color:#16A34A;"></i>${d.causeName || 'Pure for Cure - Sattvik Food Distribution'}
+        <i class="fa-solid fa-bowl-rice" style="margin-right:5px; color:#16A34A;"></i>${escapeHtml(d.causeName || 'Pure for Cure - Sattvik Food Distribution')}
 
       </div>
 
@@ -3446,11 +3461,11 @@ function _renderCardHtml(d, idx, isGenerousTab) {
 
       <div class="contrib-time" style="font-size:0.76rem; color:#64748B; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; width:100%;">
 
-        <span><i class="fa-regular fa-clock"></i> ${d.timeAgo || 'Recent'}</span>
+        <span><i class="fa-regular fa-clock"></i> ${escapeHtml(d.timeAgo || 'Recent')}</span>
 
         <div style="display:flex; align-items:center; gap:6px;">
 
-          ${d.paymentMode ? '<span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.7rem; background:#F1F5F9; padding:2px 6px; border-radius:4px; font-weight:600;">' + d.paymentMode + '</span>' : ''}
+          ${d.paymentMode ? '<span class="contrib-badge-mode" style="text-transform:uppercase; font-size:0.7rem; background:#F1F5F9; padding:2px 6px; border-radius:4px; font-weight:600;">' + escapeHtml(d.paymentMode) + '</span>' : ''}
 
           <span class="contrib-verified" style="color:#059669; font-weight:600; font-size:0.75rem;"><i class="fa-solid fa-shield-halved"></i> 80G</span>
 
@@ -3646,9 +3661,9 @@ async function renderFooterRecentDonations() {
 
           <div class="footer-contrib-info">
 
-            <div class="footer-contrib-name">${(d.name || 'Donor').toUpperCase()}</div>
+            <div class="footer-contrib-name">${escapeHtml((d.name || 'Donor').toUpperCase())}</div>
 
-            <div class="footer-contrib-cause">${purposeText} &bull; ${dateText}</div>
+            <div class="footer-contrib-cause">${escapeHtml(purposeText)} &bull; ${escapeHtml(dateText)}</div>
 
           </div>
 

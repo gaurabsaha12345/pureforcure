@@ -8,7 +8,7 @@ const ADMIN_CONFIG = {
   SUPABASE_URL: 'https://jhlxeyegakyvxtxqvrsz.supabase.co',
   SUPABASE_KEY: 'sb_publishable_o25ZPIgjLnQupz-mR52nLQ_n6d3PpN5',
   DEFAULT_RAZORPAY_KEY: 'rzp_live_ysKJLc5VAgvM7W',
-  MASTER_PASSCODE_HASH: 'pfc@admin2026', // Emergency master passcode
+  MASTER_PASSCODE_HASH: null, // Configured via secure hashes
   MEAL_UNIT_COST: 80 // ₹80 per Sattvik meal
 };
 
@@ -238,11 +238,11 @@ async function verifyMasterPasscode() {
 
   // Pre-hashed verification hashes for security (no plain text exposure)
   const validHashes = [
-    '1c137c2b90d2045a36cc5ad6fde124d1c1144f75370ae0a714b33941782ba795', // pfc@admin2026
-    '638d0696e8ed30355948e2f04e0841368e944d7855ded9c3d82c48a557b4cca6', // Bookallot@404
-    '1e1eb910c74c8f046d7548e54f5d998ddb256acef734d615327820a51456e172', // bookallot@404
-    '6051fc84a7a0d74c225fb18a496b09952da5642e60723ecae543298edd7d82d6', // admin2026
-    '2e6005bf54a6db3457a4190c1e0a2944b0f55cf6aa0d53634032d8479e0a1fe5'  // pfc2026
+    '1c137c2b90d2045a36cc5ad6fde124d1c1144f75370ae0a714b33941782ba795',
+    '638d0696e8ed30355948e2f04e0841368e944d7855ded9c3d82c48a557b4cca6',
+    '1e1eb910c74c8f046d7548e54f5d998ddb256acef734d615327820a51456e172',
+    '6051fc84a7a0d74c225fb18a496b09952da5642e60723ecae543298edd7d82d6',
+    '2e6005bf54a6db3457a4190c1e0a2944b0f55cf6aa0d53634032d8479e0a1fe5'
   ];
 
   const hash = await sha256Hex(rawCode);
