@@ -1564,8 +1564,7 @@ function getStoredDonations(causeKey, mode = 'latest') {
     unique.sort((a, b) => (parseInt(b.amount) || 0) - (parseInt(a.amount) || 0));
   }
 
-  // Strictly return top 3 contributions in 3 columns
-  return unique.slice(0, 3);
+  return unique;
 }
 
 function saveDonation(donation) {
@@ -1691,44 +1690,44 @@ function _renderContributorsHtml(container, latestList, generousList, causeKey) 
 }
 
 // Render footer recent contributions feed (strictly last 3 cards matching Donate page content)
+function formatFooterCause(cause) {
+  if (!cause) return 'Hospital Food Distribution';
+  let cleaned = cause.replace(/\s*\([^)]*\)/g, '').trim();
+  if (cleaned.toLowerCase().includes('bbci')) return 'BBCI Hospital Food Distribution';
+  if (cleaned.toLowerCase().includes('gmch')) return 'GMCH Attendant Meals';
+  if (cleaned.toLowerCase().includes('aiims')) return 'AIIMS Hospital Food Kiosk';
+  if (cleaned.toLowerCase().includes('birthday') || cleaned.toLowerCase().includes('occasion')) return 'Special Occasion Meals';
+  if (cleaned.toLowerCase().includes('amavasya')) return 'Amavasya Annadanam';
+  if (cleaned.toLowerCase().includes('memory') || cleaned.toLowerCase().includes('loved ones')) return 'In Memory of Loved Ones';
+  if (cleaned.toLowerCase().includes('flood')) return 'Assam Flood Relief Seva';
+  if (cleaned.length > 28) return cleaned.substring(0, 26) + '...';
+  return cleaned;
+}
+
 async function renderFooterRecentDonations() {
   const container = document.getElementById('footer-recent-contributions');
   if (!container) return;
 
-  const donations = getStoredDonations('all').slice(0, 3);
-  let html = '<div class="footer-recent-contributions-feed" style="margin-bottom:0.9rem; max-width:310px; width:100%;">';
+  const donations = getStoredDonations('all').slice(0, 4);
+  if (!donations || donations.length === 0) return;
+
+  let html = '<div class="footer-recent-contributions-feed">';
   donations.forEach((d) => {
     const initial = (d.name || 'D').charAt(0).toUpperCase();
-    const isVeryRecent = (d.timeAgo === 'Just now' || d.timeAgo === 'Today' || d.date === 'Just now');
-    const purposeText = d.causeName || d.cause || d.location || 'Hospital Food Distribution';
+    const dateText = d.timeAgo || d.date || 'Recent';
+    const purposeText = formatFooterCause(d.causeName || d.cause || d.location);
+    const amtNumber = parseInt(d.amount) || 0;
+    const formattedAmt = amtNumber.toLocaleString('en-IN');
     html += `
-      <div class="footer-contrib-card" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:0.65rem 0.75rem; margin-bottom:0.55rem; max-width:310px; width:100%;">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
-          <div style="display:flex; align-items:center; gap:0.5rem; overflow:hidden;">
-            <div class="footer-contrib-avatar" style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #1A8C4E, #0D80CC); color:#FFF; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">
-              ${initial}
-            </div>
-            <div style="overflow:hidden;">
-              <div style="font-size:0.84rem; font-weight:700; color:#FFF; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">${d.name}</div>
-            </div>
-          </div>
-          <div style="font-size:0.88rem; font-weight:800; color:#FCD34D; white-space:nowrap; flex-shrink:0;">
-            &#8377;${parseInt(d.amount).toLocaleString('en-IN')}.00
+      <div class="footer-contrib-card">
+        <div class="footer-contrib-left">
+          <div class="footer-contrib-avatar">${initial}</div>
+          <div class="footer-contrib-info">
+            <div class="footer-contrib-name">${(d.name || 'Donor').toUpperCase()}</div>
+            <div class="footer-contrib-cause">${purposeText} &bull; ${dateText}</div>
           </div>
         </div>
-
-        <div style="font-size:0.73rem; color:#A7F3D0; font-weight:600; margin:0.35rem 0; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-          <i class="fa-solid fa-bowl-rice" style="margin-right:4px; color:#34D399;"></i>${purposeText}
-        </div>
-
-        <div style="font-size:0.68rem; color:rgba(255,255,255,0.7); display:flex; align-items:center; justify-content:space-between; border-top:1px dashed rgba(255,255,255,0.15); padding-top:0.3rem; margin-top:0.25rem;">
-          <span><i class="fa-regular fa-clock"></i> ${d.timeAgo || d.date || 'Recent'}</span>
-          <div style="display:flex; align-items:center; gap:0.35rem;">
-            ${isVeryRecent ? '<span style="background:rgba(52,211,153,0.25); color:#6EE7B7; padding:1px 5px; border-radius:3px; font-weight:700; font-size:0.64rem;">NEW SEVA</span>' : ''}
-            <span style="background:rgba(255,255,255,0.15); color:#E2E8F0; padding:1px 5px; border-radius:3px; font-weight:700; text-transform:uppercase;">${d.paymentMode || 'UPI'}</span>
-            <span style="color:#34D399; font-weight:600;"><i class="fa-solid fa-shield-check"></i> 80G Verified</span>
-          </div>
-        </div>
+        <div class="footer-contrib-amount">&#8377;${formattedAmt}</div>
       </div>
     `;
   });
