@@ -2226,6 +2226,46 @@ async function uploadPdfReceiptToSupabase(pdfBlob, refNo) {
 
 async function sendEmailReceipt(donor, meta, receiptUrl, pdfBlob) {
 
+    // 1. PRIMARY DISPATCH: Resend Platform API (pureforcure.org verified domain)
+  try {
+    let base64Attachment = '';
+    if (pdfBlob && typeof FileReader !== 'undefined') {
+      try {
+        base64Attachment = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = () => resolve('');
+          reader.readAsDataURL(pdfBlob);
+        });
+      } catch (bErr) {
+        console.warn('Base64 attachment encoding error:', bErr);
+      }
+    }
+
+    const resendResp = await fetch('/api/send-receipt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        donor,
+        meta,
+        receiptUrl,
+        pdfBase64: base64Attachment
+      })
+    });
+
+    if (resendResp.ok) {
+      const resendData = await resendResp.json();
+      console.log('✓ [Resend] Official 80G Tax Receipt email dispatched to donor:', donor.email, resendData);
+      return true;
+    } else {
+      const errText = await resendResp.text();
+      console.warn('Resend endpoint returned status:', resendResp.status, errText);
+    }
+  } catch (resendErr) {
+    console.warn('Resend primary dispatch notice (falling back to EmailJS):', resendErr);
+  }
+
+  // 2. SECONDARY / FALLBACK DISPATCH: EmailJS Client SDK
   if (typeof window.emailjs === 'undefined' || !window.emailjs.send) {
 
     console.info('EmailJS library not ready, skipping automated email.');
