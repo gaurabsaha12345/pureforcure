@@ -2806,18 +2806,38 @@ async function completeSuccessfulDonation(paymentId) {
   // 2. Populate & open 80G receipt modal
 
   if (document.getElementById('receipt-no')) document.getElementById('receipt-no').textContent = rNum;
-
   if (document.getElementById('receipt-date')) document.getElementById('receipt-date').textContent = rDate;
-
   if (document.getElementById('receipt-donor-name')) document.getElementById('receipt-donor-name').textContent = currentDonationData.name;
-
   if (document.getElementById('receipt-donor-pan')) document.getElementById('receipt-donor-pan').textContent = currentDonationData.pan || 'NOT_PROVIDED';
-
   if (document.getElementById('receipt-amount')) document.getElementById('receipt-amount').textContent = '₹' + parseInt(currentDonationData.amount).toLocaleString('en-IN');
-
   if (document.getElementById('receipt-cause')) document.getElementById('receipt-cause').textContent = currentDonationData.causeName;
-
   if (document.getElementById('receipt-email-confirm')) document.getElementById('receipt-email-confirm').textContent = currentDonationData.email;
+
+  // Ensure Donor Contact row is present and populated
+  if (!document.getElementById('receipt-donor-phone') && document.getElementById('receipt-donor-pan')) {
+    const panRow = document.getElementById('receipt-donor-pan').closest('.receipt-row');
+    if (panRow && panRow.parentNode) {
+      const phoneRow = document.createElement('div');
+      phoneRow.className = 'receipt-row';
+      phoneRow.innerHTML = `<span>Donor Contact:</span><strong id="receipt-donor-phone">${escapeHtml(currentDonationData.phone || 'N/A')}</strong>`;
+      panRow.parentNode.insertBefore(phoneRow, panRow);
+    }
+  } else if (document.getElementById('receipt-donor-phone')) {
+    document.getElementById('receipt-donor-phone').textContent = currentDonationData.phone || 'N/A';
+  }
+
+  // Ensure Payment Mode / Txn ID row is present and populated
+  if (!document.getElementById('receipt-payment-mode') && document.getElementById('receipt-cause')) {
+    const causeRow = document.getElementById('receipt-cause').closest('.receipt-row');
+    if (causeRow && causeRow.parentNode) {
+      const payRow = document.createElement('div');
+      payRow.className = 'receipt-row';
+      payRow.innerHTML = `<span>Payment Mode / Txn:</span><strong id="receipt-payment-mode" style="word-break:break-all;">${escapeHtml(currentDonationData.paymentMode || 'Online (Razorpay)')} ${paymentId ? `(Txn: ${escapeHtml(paymentId)})` : ''}</strong>`;
+      causeRow.parentNode.insertBefore(payRow, causeRow.nextSibling);
+    }
+  } else if (document.getElementById('receipt-payment-mode')) {
+    document.getElementById('receipt-payment-mode').textContent = `${currentDonationData.paymentMode || 'Online (Razorpay)'} ${paymentId ? `(Txn: ${paymentId})` : ''}`;
+  }
 
 
 
@@ -2851,17 +2871,9 @@ async function completeSuccessfulDonation(paymentId) {
 
 
 
-  // 4. INSTANT Automated EmailJS Receipt Dispatch (< 1 minute guaranteed)
-
+  // 4. Automated 80G Receipt & PDF Dispatch (Resend API verified with fallback)
   const donorCopy = { ...currentDonationData };
-
   const metaCopy = { ...currentDonationMeta };
-
-  sendAutomated80GReceiptEmail(donorCopy, metaCopy, 'https://pureforcure.org/images/Receipt_Format_PFC-NEW.pdf', null)
-
-    .then(() => console.log('✓ Donor automated receipt email dispatched in < 2 seconds!'))
-
-    .catch(err => console.warn('Donor email notice:', err));
 
 
 
@@ -4014,27 +4026,19 @@ function ensureModalsExist() {
         <div style="margin-bottom:1.5rem;">
 
           <div class="receipt-row"><span>Receipt No:</span><strong id="receipt-no">PFC-DR-202610-104928</strong></div>
-
           <div class="receipt-row"><span>Receipt Date:</span><strong id="receipt-date">26 Sep 2026</strong></div>
-
           <div class="receipt-row"><span>Donor Name:</span><strong id="receipt-donor-name">Devoted Supporter</strong></div>
-
+          <div class="receipt-row"><span>Donor Contact:</span><strong id="receipt-donor-phone">+91 00000 00000</strong></div>
           <div class="receipt-row"><span>Donor PAN:</span><strong id="receipt-donor-pan">ABCDE1234F</strong></div>
-
-          <div class="receipt-row"><span>Seva Cause:</span><strong id="receipt-cause">Hospital Caregiver Food Distribution</strong></div>
-
+          <div class="receipt-row"><span>Towards / Cause:</span><strong id="receipt-cause">Hospital Caregiver Food Distribution</strong></div>
+          <div class="receipt-row"><span>Payment Mode / Txn:</span><strong id="receipt-payment-mode" style="word-break:break-all;">Online (Razorpay)</strong></div>
           <div class="receipt-row"><span>Total Amount:</span><strong id="receipt-amount" style="font-size:1.2rem; color:#1A8C4E;">&#8377;2,000</strong></div>
-
           <div class="receipt-row"><span>Payment Status:</span><span style="color:#16A34A; font-weight:700;"><i class="fa-solid fa-check"></i> Verified via Razorpay Gateway</span></div>
-
-          <div class="receipt-row"><span>80G Exemption:</span><span>14/80G/CIT/GHY-II/2011-12/4701-05 &bull; PAN: AAATH8807J</span></div>
-
+          <div class="receipt-row"><span>80G Statutory Order:</span><span>14/80G/CIT/GHY-II/2011-12/4701-05 &bull; PAN: AAATH8807J</span></div>
         </div>
 
         <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:0.85rem; border-radius:6px; font-size:0.8rem; color:var(--text-muted); margin-bottom:1.5rem; text-align:center;">
-
-          Donations to this institution are 50% tax-exempt under Section 80G(5)(vi) of the Income Tax Act, Govt. of India.
-
+          Donations to this institution are eligible Under 80G Tax Exemption (Income Tax Act, Govt. of India).
         </div>
 
         <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">

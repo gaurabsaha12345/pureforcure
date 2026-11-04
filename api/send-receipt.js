@@ -154,18 +154,54 @@ export default async function handler(req, res) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
   <title>${emailSubject}</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+        border-radius: 8px !important;
+      }
+      .email-header-pad {
+        padding: 24px 16px !important;
+      }
+      .email-body-pad {
+        padding: 20px 16px 16px 16px !important;
+      }
+      .summary-card-pad {
+        padding: 14px 14px !important;
+      }
+      .summary-table td {
+        font-size: 13px !important;
+        padding: 5px 0 !important;
+      }
+      .cta-button {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        padding: 14px 16px !important;
+      }
+      .summary-label {
+        width: 44% !important;
+      }
+      .summary-val {
+        word-break: break-word !important;
+      }
+    }
+  </style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #F1F5F9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #1E293B;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #F1F5F9; padding: 24px 0;">
     <tr>
       <td align="center">
         <!-- Main Container -->
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 620px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08); border: 1px solid #E2E8F0;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" class="email-container" style="max-width: 620px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08); border: 1px solid #E2E8F0;">
           
           <!-- Header Banner -->
           <tr>
-            <td style="background: linear-gradient(135deg, #1A8C4E 0%, #15803D 100%); padding: 32px 28px; text-align: center; color: #FFFFFF;">
+            <td class="email-header-pad" style="background: linear-gradient(135deg, #1A8C4E 0%, #15803D 100%); padding: 32px 28px; text-align: center; color: #FFFFFF;">
               <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">Pure For Cure</h1>
               <p style="margin: 6px 0 0; font-size: 14px; color: #D1FAE5; font-weight: 600; letter-spacing: 0.3px;">Hare Krishna Movement, Guwahati</p>
               <div style="display: inline-block; margin-top: 14px; background: rgba(255, 255, 255, 0.18); padding: 5px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #FFFFFF; letter-spacing: 0.5px;">
@@ -176,7 +212,7 @@ export default async function handler(req, res) {
 
           <!-- Content Body -->
           <tr>
-            <td style="padding: 32px 28px 24px 28px;">
+            <td class="email-body-pad" style="padding: 32px 28px 24px 28px;">
               <p style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700; color: #0F172A;">
                 Dear ${donorName},
               </p>
@@ -203,54 +239,58 @@ export default async function handler(req, res) {
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding: 18px 20px;">
-                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-size: 14px; line-height: 1.6;">
+                  <td class="summary-card-pad" style="padding: 18px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" class="summary-table" style="font-size: 14px; line-height: 1.6;">
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B; width: 42%;">Receipt Reference:</td>
-                        <td style="padding: 6px 0; color: #0F172A; font-weight: 700; text-align: right;">${refNo}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B; width: 42%;">Receipt Reference:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; font-weight: 700; text-align: right; word-break: break-all;">${refNo}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B;">Receipt Date:</td>
-                        <td style="padding: 6px 0; color: #0F172A; font-weight: 600; text-align: right;">${dateStr}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Receipt Date:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; font-weight: 600; text-align: right;">${dateStr}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B;">Contributor Name:</td>
-                        <td style="padding: 6px 0; color: #0F172A; font-weight: 700; text-align: right;">${donorName}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Contributor Name:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; font-weight: 700; text-align: right;">${donorName}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B;">Contributor Contact:</td>
-                        <td style="padding: 6px 0; color: #0F172A; text-align: right;">${phone}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Contributor Contact:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; text-align: right;">${phone}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B;">Contributor PAN:</td>
-                        <td style="padding: 6px 0; color: #0F172A; font-weight: 700; text-align: right; font-family: monospace; letter-spacing: 0.5px;">${pan}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Contributor Email:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; text-align: right; word-break: break-all;">${escapeHtml(rawEmail)}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B;">Contributed Amount:</td>
-                        <td style="padding: 6px 0; color: #16A34A; font-weight: 800; font-size: 18px; text-align: right;">${formattedAmount}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Contributor PAN:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; font-weight: 700; text-align: right; font-family: monospace; letter-spacing: 0.5px;">${pan}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B;">Payment Mode:</td>
-                        <td style="padding: 6px 0; color: #0F172A; text-align: right;">${paymentMode}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Contributed Amount:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #16A34A; font-weight: 800; font-size: 18px; text-align: right;">${formattedAmount}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B;">Transaction ID:</td>
-                        <td style="padding: 6px 0; color: #0F172A; font-weight: 600; font-family: monospace; text-align: right;">${txnId}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Payment Mode:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; text-align: right;">${paymentMode}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #64748B;">Towards / Cause:</td>
-                        <td style="padding: 6px 0; color: #0F172A; font-weight: 600; text-align: right;">${causeName}</td>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Transaction ID:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; font-weight: 600; font-family: monospace; text-align: right; word-break: break-all;">${txnId}</td>
+                      </tr>
+                      <tr>
+                        <td class="summary-label" style="padding: 6px 0; color: #64748B;">Towards / Cause:</td>
+                        <td class="summary-val" style="padding: 6px 0; color: #0F172A; font-weight: 600; text-align: right;">${causeName}</td>
                       </tr>
                       <tr style="border-top: 1px dashed #CBD5E1;">
                         <td colspan="2" style="padding-top: 10px; margin-top: 6px;"></td>
                       </tr>
                       <tr>
-                        <td style="padding: 4px 0; color: #64748B; font-size: 12px;">80G Exemption Order:</td>
-                        <td style="padding: 4px 0; color: #0F172A; font-size: 12px; font-weight: 700; text-align: right;">14/80G/CIT/GHY-II/2011-12/4701-05</td>
+                        <td class="summary-label" style="padding: 4px 0; color: #64748B; font-size: 12px;">80G Exemption Order:</td>
+                        <td class="summary-val" style="padding: 4px 0; color: #0F172A; font-size: 12px; font-weight: 700; text-align: right; word-break: break-all;">14/80G/CIT/GHY-II/2011-12/4701-05</td>
                       </tr>
                       <tr>
-                        <td style="padding: 4px 0; color: #64748B; font-size: 12px;">Trust PAN:</td>
-                        <td style="padding: 4px 0; color: #0F172A; font-size: 12px; font-weight: 700; text-align: right;">AAATH8807J</td>
+                        <td class="summary-label" style="padding: 4px 0; color: #64748B; font-size: 12px;">Trust PAN:</td>
+                        <td class="summary-val" style="padding: 4px 0; color: #0F172A; font-size: 12px; font-weight: 700; text-align: right;">AAATH8807J</td>
                       </tr>
                     </table>
                   </td>
@@ -262,7 +302,7 @@ export default async function handler(req, res) {
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 24px;">
                 <tr>
                   <td align="center">
-                    <a href="${safeReceiptUrl}" target="_blank" rel="noopener noreferrer" style="background-color: #F59E0B; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
+                    <a href="${safeReceiptUrl}" target="_blank" rel="noopener noreferrer" class="cta-button" style="background-color: #F59E0B; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
                       📄 Download Official PDF Receipt
                     </a>
                   </td>

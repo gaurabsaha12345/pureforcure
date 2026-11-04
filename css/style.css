@@ -11694,6 +11694,57 @@ img {
 
 }
 
+/* High-fidelity Responsive Receipt Modal Styling */
+@media (max-width: 640px) {
+  .receipt-modal-backdrop, .gateway-modal-backdrop {
+    padding: 0.75rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .receipt-card, .receipt-modal-card {
+    padding: 1.25rem 1rem !important;
+    max-height: 92vh !important;
+    border-radius: 14px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .receipt-header-brand {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 0.5rem !important;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .receipt-header-brand img {
+    height: 42px !important;
+  }
+  .receipt-header-brand h3 {
+    font-size: 1.05rem !important;
+  }
+  .receipt-row {
+    font-size: 0.84rem !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    padding: 0.45rem 0 !important;
+  }
+  .receipt-row strong, .receipt-row span:last-child {
+    text-align: right !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+  }
+  .receipt-highlight-box {
+    padding: 0.85rem 0.65rem !important;
+    margin: 1rem 0 !important;
+  }
+  .receipt-highlight-box h4 {
+    font-size: 1.05rem !important;
+  }
+  .receipt-highlight-box p {
+    font-size: 0.82rem !important;
+  }
+}
+
+
 
 
 
