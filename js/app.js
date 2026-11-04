@@ -613,26 +613,51 @@ function matchesCauseLocation(recordLocation, pageCauseKey) {
   return normPage === normRec;
 }
 
-function formatRelativeDate(isoOrDateStr) {
+function formatSupabaseDateTime(isoOrDateStr) {
   if (!isoOrDateStr) return 'Recent';
   try {
-    const d = new Date(isoOrDateStr);
+    let d;
+    if (typeof isoOrDateStr === 'number') {
+      d = new Date(isoOrDateStr);
+    } else {
+      const str = String(isoOrDateStr).trim();
+      if (/^\d{1,2}\s+[A-Za-z]{3,4}\s+\d{4}(,\s+\d{1,2}:\d{2}\s+(AM|PM))?$/i.test(str)) {
+        return str;
+      }
+      d = new Date(str);
+    }
     if (isNaN(d.getTime())) return String(isoOrDateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - d.getTime();
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    if (diffMinutes < 5) return 'Just now';
-    if (diffMinutes < 60) return `${diffMinutes}m ago`;
-    if (diffHours < 24 && d.getDate() === now.getDate()) return `${diffHours}h ago`;
-    if (diffDays <= 0 || (diffDays === 1 && d.getDate() === now.getDate())) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-  } catch {
-    return 'Recent';
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    // Convert to IST (UTC+5:30)
+    const istOffsetMs = 5.5 * 60 * 60 * 1000;
+    const istDate = new Date(d.getTime() + istOffsetMs);
+    
+    const day = String(istDate.getUTCDate()).padStart(2, '0');
+    const month = months[istDate.getUTCMonth()];
+    const year = istDate.getUTCFullYear();
+    const datePart = `${day} ${month} ${year}`;
+
+    const hasTime = (typeof isoOrDateStr === 'number') || 
+                    (typeof isoOrDateStr === 'string' && (isoOrDateStr.includes('T') || isoOrDateStr.includes(':')));
+    
+    if (hasTime) {
+      let hours = istDate.getUTCHours();
+      const minutes = String(istDate.getUTCMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const hoursStr = String(hours).padStart(2, '0');
+      return `${datePart}, ${hoursStr}:${minutes} ${ampm}`;
+    }
+    return datePart;
+  } catch (e) {
+    return String(isoOrDateStr || 'Recent');
   }
+}
+
+function formatRelativeDate(isoOrDateStr) {
+  return formatSupabaseDateTime(isoOrDateStr);
 }
 
 // Fetch live donations from Supabase REST API
@@ -1333,7 +1358,8 @@ async function completeSuccessfulDonation(paymentId) {
     causeKey: currentDonationData.causeKey,
     paymentId: paymentId,
     txn_id: paymentId,
-    timeAgo: 'Just now',
+    timeAgo: formatSupabaseDateTime(Date.now()),
+    created_at: new Date().toISOString(),
     timestamp: Date.now(),
     receipt_no: rNum,
     dateStr: rDate
@@ -1436,10 +1462,20 @@ async function completeSuccessfulDonation(paymentId) {
 // =============================================================
 const VERIFIED_SUPABASE_DONATIONS = [
   {
+    name: 'Gaurab Saha',
+    amount: 80,
+    causeName: 'GMCH Hospital (Guwahati Medical College & Hospital Caregiver Meals)',
+    timeAgo: '03 Nov 2026, 04:00 PM',
+    created_at: '2026-11-03T10:30:17.596541+00:00',
+    paymentMode: 'Card',
+    location: 'gmch'
+  },
+  {
     name: 'Sarvajna Chaitanya Dasa',
     amount: 80,
     causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)',
-    timeAgo: '03 Nov 2026',
+    timeAgo: '03 Nov 2026, 12:09 PM',
+    created_at: '2026-11-03T06:39:53.179502+00:00',
     paymentMode: 'UPI',
     location: 'borooah'
   },
@@ -1447,7 +1483,8 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'Saurav',
     amount: 80,
     causeName: 'Special Occasion (Birthday / Anniversary Milestone Annadanam)',
-    timeAgo: '02 Nov 2026',
+    timeAgo: '02 Nov 2026, 01:41 PM',
+    created_at: '2026-11-02T08:11:26.931317+00:00',
     paymentMode: 'UPI',
     location: 'birthday'
   },
@@ -1455,7 +1492,8 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'GAURAB Saha',
     amount: 80,
     causeName: 'BBCI Hospital Food Distribution (Dr. B. Borooah Cancer Institute)',
-    timeAgo: '01 Nov 2026',
+    timeAgo: '01 Nov 2026, 09:52 PM',
+    created_at: '2026-11-01T16:22:40.341965+00:00',
     paymentMode: 'UPI',
     location: 'borooah'
   },
@@ -1463,7 +1501,8 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'SANTANA HALOI',
     amount: 800,
     causeName: 'BBCI Hospital Food Distribution',
-    timeAgo: '10 Oct 2026',
+    timeAgo: '10 Oct 2026, 10:07 AM',
+    created_at: '2026-10-10T04:37:59.23498+00:00',
     paymentMode: 'Razorpay',
     location: 'borooah'
   },
@@ -1471,7 +1510,8 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'ARUNJYOTI BURAGOHAIN',
     amount: 4800,
     causeName: 'GMCH Hospital Caregiver Meals',
-    timeAgo: '25 Sep 2026',
+    timeAgo: '25 Sep 2026, 03:25 PM',
+    created_at: '2026-09-25T09:55:01.690305+00:00',
     paymentMode: 'Razorpay',
     location: 'gmch'
   },
@@ -1479,7 +1519,8 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'SAGAR BARUAH',
     amount: 800,
     causeName: 'Assam Flood Relief',
-    timeAgo: '14 Sep 2026',
+    timeAgo: '14 Sep 2026, 09:56 PM',
+    created_at: '2026-09-14T16:26:15.547693+00:00',
     paymentMode: 'Razorpay',
     location: 'assam-flood-relief'
   },
@@ -1487,7 +1528,8 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'SANTANA HALOI',
     amount: 800,
     causeName: 'BBCI Hospital Food Distribution',
-    timeAgo: '02 Sep 2026',
+    timeAgo: '02 Sep 2026, 09:39 AM',
+    created_at: '2026-09-02T04:09:45.722914+00:00',
     paymentMode: 'Razorpay',
     location: 'borooah'
   },
@@ -1495,7 +1537,8 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'SANTANA HALOI',
     amount: 800,
     causeName: 'GMCH Hospital Caregiver Relief',
-    timeAgo: '02 Jul 2026',
+    timeAgo: '02 Jul 2026, 06:12 PM',
+    created_at: '2026-07-02T12:42:10.36631+00:00',
     paymentMode: 'Razorpay',
     location: 'gmch'
   },
@@ -1503,7 +1546,8 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'REETUMONI SINGHA',
     amount: 20,
     causeName: 'BBCI Hospital Food Relief',
-    timeAgo: '24 Jun 2026',
+    timeAgo: '24 Jun 2026, 04:20 PM',
+    created_at: '2026-06-24T10:50:24.918327+00:00',
     paymentMode: 'Razorpay',
     location: 'borooah'
   },
@@ -1511,17 +1555,46 @@ const VERIFIED_SUPABASE_DONATIONS = [
     name: 'BHANWAR SINGH',
     amount: 80,
     causeName: 'Sattvik Food Relief',
-    timeAgo: '18 Jun 2026',
+    timeAgo: '18 Jun 2026, 02:46 PM',
+    created_at: '2026-06-18T09:16:08.290808+00:00',
     paymentMode: 'Razorpay',
     location: 'general'
   }
 ];
+
+function getDonationTimeValue(d) {
+  if (!d) return 0;
+  if (d.created_at) {
+    const t = new Date(d.created_at).getTime();
+    if (!isNaN(t)) return t;
+  }
+  if (d.timestamp) {
+    const t = typeof d.timestamp === 'number' ? d.timestamp : new Date(d.timestamp).getTime();
+    if (!isNaN(t)) return t;
+  }
+  if (d.date) {
+    const t = new Date(d.date).getTime();
+    if (!isNaN(t)) return t;
+  }
+  if (d.timeAgo) {
+    const t = new Date(d.timeAgo).getTime();
+    if (!isNaN(t)) return t;
+  }
+  return 0;
+}
 
 function getStoredDonations(causeKey, mode = 'latest') {
   let stored = [];
   try {
     const raw = localStorage.getItem(DONATIONS_STORAGE_KEY);
     stored = raw ? JSON.parse(raw) : [];
+    // Sanitize any legacy 'Just now' or relative strings from user's localStorage
+    stored = stored.map(d => {
+      if (!d.timeAgo || d.timeAgo === 'Just now' || d.timeAgo === 'Today' || d.timeAgo === 'Recent' || d.timeAgo.includes('ago')) {
+        d.timeAgo = formatSupabaseDateTime(d.created_at || d.timestamp || d.date || d.dateStr);
+      }
+      return d;
+    });
   } catch (e) {
     stored = [];
   }
@@ -1533,8 +1606,8 @@ function getStoredDonations(causeKey, mode = 'latest') {
     allRealDonations = [...window._liveSupabaseDonations, ...allRealDonations];
   }
 
-  // Merge any real donations stored in current session
-  const combined = [...stored, ...allRealDonations];
+  // Prioritize live verified Supabase records
+  const combined = [...allRealDonations, ...stored];
 
   // Filter out any test amounts (< 10) or test names
   const validOnly = combined.filter(d => {
@@ -1549,11 +1622,11 @@ function getStoredDonations(causeKey, mode = 'latest') {
     filtered = validOnly.filter(d => matchesCauseLocation(d.location || d.causeKey, causeKey));
   }
 
-  // Deduplicate by unique payment or name, amount, timestamp/date
+  // Deduplicate by unique payment or name + amount
   const unique = [];
   const seen = new Set();
   for (const d of filtered) {
-    const key = d.paymentId || d.txn_id || `${d.name}_${d.amount}_${d.timestamp || d.timeAgo || d.date || ''}`;
+    const key = d.paymentId || d.txn_id || `${(d.name || '').trim().toLowerCase()}_${d.amount}`;
     if (!seen.has(key)) {
       seen.add(key);
       unique.push(d);
@@ -1562,6 +1635,9 @@ function getStoredDonations(causeKey, mode = 'latest') {
 
   if (mode === 'generous') {
     unique.sort((a, b) => (parseInt(b.amount) || 0) - (parseInt(a.amount) || 0));
+  } else {
+    // Latest mode: sort strictly descending by Supabase date and time
+    unique.sort((a, b) => getDonationTimeValue(b) - getDonationTimeValue(a));
   }
 
   return unique;
@@ -1599,7 +1675,10 @@ window.switchContributorTab = function(btn, tabName) {
 // Render single landscape contributor card
 function _renderCardHtml(d, idx, isGenerousTab) {
   const initial = (d.name || 'D').charAt(0).toUpperCase();
-  const isVeryRecent = !isGenerousTab && (d.timeAgo === 'Just now' || d.timeAgo === 'Today');
+  const timeVal = getDonationTimeValue(d);
+  const isVeryRecent = !isGenerousTab && (
+    (timeVal && (Date.now() - timeVal < 72 * 3600 * 1000)) || idx < 2
+  );
 
   return `
     <div class="contributor-row">
@@ -1714,7 +1793,7 @@ async function renderFooterRecentDonations() {
   let html = '<div class="footer-recent-contributions-feed">';
   donations.forEach((d) => {
     const initial = (d.name || 'D').charAt(0).toUpperCase();
-    const dateText = d.timeAgo || d.date || 'Recent';
+    const dateText = d.timeAgo || formatSupabaseDateTime(d.created_at || d.timestamp || d.date) || 'Recent';
     const purposeText = formatFooterCause(d.causeName || d.cause || d.location);
     const amtNumber = parseInt(d.amount) || 0;
     const formattedAmt = amtNumber.toLocaleString('en-IN');
@@ -1760,18 +1839,14 @@ async function initAllRecentDonations() {
       const validRows = rows.filter(r => (parseInt(r.amount) || 0) >= 10);
       if (validRows.length > 0) {
         window._liveSupabaseDonations = validRows.map(r => {
-          let dateStr = 'Recent';
-          if (r.date) {
-            try {
-              const dObj = new Date(r.date + 'T00:00:00');
-              dateStr = dObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-            } catch(e) { dateStr = r.date; }
-          }
+          const dateStr = formatSupabaseDateTime(r.created_at || r.date);
           return {
             name: r.name,
             amount: parseInt(r.amount),
             causeName: (r.notes && r.notes.includes('Cause:')) ? r.notes.split('Cause:')[1].split('|')[0].trim() : getCauseTitleByKey(r.location || 'general'),
             timeAgo: dateStr,
+            created_at: r.created_at,
+            timestamp: r.created_at ? new Date(r.created_at).getTime() : undefined,
             paymentMode: r.method || 'Razorpay',
             location: r.location || 'general'
           };
