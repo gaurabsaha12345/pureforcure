@@ -1696,13 +1696,13 @@ async function renderFooterRecentDonations() {
   if (!container) return;
 
   const donations = getStoredDonations('all').slice(0, 3);
-  let html = '<div class="footer-recent-contributions-feed" style="margin-bottom:0.9rem;">';
+  let html = '<div class="footer-recent-contributions-feed" style="margin-bottom:0.9rem; max-width:310px; width:100%;">';
   donations.forEach((d) => {
     const initial = (d.name || 'D').charAt(0).toUpperCase();
     const isVeryRecent = (d.timeAgo === 'Just now' || d.timeAgo === 'Today' || d.date === 'Just now');
     const purposeText = d.causeName || d.cause || d.location || 'Hospital Food Distribution';
     html += `
-      <div class="footer-contrib-card" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:0.75rem 0.85rem; margin-bottom:0.65rem;">
+      <div class="footer-contrib-card" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:0.65rem 0.75rem; margin-bottom:0.55rem; max-width:310px; width:100%;">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
           <div style="display:flex; align-items:center; gap:0.5rem; overflow:hidden;">
             <div class="footer-contrib-avatar" style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #1A8C4E, #0D80CC); color:#FFF; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">
