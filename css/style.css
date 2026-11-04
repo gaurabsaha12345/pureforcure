@@ -102,7 +102,7 @@
 
   --radius-lg: 24px;
 
-  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
@@ -16806,4 +16806,44 @@ input[type="submit"] {
   .csr-partners-grid {
     grid-template-columns: 1fr !important;
   }
+}
+
+
+/* ==========================================================================
+   UNIFORM TYPOGRAPHY & CARD TITLE STYLING
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6,
+.section-title,
+.hero-title,
+.hero-title-main,
+.page-header h1,
+.support-card-title,
+.product-main-card h3,
+.initiative-card h3,
+.initiative-card-title,
+.csr-pyramid-title {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+}
+
+/* Card titles strictly in black text */
+.support-card-title,
+.support-card-title a,
+.product-title,
+.product-title a,
+.product-main-card h3,
+.product-main-card h3 a,
+.initiative-card h3,
+.initiative-card h3 a,
+.initiative-card-title,
+.initiative-card-title a,
+.service-memory-card h3,
+.service-card-location h3,
+.sattvik-card h3,
+.satvik-card h3,
+.sattvic-card h3,
+.gallery-card-modern .gallery-title {
+  color: #000000 !important;
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
 }
