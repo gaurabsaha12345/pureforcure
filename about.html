@@ -123,7 +123,7 @@
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261104a">
+  <link rel="stylesheet" href="css/style.css?v=20261104b">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
@@ -851,105 +851,25 @@
     </div>
   </section>
 
-  <!-- Section 7: Interactive Donation Section -->
+  <!-- Section 7: Support & Impact Call to Action -->
   <section class="section-py" style="background:#FFFFFF; border-top:1px solid #E2E8F0; padding:4rem 0;">
-    <div class="container" style="max-width:800px;">
-      <div class="section-header" style="text-align:center; margin-bottom:2rem;">
-        <span class="badge-pill" style="background:#E8F5E9; color:#1A8C4E; border:1px solid #C8E6C9;">
-          <i class="fa-solid fa-hand-holding-heart"></i> Regular Meals Service
-        </span>
-        <h2 style="font-size:2rem; font-weight:800; color:#0F172A; margin:0.5rem 0;">Support <span
-            class="pfc-green-text">Pure for Cure</span> Today</h2>
-        <p style="color:#64748B; font-size:0.95rem;">Sponsor fresh Sattvik meals for hospital attendants.Section 80G
-          tax exemption with e-Receipt.</p>
-      </div>
-
-      <div class="pfc-donation-box"
-        style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:2rem;">
-        <form class="pfc-donation-form" data-cause="General Hospital Food Distribution Service" data-cause-key="general"
-          onsubmit="return handleQuickDonation(event, this);">
-          <div style="margin-bottom:1.25rem;">
-            <label style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:0.5rem; color:#334155;">Choose
-              Meal Sponsorship Level:</label>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:0.75rem;">
-              <button type="button" class="meal-qty-btn" data-meals="10" data-amt="800"
-                style="padding:0.75rem 0.5rem; border:2px solid #CBD5E1; border-radius:8px; background:#fff; font-weight:700; color:#334155; cursor:pointer; text-align:center;">
-                10 Meals<br><span style="font-size:0.8rem; font-weight:normal; color:#64748B;">&#8377;800</span>
-              </button>
-              <button type="button" class="meal-qty-btn active" data-meals="25" data-amt="2000"
-                style="padding:0.75rem 0.5rem; border:2px solid #1A8C4E; border-radius:8px; background:#E8F5E9; font-weight:700; color:#1A8C4E; cursor:pointer; text-align:center;">
-                25 Meals<br><span style="font-size:0.8rem; font-weight:normal; color:#64748B;">&#8377;2,000</span>
-              </button>
-              <button type="button" class="meal-qty-btn" data-meals="50" data-amt="4000"
-                style="padding:0.75rem 0.5rem; border:2px solid #CBD5E1; border-radius:8px; background:#fff; font-weight:700; color:#334155; cursor:pointer; text-align:center;">
-                50 Meals<br><span style="font-size:0.8rem; font-weight:normal; color:#64748B;">&#8377;4,000</span>
-              </button>
-              <button type="button" class="meal-qty-btn" data-meals="100" data-amt="8000"
-                style="padding:0.75rem 0.5rem; border:2px solid #CBD5E1; border-radius:8px; background:#fff; font-weight:700; color:#334155; cursor:pointer; text-align:center;">
-                100 Meals<br><span style="font-size:0.8rem; font-weight:normal; color:#64748B;">&#8377;8,000</span>
-              </button>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-            <div>
-              <label
-                style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.35rem; color:#334155;">Donation
-                Amount (&#8377;):</label>
-              <input type="number" name="amount" class="form-control amount-input" value="2000" min="80" required
-                style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:6px; font-weight:700; color:#1A8C4E; font-size:1.1rem;">
-            </div>
-            <div>
-              <label
-                style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.35rem; color:#334155;">Meals
-                Nourished:</label>
-              <input type="text" class="form-control meals-display" value="25 Meals" readonly
-                style="width:100%; padding:0.65rem 0.85rem; border:1px solid #E2E8F0; border-radius:6px; background:#F1F5F9; color:#64748B; font-weight:600;">
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-            <div>
-              <label
-                style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.35rem; color:#334155;">Full
-                Name *</label>
-              <input type="text" name="name" class="form-control" placeholder="e.g. Ramesh Kalita" required
-                style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:6px;">
-            </div>
-            <div>
-              <label
-                style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.35rem; color:#334155;">Phone
-                Number (UPI/Receipt) *</label>
-              <input type="tel" name="phone" class="form-control" placeholder="+91 98765 43210" required
-                style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:6px;">
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
-            <div>
-              <label
-                style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.35rem; color:#334155;">Email
-                (For Donation Receipt) *</label>
-              <input type="email" name="email" class="form-control" placeholder="name@example.com" required
-                style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:6px;">
-            </div>
-            <div>
-              <label
-                style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.35rem; color:#334155;">PAN (Only for 80G Exemption):</label>
-              <input type="text" name="pan" class="form-control" placeholder="e.g. ABCDE1234F (Optional)" maxlength="10"
-                style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:6px; text-transform:uppercase;">
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-lg"
-            style="width:100%; justify-content:center; padding:1.1rem; border-radius:10px;"><i
-              class="fa-solid fa-heart"></i> Donate &amp; Avail 80G Tax Exemption</button>
-
-          <p style="text-align:center; font-size:0.8rem; color:#64748B; margin-top:0.8rem;">
-            <i class="fa-solid fa-shield-halved text-success"></i> 256-bit SSL Encrypted | Powered by Razorpay Payment
-            Gateway | 80G Tax Benefit
-          </p>
-        </form>
+    <div class="container" style="max-width:800px; text-align:center;">
+      <span class="badge-pill" style="background:#E8F5E9; color:#1A8C4E; border:1px solid #C8E6C9; margin-bottom:1rem; display:inline-block;">
+        <i class="fa-solid fa-hand-holding-heart"></i> Daily Healthcare Hunger Relief
+      </span>
+      <h2 style="font-size:2.2rem; font-weight:800; color:#0F172A; margin:0.5rem 0 1rem;">
+        Stand With Us in Nourishing <span class="pfc-green-text">Lives in Need</span>
+      </h2>
+      <p style="color:#64748B; font-size:1.05rem; line-height:1.7; margin-bottom:2rem; max-width:650px; margin-left:auto; margin-right:auto;">
+        Every day, thousands of patients and attendants struggle for meals outside Assam's premier government hospitals. Join hands with <span class="pfc-green-text">Pure for Cure</span> by volunteering or supporting dedicated food distribution drives.
+      </p>
+      <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+        <a href="donate.html" class="btn btn-primary" style="padding:0.85rem 2rem; font-size:1rem; border-radius:10px;">
+          <i class="fa-solid fa-heart"></i> Support Our Programs
+        </a>
+        <a href="volunteer.html" class="btn btn-secondary" style="padding:0.85rem 2rem; font-size:1rem; border-radius:10px; background:#F1F5F9; color:#334155;">
+          <i class="fa-solid fa-users"></i> Volunteer With Us
+        </a>
       </div>
     </div>
   </section>
@@ -1219,7 +1139,7 @@
   <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261104a"></script>
+  <script src="js/app.js?v=20261104b"></script>
 
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0"
