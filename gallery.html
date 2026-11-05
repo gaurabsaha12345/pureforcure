@@ -123,7 +123,7 @@
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261105e">
+  <link rel="stylesheet" href="css/style.css?v=20261105f">
 </head>
 
 <body>
@@ -474,10 +474,18 @@
   <!-- Specialized Hospital & Outreach Galleries Section -->
   <section class="section" id="hospital-galleries" style="background:#F8FAFC; border-top:1px solid #E2E8F0; scroll-margin-top:100px;">
     <div class="container">
-      <div class="section-title-wrap">
-        <span class="section-tag" style="background:#FFFFFF; color:#1A8C4E; border:1px solid #BBF7D0; box-shadow:0 2px 8px rgba(0,0,0,0.06); font-weight:800;"><i class="fa-solid fa-hospital" style="color:#1A8C4E;"></i> DEDICATED GALLERIES</span>
-        <h2 class="section-title">Visit Specific <em>Hospital &amp; Service Galleries</em></h2>
-        <p class="section-desc">Explore transparent on-ground photo archives, donor proofs, and daily food distribution drives across our specialized medical centers and disaster relief missions.</p>
+      <!-- Left-hand side: Visit Our (with 2 saffron lines) and Dedicated Service Gallery (Green) -->
+      <div style="margin-bottom:2rem; border-bottom:2px solid #CBD5E1; padding-bottom:1rem;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:0.5rem;">
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <span style="height:2.5px; width:38px; background:#F59E0B; display:block; border-radius:2px;"></span>
+            <span style="height:2.5px; width:38px; background:#F59E0B; display:block; border-radius:2px;"></span>
+          </div>
+          <span style="color:#F59E0B; font-weight:800; font-size:1.05rem; text-transform:uppercase; letter-spacing:0.12em; font-family:var(--font-heading);">Visit Our</span>
+        </div>
+        <h2 style="font-size:2.15rem; color:#16A34A; font-weight:800; margin:0; font-family:var(--font-heading); text-align:left;">
+          Dedicated Service Gallery
+        </h2>
       </div>
 
       <div class="hospital-gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.75rem;">
@@ -774,7 +782,7 @@
         <!-- 10. Other Hospitals & Regional Service Centers -->
         <div class="hospital-gallery-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:14px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.05); display:flex; flex-direction:column; transition:transform 0.3s ease, box-shadow 0.3s ease;">
           <a href="gallery-other.html" style="display:block; position:relative; height:200px; overflow:hidden;" title="Visit Other Hospitals and Photos">
-            <img src="images/gallery/food-van-service.jpg" alt="Other Hospitals & Community Centers Photos" style="width:100%; height:100%; object-fit:cover; object-position:center 65%; transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" loading="lazy" decoding="async">
+            <img src="images/gallery/Card_pics/Food Delivery Van_ Apollo.jpeg" alt="Other Hospitals & Community Centers Photos" style="width:100%; height:100%; object-fit:cover; object-position:center 65%; transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" loading="lazy" decoding="async">
             <span style="position:absolute; top:12px; left:12px; background:#FFFFFF; color:#1A8C4E; border:1px solid rgba(255,255,255,0.9); box-shadow:0 2px 8px rgba(0,0,0,0.18); font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.04em;">
               <i class="fa-solid fa-images" style="color:#1A8C4E;"></i> Other Centers
             </span>
@@ -795,7 +803,9 @@
           </div>
         </div>
 
-      </div></section>
+      </div><!-- /.hospital-gallery-grid -->
+    </div><!-- /.container -->
+  </section>
 
 
   <!-- Four Pillars of Compassionate Care (Initiative Highlights - 4 Cards Grid as in previous version) -->
@@ -1098,7 +1108,7 @@
     </div>
   </footer>
 
-  <script src="js/app.js?v=20261105e"></script>
+  <script src="js/app.js?v=20261105f"></script>
 
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0"
