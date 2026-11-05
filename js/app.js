@@ -1759,21 +1759,21 @@ async function generateReceiptPdfBlob(donor, meta) {
         color: rgb(0.4, 0.45, 0.5),
       });
 
-      // ========================================================
+            // ========================================================
       // PAGE 2 OF 2: OFFICIAL CANVA 80G DONATION RECEIPT
       // ========================================================
-      // 1. Reference No & Date (next to Reference No: and Date: at baseline y=736)
+      // 1. Reference No & Date (next to Reference No: and Date: at baseline y=722)
       receiptPage.drawText(String(meta.refNo || ''), {
-        x: 105,
-        y: 736,
+        x: 114,
+        y: 722,
         size: 10,
         font: bold,
         color: black
       });
 
       receiptPage.drawText(String(meta.dateStr || ''), {
-        x: 480,
-        y: 736,
+        x: 478,
+        y: 722,
         size: 10,
         font: bold,
         color: black
@@ -1789,30 +1789,30 @@ async function generateReceiptPdfBlob(donor, meta) {
         color: black
       });
 
-      // 3. Entries strictly below form questions:
-      // Row 1: Donor's Name & Whatsapp No
+      // 3. Entries strictly below form questions with generous, professional spacing:
+      // Row 1: Donor's Name & Whatsapp No (labels at baseline ~435.0, entries at y=416)
       receiptPage.drawText(String(donor.name || 'Anonymous'), {
-        x: 103.6,
-        y: 435,
-        size: 10,
+        x: 104.5,
+        y: 416,
+        size: 10.5,
         font: bold,
         color: black
       });
 
       receiptPage.drawText(String(donor.phone || 'N/A'), {
-        x: 401.9,
-        y: 435,
-        size: 10,
+        x: 402.0,
+        y: 416,
+        size: 10.5,
         font: font,
         color: black
       });
 
-      // Row 2: Address & Towards
+      // Row 2: Address & Towards (labels at baseline ~360.5, entries at y=342, 328)
       const addrLines = wrapCleanText(donor.address || 'Guwahati, Assam, India', font, 9.5, 270).slice(0, 2);
       addrLines.forEach((line, i) => {
         receiptPage.drawText(line, {
-          x: 103.6,
-          y: 360 - (i * 12),
+          x: 103.5,
+          y: 342 - (i * 14),
           size: 9.5,
           font: font,
           color: black
@@ -1823,49 +1823,40 @@ async function generateReceiptPdfBlob(donor, meta) {
       const causeLines = wrapCleanText(causeText, font, 9.5, 175).slice(0, 2);
       causeLines.forEach((line, i) => {
         receiptPage.drawText(line, {
-          x: 401.9,
-          y: 360 - (i * 12),
+          x: 402.0,
+          y: 342 - (i * 14),
           size: 9.5,
           font: font,
           color: black
         });
       });
 
-      // Row 3: Email ID & PAN No
+      // Row 3: Email ID & PAN No (labels at baseline ~277.5, entries at y=259)
       receiptPage.drawText(String(donor.email || 'N/A'), {
-        x: 103.6,
-        y: 278,
+        x: 104.5,
+        y: 259,
         size: 9.5,
         font: font,
         color: black
       });
 
       receiptPage.drawText(String(donor.pan || 'NOT_PROVIDED'), {
-        x: 401.9,
-        y: 278,
+        x: 403.0,
+        y: 259,
         size: 9.5,
         font: font,
         color: black
       });
 
-      // Row 4: Payment Mode
+      // Row 4: Payment Mode (label at baseline ~220.5, entry at y=202)
       const modeStr = (donor.paymentMode || 'Razorpay Online Seva') + (meta.txnId ? ` (Txn ID: ${meta.txnId})` : '');
       const modeW = font.widthOfTextAtSize(modeStr, 9.5);
       receiptPage.drawText(modeStr, {
         x: (width - modeW) / 2,
-        y: 224,
+        y: 202,
         size: 9.5,
         font: font,
         color: black
-      });
-
-      // Page indicator at bottom
-      receiptPage.drawText('Page 2 of 2 : Official 80G Tax Exemption Donation Receipt', {
-        x: (width - font.widthOfTextAtSize('Page 2 of 2 : Official 80G Tax Exemption Donation Receipt', 8)) / 2,
-        y: 20,
-        size: 8,
-        font: font,
-        color: rgb(0.4, 0.45, 0.5),
       });
 
       const pdfBytes = await pdfDoc.save();
@@ -1988,7 +1979,7 @@ async function generateReceiptPdfBlob(donor, meta) {
 
     y = 675;
 
-    page.drawText('Refercence No: ', { x: 45, y, size: 11, font: bold, color: black });
+    page.drawText('Reference No: ', { x: 45, y, size: 11, font: bold, color: black });
 
     page.drawText(String(meta.refNo || ''), { x: 140, y, size: 10.5, font: font, color: black });
 
