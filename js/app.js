@@ -5044,7 +5044,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (modalDesc) modalDesc.textContent = desc;
 
-      if (modalDonateBtn) modalDonateBtn.href = donateUrl;
+      if (modalDonateBtn) {
+        modalDonateBtn.href = donateUrl;
+        if (donateUrl && donateUrl.startsWith('gallery-')) {
+          modalDonateBtn.innerHTML = '<i class="fa-solid fa-images"></i> Visit Dedicated Gallery &amp; Sponsor';
+        } else {
+          modalDonateBtn.innerHTML = '<i class="fa-solid fa-heart"></i> Sponsor Meals for this Initiative';
+        }
+      }
 
 
 

@@ -123,7 +123,7 @@
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261105a">
+  <link rel="stylesheet" href="css/style.css?v=20261105b">
 </head>
 
 <body>
@@ -290,222 +290,180 @@
       <!-- Category Filter Tabs -->
       <div class="gallery-filter-wrap" role="tablist" aria-label="Initiative categories">
         <button class="gallery-tab-btn active" role="tab" aria-selected="true" data-filter="all"><i class="fa-solid fa-border-all"></i> All Initiatives</button>
-        <button class="gallery-tab-btn" role="tab" aria-selected="false" data-filter="hospital"><i class="fa-solid fa-hospital"></i> Hospital Kiosks</button>
-        <button class="gallery-tab-btn" role="tab" aria-selected="false" data-filter="kitchen"><i class="fa-solid fa-kitchen-set"></i> Kitchen &amp; Cooking</button>
-        <button class="gallery-tab-btn" role="tab" aria-selected="false" data-filter="flood"><i class="fa-solid fa-water"></i> Flood Relief</button>
-        <button class="gallery-tab-btn" role="tab" aria-selected="false" data-filter="csr"><i class="fa-solid fa-handshake"></i> CSR &amp; Team</button>
+        <button class="gallery-tab-btn" role="tab" aria-selected="false" data-filter="hospital"><i class="fa-solid fa-hospital"></i> Hospital Seva</button>
+        <button class="gallery-tab-btn" role="tab" aria-selected="false" data-filter="special"><i class="fa-solid fa-cake-candles"></i> Special Occasions</button>
+        <button class="gallery-tab-btn" role="tab" aria-selected="false" data-filter="disaster"><i class="fa-solid fa-hands-holding-circle"></i> Disaster Relief</button>
+        <button class="gallery-tab-btn" role="tab" aria-selected="false" data-filter="community"><i class="fa-solid fa-users"></i> Community Outreach</button>
       </div>
 
       <!-- Modern Interactive Gallery Grid -->
       <div class="gallery-grid-modern" id="galleryGrid">
 
-        <!-- 1. AIIMS Guwahati Kiosk -->
-        <div class="gallery-card-modern" data-category="hospital" data-badge="Hospital Sattvik Meals Distribution"
-          data-title="AIIMS Guwahati Daily Caregiver Sattvik Meals Distribution"
-          data-desc="Attendants from rural districts receive hot, fresh Sattvik khichdi and sabji outside AIIMS Guwahati emergency counters, easing their medical hardships."
-          data-donate-url="gallery-hospital-meals.html" role="button" tabindex="0" aria-label="Enlarge photo: AIIMS Guwahati Daily Caregiver Sattvik Meals Distribution">
-          <img src="images/gallery/Card_pics/AIIMS_card.JPG" alt="AIIMS Guwahati Kiosk Caregiver Food Distribution" width="600" height="450" fetchpriority="high" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">AIIMS Guwahati</span>
-            <div class="gallery-title">Daily Caregiver Sattvik Meals Distribution</div>
-            <p class="gallery-desc-short">Serving 500+ patient caregivers daily with wholesome Sattvik Meals.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 1. Hospital Caregiver Meals -->
+        <div class="gallery-card-modern" data-category="hospital" data-badge="Hospital Caregiver Seva"
+          data-title="Daily Hospital Caregiver Meals Distribution"
+          data-desc="Wholesome, hot Sattvik meals served daily to impoverished caregivers and patient attendants outside government medical institutions across Guwahati."
+          data-donate-url="gallery-hospital-meals.html" role="button" tabindex="0" aria-label="Enlarge photo: Daily Hospital Caregiver Meals Distribution">
+          <img src="images/gallery/Card_pics/AIIMS_card.JPG" alt="Daily Hospital Caregiver Meals Distribution" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-hospital"></i> Hospital Seva</span>
+            <div class="gallery-title">Daily Hospital Caregiver Meals Distribution</div>
+            <p class="gallery-sub">Nourishing patient families outside government hospital wards</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 2. Guwahati Medical College & Hospital (GMCH) Distribution -->
-        <div class="gallery-card-modern" data-category="hospital" data-badge="Hospital Sattvik Meals Distribution"
-          data-title="Guwahati Medical College & Hospital (GMCH) Trauma &amp; ICU Caregiver Outreach"
-          data-desc="Dedicated devotees and volunteers distributing nourishing meals to hundreds of families camping outside Bhangagarh hospital corridors."
-          data-donate-url="donate-gmch.html" role="button" tabindex="0" aria-label="Enlarge photo: GMCH Trauma &amp; emergency relief">
-          <img src="images/gallery/Card_pics/GMCH card.jpg" alt="Guwahati Medical College &amp; Hospital Sattvik Meals Distribution" width="600" height="450" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Guwahati Medical College &amp; Hospital (GMCH)</span>
-            <div class="gallery-title">Trauma &amp; emergency relief</div>
-            <p class="gallery-desc-short">nutritious meals delivered right where families wait day and night for their hospitalized loved ones.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 2. AIIMS Guwahati Hospital Food Kiosk -->
+        <div class="gallery-card-modern" data-category="hospital" data-badge="AIIMS Guwahati Seva"
+          data-title="AIIMS Guwahati Hospital Food Kiosk"
+          data-desc="Dedicated permanent food kiosk counter serving fresh meals round-the-clock outside AIIMS Guwahati emergency entrance."
+          data-donate-url="gallery-aiims.html" role="button" tabindex="0" aria-label="Enlarge photo: AIIMS Guwahati Hospital Food Kiosk">
+          <img src="images/gallery/Card_pics/aiims_kiosk.jpg" alt="AIIMS Guwahati Hospital Food Kiosk" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-square-plus"></i> AIIMS Guwahati</span>
+            <div class="gallery-title">AIIMS Guwahati Hospital Food Kiosk</div>
+            <p class="gallery-sub">Emergency food kiosk counter for rural hospital attendants</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- Pure for Cure Hospital Food Distribution Kiosk Counter -->
-        <div class="gallery-card-modern" data-category="hospital" data-badge="Hospital Food Kiosk"
-          data-title="Pure for Cure Dedicated Hospital Food Distribution Kiosk Counter"
-          data-desc="Permanent hygienic food distribution kiosk counter established outside hospital grounds to serve hot, fresh Sattvik meals directly to waiting patient caregivers and attendants."
-          data-donate-url="donate-kiosk.html" role="button" tabindex="0" aria-label="Enlarge photo: Pure for Cure Hospital Food Distribution Kiosk Counter">
-          <img src="images/gallery/pfc_kiosk.JPG" alt="Pure for Cure Hospital Food Distribution Kiosk Counter" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Hospital Food Kiosk</span>
-            <div class="gallery-title">Pure for Cure Distribution Kiosk Counter</div>
-            <p class="gallery-desc-short">Permanent hygienic booth serving 500+ patient caregivers daily.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 3. GMCH Guwahati Trauma & Emergency Seva -->
+        <div class="gallery-card-modern" data-category="hospital" data-badge="GMCH Guwahati Seva"
+          data-title="GMCH Guwahati Trauma &amp; Emergency Seva"
+          data-desc="Continuous daily caregiver meal distributions at Guwahati Medical College &amp; Hospital supporting hundreds of ICU families."
+          data-donate-url="gallery-gmch.html" role="button" tabindex="0" aria-label="Enlarge photo: GMCH Guwahati Trauma &amp; Emergency Seva">
+          <img src="images/gallery/Card_pics/GMCH card.jpg" alt="GMCH Guwahati Trauma &amp; Emergency Seva" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-truck-medical"></i> GMCH Guwahati</span>
+            <div class="gallery-title">GMCH Guwahati Trauma &amp; Emergency Seva</div>
+            <p class="gallery-sub">Daily hot meals for ICU &amp; emergency caregivers at GMCH</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 3. BBCI Cancer Care -->
-        <div class="gallery-card-modern" data-category="hospital" data-badge="Cancer Care"
-          data-title="B. Borooah Cancer Institute (BBCI) Kiosk"
-          data-desc="Specialized nutrition prepared without heavy spices or irritants to nurture cancer fighters and attendants during exhausting chemo cycles."
-          data-donate-url="donate-bbci.html" role="button" tabindex="0" aria-label="Enlarge photo: BBCI Cancer Center Healing Sattvik Meals">
-          <img src="images/gallery/Card_pics/BBCI Card.JPG" alt="BBCI Cancer Care Meal Distribution" width="600" height="450" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">BBCI Cancer Center</span>
-            <div class="gallery-title">Healing Sattvik Meals for Cancer Families</div>
-            <p class="gallery-desc-short">Gentle, hygienic, easy-to-digest nutrition for fighting cancer with strength.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 4. BBCI Cancer Care Patient Family Nutrition -->
+        <div class="gallery-card-modern" data-category="hospital" data-badge="Cancer Care Seva"
+          data-title="BBCI Cancer Care Patient Family Nutrition"
+          data-desc="Compassionate food relief for low-income cancer patients and their accompanying families at Dr. B. Borooah Cancer Institute."
+          data-donate-url="gallery-borooah.html" role="button" tabindex="0" aria-label="Enlarge photo: BBCI Cancer Care Patient Family Nutrition">
+          <img src="images/gallery/Card_pics/BBCI Card.JPG" alt="BBCI Cancer Care Patient Family Nutrition" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-ribbon"></i> Cancer Care</span>
+            <div class="gallery-title">BBCI Cancer Care Patient Family Nutrition</div>
+            <p class="gallery-sub">Empowering fighting families at Dr. B. Borooah Cancer Institute</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 4. Thermal Food Vessels & Insulated Dispensers -->
-        <div class="gallery-card-modern" data-category="kitchen" data-badge="Thermal Hygiene"
-          data-title="Stainless Steel Insulated Thermal Food Vessels &amp; Canisters"
-          data-desc="Custom-engineered insulated stainless steel thermal containers and dispensers keeping 3,000+ meals steaming hot above 65°C from our central kitchen to hospital counters."
-          data-donate-url="donate-kitchen.html" role="button" tabindex="0" aria-label="Enlarge photo: Insulated Food Vessels &amp; Canisters">
-          <img src="images/gallery/pfc_vessels.png" alt="Pure for Cure Insulated Thermal Food Vessels and Dispensers" width="600" height="450" loading="lazy" decoding="async" class="face-center">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Thermal Insulation</span>
-            <div class="gallery-title">Insulated Food Vessels &amp; Canisters</div>
-            <p class="gallery-desc-short">Preserving heat, fresh aroma, and pristine hygiene during transit.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 5. Birthday & Special Milestone Annadanam -->
+        <div class="gallery-card-modern" data-category="special" data-badge="Milestone Annadanam"
+          data-title="Birthday &amp; Special Milestone Annadanam"
+          data-desc="Sharing joyous life occasions, birthdays, and anniversaries by sponsoring warm, hygienic Sattvik meals for hospital attendants."
+          data-donate-url="gallery-birthday.html" role="button" tabindex="0" aria-label="Enlarge photo: Birthday &amp; Special Milestone Annadanam">
+          <img src="images/gallery/Card_pics/special_occasion_card.jpg" alt="Birthday &amp; Special Milestone Annadanam" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-cake-candles"></i> Milestone Seva</span>
+            <div class="gallery-title">Birthday &amp; Special Milestone Annadanam</div>
+            <p class="gallery-sub">Celebrating birthdays and life milestones through compassionate feeding</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 5. BBCI Kiosk Inauguration by Hon'ble MLA -->
-        <div class="gallery-card-modern" data-category="hospital" data-badge="BBCI Kiosk Inauguration"
-          data-title="Pure for Cure BBCI Kiosk Inauguration"
-          data-desc="Official inauguration ceremony of the Pure for Cure Food Kiosk at Dr. B. Borooah Cancer Institute (BBCI Guwahati), inaugurated by Hon'ble MLA and respected dignitaries, sponsored by Lohia Group under CSR."
-          data-donate-url="donate-bbci.html" role="button" tabindex="0" aria-label="Enlarge photo: Pure for Cure BBCI Kiosk Inauguration">
-          <img src="images/gallery/Important pics/pfc_start.jpg" alt="Pure for Cure BBCI Kiosk Inauguration Ceremony" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">BBCI Kiosk Inauguration</span>
-            <div class="gallery-title">BBCI Kiosk Inaugurated by Hon'ble MLA</div>
-            <p class="gallery-desc-short">Sponsored by Lohia Group under CSR at BBCI Guwahati.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 6. Sattvik Meals in Memory of Loved Ones -->
+        <div class="gallery-card-modern" data-category="special" data-badge="In Memory Seva"
+          data-title="Sattvik Meals in Memory of Loved Ones"
+          data-desc="Honoring departed elders and departed loved ones through sacred Annadanam served to distressed families in hospitals."
+          data-donate-url="gallery-in-memory.html" role="button" tabindex="0" aria-label="Enlarge photo: Sattvik Meals in Memory of Loved Ones">
+          <img src="images/gallery/Card_pics/in_memory_loved_ones_card.jpg" alt="Sattvik Meals in Memory of Loved Ones" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-om"></i> In Memory Seva</span>
+            <div class="gallery-title">Sattvik Meals in Memory of Loved Ones</div>
+            <p class="gallery-sub">Tribute Annadanam keeping sacred memories alive through service</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 6. Inaugural Caregiver Meal Distribution -->
-        <div class="gallery-card-modern" data-category="kitchen" data-badge="Inaugural Service"
-          data-title="Inaugural Caregiver Meal Distribution Drives — 2017"
-          data-desc="Dedicated volunteers and devotees serving the earliest batches of pure, nourishing Sattvik meals to patient attendants and families outside government healthcare facilities in Guwahati."
-          data-donate-url="donate-kitchen.html" role="button" tabindex="0" aria-label="Enlarge photo: Early Hospital Caregiver Food Drives">
-          <img src="images/gallery/Important pics/pfc_start2.jpg" alt="Inaugural Caregiver Meal Distribution 2017" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Inaugural Service</span>
-            <div class="gallery-title">Early Hospital Caregiver Food Drives</div>
-            <p class="gallery-desc-short">Reaching patient families camping outside hospitals with warm meals.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 7. Namami Brahmaputra Sacred Mahabhog -->
+        <div class="gallery-card-modern" data-category="special" data-badge="Riverfront Mahabhog"
+          data-title="Namami Brahmaputra Sacred Mahabhog"
+          data-desc="Grand riverfront food relief and sanctified Prasad distribution reaching thousands of pilgrims and devotees in Assam."
+          data-donate-url="gallery-namami.html" role="button" tabindex="0" aria-label="Enlarge photo: Namami Brahmaputra Sacred Mahabhog">
+          <img src="images/gallery/Card_pics/namami-card.jpg" alt="Namami Brahmaputra Sacred Mahabhog" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-water"></i> Sacred Mahabhog</span>
+            <div class="gallery-title">Namami Brahmaputra Sacred Mahabhog</div>
+            <p class="gallery-sub">Riverfront feast distributions across Brahmaputra ghats</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 7. Dedicated Pure for Cure vehicle distribution -->
-        <div class="gallery-card-modern" data-category="hospital" data-badge="Logistics &amp; Mobility"
-          data-title="Dedicated Pure for Cure Distribution Vehicle"
-          data-desc="Our specialized insulated food distribution vehicle navigates Guwahati traffic daily to ensure timely lunch delivery across all hospital centers."
-          data-donate-url="donate-vehicle.html" role="button" tabindex="0" aria-label="Enlarge photo: Timely Hospital Delivery Vehicle">
-          <img src="images/gallery/pfc_vehicle.jpg" alt="Dedicated Pure for Cure Distribution Vehicle" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Distribution Vehicle</span>
-            <div class="gallery-title">Timely Hospital Delivery</div>
-            <p class="gallery-desc-short">Transporting hot thermal dispensers across hospital networks daily.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 8. Assam Flood Relief Emergency Food Drives -->
+        <div class="gallery-card-modern" data-category="disaster" data-badge="Disaster Food Relief"
+          data-title="Assam Flood Relief Emergency Food Drives"
+          data-desc="Rapid disaster response via boats and mobile kitchens delivering hot meals and GAIL-backed dry ration kits to marooned flood victims."
+          data-donate-url="gallery-assam.html" role="button" tabindex="0" aria-label="Enlarge photo: Assam Flood Relief Emergency Food Drives">
+          <img src="images/gallery/Card_pics/flood_1.jpg" alt="Assam Flood Relief Emergency Food Drives" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-life-ring"></i> Disaster Relief</span>
+            <div class="gallery-title">Assam Flood Relief Emergency Food Drives</div>
+            <p class="gallery-sub">Emergency boat relief and hot meal distribution in inundated hamlets</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 8. Flood Relief Boat Drive -->
-        <div class="gallery-card-modern" data-category="flood" data-badge="Disaster Service"
-          data-title="Emergency Boat Relief in Assam Floods"
-          data-desc="Devotees navigating inundated Brahmaputra villages by motorboat to deliver nutritious meals, dry food packets, and clean drinking water to marooned families."
-          data-donate-url="flood-relief.html" role="button" tabindex="0" aria-label="Enlarge photo: Emergency Boat Operations in Assam Floods">
-          <img src="images/gallery/Card_pics/flood_1.jpg" alt="Assam Flood Relief Boat Operations" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Assam Flood Relief</span>
-            <div class="gallery-title">Emergency Boat Operations</div>
-            <p class="gallery-desc-short">Reaching submerged islands where no dry kitchen can function.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 9. COVID-19 Lockdown Emergency Food Relief -->
+        <div class="gallery-card-modern" data-category="disaster" data-badge="Pandemic Food Relief"
+          data-title="COVID-19 Lockdown Emergency Food Relief"
+          data-desc="Continuous humanitarian meals distributed across Guwahati during strict lockdowns, ensuring no stranded migrant or patient went hungry."
+          data-donate-url="gallery-covid.html" role="button" tabindex="0" aria-label="Enlarge photo: COVID-19 Lockdown Emergency Food Relief">
+          <img src="images/gallery/Card_pics/covid19.png" alt="COVID-19 Lockdown Emergency Food Relief" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-shield-virus"></i> Pandemic Seva</span>
+            <div class="gallery-title">COVID-19 Lockdown Emergency Food Relief</div>
+            <p class="gallery-sub">Serving daily-wage workers, migrants, and hospital families during lockdown</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 9. Flood Relief Ration Camps -->
-        <div class="gallery-card-modern" data-category="flood" data-badge="Disaster Service"
-          data-title="Dry Ration &amp; Cooked Food Distribution Camp"
-          data-desc="Setting up relief points on highway embankments and higher ground to feed thousands of displaced rural families and children."
-          data-donate-url="flood-relief.html" role="button" tabindex="0" aria-label="Enlarge photo: Highway Embankment Food Distribution">
-          <img src="images/gallery/flood-relief-2.jpg" alt="Flood Relief Highway Food Distribution Camp" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Disaster Relief</span>
-            <div class="gallery-title">Highway Embankment Food Distribution</div>
-            <p class="gallery-desc-short">Providing sustained relief until floodwaters recede.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 10. Orphanages & Child Care Homes Nutrition -->
+        <div class="gallery-card-modern" data-category="community" data-badge="Child Nutrition Seva"
+          data-title="Orphanages &amp; Child Care Homes Nutrition"
+          data-desc="Nutritious, freshly cooked Sattvik meals and seasonal fruits lovingly served to children in shelter homes and childcare centers."
+          data-donate-url="gallery-orphanage.html" role="button" tabindex="0" aria-label="Enlarge photo: Orphanages &amp; Child Care Homes Nutrition">
+          <img src="images/gallery/Card_pics/Orphanage_card.jpeg" alt="Orphanages &amp; Child Care Homes Nutrition" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-child-reaching"></i> Child Care</span>
+            <div class="gallery-title">Orphanages &amp; Child Care Homes Nutrition</div>
+            <p class="gallery-sub">Wholesome meals and warm care for children in registered homes</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 10. Corporate CSR Partnerships (GAIL & NRL) -->
-        <div class="gallery-card-modern" data-category="csr" data-badge="Corporate CSR"
-          data-title="GAIL (India) Limited &amp; NRL CSR Healthcare Partnerships"
-          data-desc="Leading corporate enterprises partnering with Pure for Cure to provide subsidized and free daily meals to patient attendants outside major government hospitals in Assam."
-          data-donate-url="csr.html" role="button" tabindex="0" aria-label="Enlarge photo: GAIL and NRL Corporate CSR Partnerships">
-          <img src="images/gallery/csr/gail_sponsor_banner.jpg" alt="Corporate CSR Partnerships GAIL and NRL" width="600" height="450" loading="lazy" decoding="async" class="face-center">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Corporate CSR</span>
-            <div class="gallery-title">GAIL &amp; NRL CSR Service</div>
-            <p class="gallery-desc-short">Empowering hospital kiosks and mobile delivery infrastructure.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
+        <!-- 11. Sattvik Meals for Assam Police Personnel -->
+        <div class="gallery-card-modern" data-category="community" data-badge="Secretariat Seva"
+          data-title="Sattvik Meals for Assam Police Personnel"
+          data-desc="Honoring dedicated Assam Police personnel on duty at Dispur Secretariat with fresh, wholesome, sanctified Sattvik meal distributions."
+          data-donate-url="gallery-police.html" role="button" tabindex="0" aria-label="Enlarge photo: Sattvik Meals for Assam Police Personnel">
+          <img src="images/gallery/Card_pics/dispur_police_meals.jpg" alt="Sattvik Meals for Assam Police Personnel" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-shield-halved"></i> Police Seva</span>
+            <div class="gallery-title">Sattvik Meals for Assam Police Personnel</div>
+            <p class="gallery-sub">Wholesome meals served to frontline security personnel at Dispur Secretariat</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
-        <!-- 11. Milestone Birthday & Anniversary Annadanam -->
-        <div class="gallery-card-modern" data-category="csr" data-badge="Milestone Service"
-          data-title="Birthday &amp; Special Milestone Annadanam at BBCI &amp; GMCH"
-          data-desc="Families and donors celebrating auspicious life milestones by sponsoring pure, nourishing Sattvik meals for patient attendants camping in hospital corridors."
-          data-donate-url="donate-birthday.html" role="button" tabindex="0" aria-label="Enlarge photo: birthday meal distribution at Hospitals">
-          <img src="images/gallery/Card_pics/special_occasion_card.jpg" alt="Birthday and Milestone Meal Distribution at Hospitals" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Milestone Annadanam</span>
-            <div class="gallery-title">birthday meal distribution at Hospitals</div>
-            <p class="gallery-desc-short">Sharing joyous life occasions by feeding patient attendants.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
-          </div>
-        </div>
-
-        <!-- 12. dedicated team -->
-        <div class="gallery-card-modern" data-category="csr" data-badge="Service Team"
-          data-title="Meet Our Kitchen &amp; On-Ground Hospital Sevaks"
-          data-desc="Over 500+ dedicated kitchen cooks, food delivery drivers, and young volunteers serving the underprivileged 365 days a year across Greater Guwahati."
-          data-donate-url="about.html#team" role="button" tabindex="0" aria-label="Enlarge photo: Dedicated Pure for Cure Service Team">
-          <img src="images/gallery/team/kitchen_care_team.jpg" alt="Dedicated Pure for Cure Kitchen and Hospital Service Team" width="600" height="450" loading="lazy" decoding="async" class="face-top">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">our distribution team</span>
-            <div class="gallery-title">Compassionate Hands</div>
-            <p class="gallery-desc-short">Devoted volunteers ensuring no caregiver sleeps hungry.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Sponsor</div>
-          </div>
-        </div>
-
-        <!-- 13. Namami Brahmaputra Sacred Mahabhog Distribution -->
-        <div class="gallery-card-modern" data-category="csr" data-badge="Riverfront Mahabhog"
-          data-title="Namami Brahmaputra Sacred Mahabhog Distribution"
-          data-desc="Dedicated volunteers and student scouts serving piping hot, wholesome Sattvik meals from insulated containers to tens of thousands of pilgrims and visitors along the Brahmaputra ghats."
-          data-donate-url="gallery-namami.html" role="button" tabindex="0" aria-label="Enlarge photo: Namami Brahmaputra Sacred Mahabhog Distribution">
-          <img src="images/gallery/Card_pics/namami-card.jpg" alt="Namami Brahmaputra Sacred Mahabhog Distribution" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Namami Brahmaputra</span>
-            <div class="gallery-title">Riverfront Mahabhog Distribution</div>
-            <p class="gallery-desc-short">Mass Annadanam serving pilgrims and visitors at riverfront ghats.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; View Gallery</div>
-          </div>
-        </div>
-
-        <!-- 14. Rural Outreach & School Food Distribution -->
-        <div class="gallery-card-modern" data-category="csr" data-badge="School & Rural Outreach"
-          data-title="Rural Outreach & School Food Distribution"
-          data-desc="Extending hot, nutritious Sattvik mid-day meals and character-building education to schoolchildren and forest-fringe village communities across rural Assam."
-          data-donate-url="gallery-rural.html" role="button" tabindex="0" aria-label="Enlarge photo: Rural Outreach and School Food Distribution">
-          <img src="images/gallery/Card_pics/Rural Outreach.jpg" alt="Rural Outreach and School Food Distribution" width="600" height="450" loading="lazy" decoding="async">
-          <div class="gallery-card-overlay">
-            <span class="gallery-badge">Rural &amp; School Feeding</span>
-            <div class="gallery-title">Rural School Children Outreach</div>
-            <p class="gallery-desc-short">Daily wholesome nutrition for underprivileged schoolchildren in Assam.</p>
-            <div class="gallery-hover-action"><i class="fa-solid fa-expand"></i> Click to Enlarge &amp; View Gallery</div>
+        <!-- 12. Rural Outreach & School Nutrition -->
+        <div class="gallery-card-modern" data-category="community" data-badge="Rural Outreach Seva"
+          data-title="Rural Outreach &amp; School Nutrition"
+          data-desc="Supplementary meal drives, health kits, and nutritional assistance distributed to village children across rural Kamrup district."
+          data-donate-url="gallery-rural.html" role="button" tabindex="0" aria-label="Enlarge photo: Rural Outreach &amp; School Nutrition">
+          <img src="images/gallery/Card_pics/Rural Outreach.jpg" alt="Rural Outreach &amp; School Nutrition" width="600" height="450" loading="lazy" decoding="async">
+          <div class="gallery-overlay">
+            <span class="gallery-badge"><i class="fa-solid fa-school"></i> Rural Seva</span>
+            <div class="gallery-title">Rural Outreach &amp; School Nutrition</div>
+            <p class="gallery-sub">Wholesome food distributions to underprivileged rural school children</p>
+            <div class="gallery-action"><i class="fa-solid fa-expand"></i> View Memories &amp; Details</div>
           </div>
         </div>
 
@@ -1140,7 +1098,7 @@
     </div>
   </footer>
 
-  <script src="js/app.js?v=20261105a"></script>
+  <script src="js/app.js?v=20261105b"></script>
 
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0"
