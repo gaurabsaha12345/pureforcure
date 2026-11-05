@@ -311,7 +311,7 @@ export default async function handler(req, res) {
               ` : ''}
 
               <p style="margin: 0 0 16px 0; font-size: 13.5px; line-height: 1.6; color: #64748B;">
-                <em>Note: Please find your official signed PDF receipt attached with this email for your tax exemption filing (Form 10BD compliant).</em>
+                <em>Note: Please find your official signed 2-page PDF receipt attached with this email for your tax exemption filing (Form 10BD compliant). Page 1 provides your verified Donor Details Record, and Page 2 provides the Official 80G Tax Exemption Receipt.</em>
               </p>
 
               <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #334155;">

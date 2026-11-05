@@ -11751,6 +11751,57 @@ img {
 
 
 
+/* Print optimization: When printing from browser, only display the receipt modal */
+@media print {
+  /* Hide all background website elements */
+  body > *:not(#receipt-modal),
+  header, footer, nav, .site-header, .site-footer,
+  .hero-section, .initiatives-section, .donations-section,
+  .whatsapp-float, .btn-float, .back-to-top,
+  .lightbox-close-btn, #receipt-close-btn,
+  .receipt-card button, .receipt-modal-backdrop button {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  body, html {
+    background: #FFFFFF !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #receipt-modal {
+    position: static !important;
+    display: block !important;
+    background: #FFFFFF !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    visibility: visible !important;
+  }
+
+  .receipt-card, .receipt-modal-card {
+    position: static !important;
+    display: block !important;
+    box-shadow: none !important;
+    border: 1px solid #CBD5E1 !important;
+    padding: 24px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid !important;
+  }
+
+  .receipt-highlight-box {
+    border: 1px solid #16A34A !important;
+    background: #F0FDF4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
 /* Sub-Navigation Quick Links Strip */
 
 
