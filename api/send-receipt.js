@@ -222,11 +222,11 @@ export default async function handler(req, res) {
               </p>
 
               <p style="margin: 0 0 18px 0; font-size: 14px; line-height: 1.65; color: #475569;">
-                Thank you for your noble and heartfelt contribution to <strong>Pure For Cure</strong>, a charitable feeding mission dedicated to serving the divine vision and teachings of His Divine Grace Vishwaguru A.C. Bhaktivedanta Swami Srila Prabhupada.
+                Thank you for your noble and heartfelt contribution to <strong>Pure For Cure</strong>, a charitable feeding mission dedicated to serving the divine vision and teachings of His Divine Grace Vishwaguru A.C. Bhaktivedanta Swami Prabhupada.
               </p>
 
               <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.65; color: #475569;">
-                Your generous support directly empowers our centralized mechanized kitchen to serve warm, nutritious, piping-hot Sattvik meals to patient caregivers and families facing medical hardships outside government hospitals across Assam.
+                Your generous support directly empowers our centralized mechanized kitchen to serve warm, nutritious, piping-hot Sattvik meals to patient caregivers and families facing medical hardships outside government hospitals for patients, Old-Age Homes, Orphanages &amp; places in need across Assam.
               </p>
 
               <!-- Itemized Receipt Summary Card -->
