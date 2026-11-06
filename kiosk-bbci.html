@@ -117,7 +117,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261106_1815">
+  <link rel="stylesheet" href="css/style.css?v=20261106_1845">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
@@ -273,6 +273,28 @@
 <section class="section" style="background:#FFFFFF;">
     <div class="container">
       <div class="grid-2" style="align-items:center; gap:3rem; margin-bottom:3.5rem;">
+        <!-- Left: Photo Gallery -->
+        <div>
+          <div class="product-featured-img-wrap">
+            <span class="product-location-badge"><i class="fa-solid fa-location-dot"></i> BBCI Cancer Hospital, Gopinath Nagar</span>
+            <img id="bbci-feat-img" src="images/gallery/bbci_gallery/Title.JPG" alt="BBCI Cancer Care Distribution" class="product-featured-img" fetchpriority="high" decoding="async">
+          </div>
+          <!-- Interactive Slideshow 10 Thumbnails (from dedicated bbci_gallery folder) -->
+          <div class="product-thumbs-strip">
+            <img src="images/gallery/bbci_gallery/Title.JPG" alt="BBCI Kiosk Counter Structure Slide 1" class="product-thumb active" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4062.JPG" alt="BBCI Attendant Meal Distribution Slide 2" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4064.JPG" alt="Serving Pure Sattvik Lunch at BBCI Slide 3" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4837.JPG" alt="Daily Cancer Hospital Seva Slide 4" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4839.JPG" alt="Compassion in Healthcare Corridor Slide 5" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4839.JPG" alt="Caregivers in Orderly Queue Slide 6" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4840.JPG" alt="Fresh Warm Food Service Slide 7" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4841.JPG" alt="Volunteers at BBCI Food Counter Slide 8" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4842.JPG" alt="Dignified Meal Distribution Slide 9" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+            <img src="images/gallery/bbci_gallery/DSC_4843.JPG" alt="Caregivers Receiving Warm Meals Slide 10" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
+          </div>
+        </div>
+
+        <!-- Right: Kiosk Overview & CTA -->
         <div>
           <span class="section-tag">KIOSK OVERVIEW</span>
           <h2 style="font-size:2rem; color:var(--dark); margin-bottom:1rem;">Nourishing with Compassion Every Single Day</h2>
@@ -291,26 +313,6 @@
           <div style="display:flex; gap:1rem; flex-wrap:wrap;">
             <a href="donate-bbci.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-heart"></i> Donate for BBCI Guwahati &rarr;</a>
             <a href="programs.html" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> All Programs</a>
-          </div>
-        </div>
-
-        <div>
-          <div class="product-featured-img-wrap">
-            <span class="product-location-badge"><i class="fa-solid fa-location-dot"></i> BBCI Cancer Hospital, Gopinath Nagar</span>
-            <img id="bbci-feat-img" src="images/gallery/bbci_gallery/Title.JPG" alt="BBCI Cancer Care Distribution" class="product-featured-img" fetchpriority="high" decoding="async">
-          </div>
-          <!-- Interactive Slideshow 10 Thumbnails (from dedicated bbci_gallery folder) -->
-          <div class="product-thumbs-strip">
-            <img src="images/gallery/bbci_gallery/Title.JPG" alt="BBCI Kiosk Counter Structure Slide 1" class="product-thumb active" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4062.JPG" alt="BBCI Attendant Meal Distribution Slide 2" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4064.JPG" alt="Serving Pure Sattvik Lunch at BBCI Slide 3" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4837.JPG" alt="Daily Cancer Hospital Seva Slide 4" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4839.JPG" alt="Compassion in Healthcare Corridor Slide 5" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4839.JPG" alt="Caregivers in Orderly Queue Slide 6" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4840.JPG" alt="Fresh Warm Food Service Slide 7" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4841.JPG" alt="Volunteers at BBCI Food Counter Slide 8" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4842.JPG" alt="Dignified Meal Distribution Slide 9" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
-            <img src="images/gallery/bbci_gallery/DSC_4843.JPG" alt="Caregivers Receiving Warm Meals Slide 10" class="product-thumb" onclick="swapFeaturedImg(this, 'bbci-feat-img')" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
@@ -632,7 +634,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261106_1815"></script>
+  <script src="js/app.js?v=20261106_1845"></script>
 
   <!-- Simulated Payment Gateway Checkout Modal -->
     <!-- Razorpay Payment Gateway Checkout Modal -->
