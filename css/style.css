@@ -34023,3 +34023,20 @@ html {
 #product-donation-form {
   scroll-margin-top: 110px !important;
 }
+
+/* Desktop Dual Video Grid for Kiosk Page */
+.kiosk-videos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 900px) {
+  .kiosk-videos-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 899px) {
+  .desktop-only-video {
+    display: none !important;
+  }
+}
