@@ -3163,7 +3163,7 @@ const VERIFIED_SUPABASE_DONATIONS = [
 
     amount: 80,
 
-    causeName: 'Special Occasion (Birthday / Anniversary Milestone Annadanam)',
+    causeName: 'Special Occasion (Birthday / Anniversary Milestone Annadan)',
 
     timeAgo: '02 Nov 2026, 01:41 PM',
 
@@ -3751,7 +3751,7 @@ function formatFooterCause(cause) {
 
   if (cleaned.toLowerCase().includes('birthday') || cleaned.toLowerCase().includes('occasion')) return 'Special Occasion Meals';
 
-  if (cleaned.toLowerCase().includes('amavasya')) return 'Amavasya Annadanam';
+  if (cleaned.toLowerCase().includes('amavasya')) return 'Amavasya Annadan';
 
   if (cleaned.toLowerCase().includes('memory') || cleaned.toLowerCase().includes('loved ones')) return 'In Memory of Loved Ones';
 

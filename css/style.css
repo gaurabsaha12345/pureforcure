@@ -28423,53 +28423,24 @@ input[type="submit"] {
 
 
 .pfc-whatsapp-widget {
-
-
-
   position: fixed;
-
-
-
   bottom: 24px;
-
-
-
   left: 24px;
-
-
-
+  right: auto !important;
+  width: 58px !important;
+  height: 58px !important;
+  max-width: 58px !important;
+  max-height: 58px !important;
+  border-radius: 50% !important;
   z-index: 99999;
-
-
-
   display: flex;
-
-
-
   align-items: center;
-
-
-
-  gap: 10px;
-
-
-
+  justify-content: center;
   text-decoration: none;
-
-
-
   cursor: pointer;
-
-
-
   -webkit-tap-highlight-color: transparent;
-
-
-
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-
-
-
+  pointer-events: auto !important;
 }
 
 
@@ -28791,21 +28762,14 @@ input[type="submit"] {
 
 
 @media (max-width: 768px) {
-
-
-
   .pfc-whatsapp-widget {
-
-
-
-    bottom: 18px;
-
-
-
-    left: 18px;
-
-
-
+    bottom: 18px !important;
+    left: 18px !important;
+    right: auto !important;
+    width: 50px !important;
+    height: 50px !important;
+    max-width: 50px !important;
+    max-height: 50px !important;
   }
 
 
@@ -34002,7 +33966,13 @@ button,
 .pfc-whatsapp-widget,
 .pfc-wa-floating-btn {
   bottom: calc(20px + var(--sab)) !important;
-  right: calc(20px + var(--sar)) !important;
+  left: calc(20px + var(--sal)) !important;
+  right: auto !important;
+  width: 58px !important;
+  height: 58px !important;
+  max-width: 58px !important;
+  max-height: 58px !important;
+  border-radius: 50% !important;
 }
 .lightbox-modal,
 .donation-modal,
