@@ -7573,7 +7573,7 @@ document.addEventListener('DOMContentLoaded', function() {
 window.updateKioskBudget = function(selectEl) {
   if (!selectEl) return;
   var opt = selectEl.options[selectEl.selectedIndex];
-  var budget = opt.getAttribute('data-budget') || '₹11,00,000';
+  var budget = opt.getAttribute('data-budget') || '₹ 11,00,000';
   var target = document.getElementById('csr-budget-range');
   if (target) {
     target.value = budget;
