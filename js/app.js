@@ -7619,39 +7619,25 @@ window.handleCSRFormSubmit = function(e, form) {
 
 
   const vehicleCount = formEl.querySelector('[name="vehicle_count"]')?.value || '';
-
   const kioskCount = formEl.querySelector('[name="kiosk_count"]')?.value || '';
-
+  const kitCount = formEl.querySelector('[name="kit_count"]')?.value || '';
   const kitchenSupport = formEl.querySelector('[name="kitchen_support"]')?.value || '';
-
   const vesselsCount = formEl.querySelector('[name="vessels_count"]')?.value || '';
 
-
-
   let countDetails = '';
-
   if (vehicleCount) countDetails += `Vehicles: ${vehicleCount}. `;
-
   if (kioskCount) countDetails += `Kiosks: ${kioskCount}. `;
-
+  if (kitCount) countDetails += `Nutritional Food Baskets: ${kitCount}. `;
   if (kitchenSupport) countDetails += `Kitchen Support: ${kitchenSupport}. `;
-
   if (vesselsCount) countDetails += `Serving Vessels: ${vesselsCount}. `;
 
-
-
   if (!initiative) {
-
     if (vehicleCount) initiative = 'vehicle_sponsorship';
-
     else if (kioskCount) initiative = 'kiosk_adoption';
-
+    else if (kitCount) initiative = 'nutritional_kits_tb_patients';
     else if (kitchenSupport) initiative = 'kitchen_automation';
-
     else if (vesselsCount) initiative = 'vessels_sponsorship';
-
     else initiative = 'csr_general';
-
   }
 
 
@@ -8384,3 +8370,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+
+// Global CSR Kit Budget Calculation
+window.updateKitBudget = function(selectEl) {
+  if (!selectEl) return;
+  var opt = selectEl.options[selectEl.selectedIndex];
+  var budget = opt.getAttribute('data-budget') || '₹ 10,00,000';
+  var target = document.getElementById('csr-budget-range');
+  if (target) {
+    target.value = budget;
+  }
+};
