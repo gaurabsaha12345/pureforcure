@@ -120,7 +120,7 @@
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261106_1945">
+  <link rel="stylesheet" href="css/style.css?v=20261106_2000">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
@@ -324,31 +324,6 @@
             </p>
           </div>
 
-          <!-- Feature Highlights Box -->
-          <div
-            style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:var(--radius-md); padding:1.75rem; margin-bottom:2rem;">
-            <h4 style="color:#166534; font-size:1.2rem; margin-bottom:1rem;"><i class="fa-solid fa-circle-check"></i>
-              Highlights of this food initiative:</h4>
-            <ul style="list-style:none; padding:0;">
-              <li
-                style="display:flex; align-items:start; gap:0.75rem; font-size:0.95rem; color:#1F2937; margin-bottom:0.75rem;">
-                <i class="fa-solid fa-leaf" style="color:#16A34A; margin-top:4px;"></i> <span>Over 600 fresh meals
-                  distributed during peak hospital lunch hours</span></li>
-              <li
-                style="display:flex; align-items:start; gap:0.75rem; font-size:0.95rem; color:#1F2937; margin-bottom:0.75rem;">
-                <i class="fa-solid fa-leaf" style="color:#16A34A; margin-top:4px;"></i> <span>Eco-friendly leaf and
-                  paper packaging ensuring zero hospital litter</span></li>
-              <li
-                style="display:flex; align-items:start; gap:0.75rem; font-size:0.95rem; color:#1F2937; margin-bottom:0.75rem;">
-                <i class="fa-solid fa-leaf" style="color:#16A34A; margin-top:4px;"></i> <span>Nutritionally dense blend
-                  of rice, lentils, and seasonal greens</span></li>
-              <li
-                style="display:flex; align-items:start; gap:0.75rem; font-size:0.95rem; color:#1F2937; margin-bottom:0.75rem;">
-                <i class="fa-solid fa-leaf" style="color:#16A34A; margin-top:4px;"></i> <span>Recognized and facilitated
-                  by Guwahati district hospital administration</span></li>
-            </ul>
-          </div>
-
           <!-- Trust Badges (Optimized Same-Line Card Row) -->
           <div class="kiosk-trust-badges-row" style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:0.75rem; border-top:1px solid #E2E8F0; padding-top:1.25rem; margin-bottom:1.25rem; align-items:center;">
             <div style="display:flex; align-items:center; gap:0.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:0.6rem 0.75rem;">
@@ -465,15 +440,15 @@
             </div>
 
             <div class="donation-form-group">
-              <label for="donor-email"><i class="fa-solid fa-envelope"></i> Email (For Donation Receipt):</label>
-              <input type="email" id="donor-email" placeholder="e.g. ramesh.sharma@gmail.com"
-                class="donation-input donor-email" required>
-            </div>
-
-            <div class="donation-form-group">
               <label for="donor-phone"><i class="fa-solid fa-phone"></i> Mobile Number (+91):</label>
               <input type="tel" id="donor-phone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10"
                 title="Please enter a valid 10-digit mobile number" class="donation-input donor-phone" required>
+            </div>
+
+            <div class="donation-form-group">
+              <label for="donor-email"><i class="fa-solid fa-envelope"></i> Email (For Donation Receipt):</label>
+              <input type="email" id="donor-email" placeholder="e.g. ramesh.sharma@gmail.com"
+                class="donation-input donor-email" required>
             </div>
 
             <div class="donation-form-group">
@@ -519,11 +494,7 @@
     <div class="container" style="max-width:860px;">
       <div class="contributors-header">
         <div class="contributors-divider"></div>
-        <h2 class="contributors-title">Recent Donors for Guwahati Medical College & Hospital (GMCH) Food Distribution
-        </h2>
-        <p style="font-size:0.95rem; color:var(--text-muted); margin-top:0.4rem;">
-          Verified recent contributions processed via Payment Gateway.
-        </p>
+        <h2 class="contributors-title">Recent Donors</h2>
       </div>
 
       <div id="dynamic-recent-contributors" data-cause-key="gmch">
@@ -937,7 +908,7 @@
   <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261106_1945"></script>
+  <script src="js/app.js?v=20261106_2000"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 

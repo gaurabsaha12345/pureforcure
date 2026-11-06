@@ -8329,6 +8329,7 @@ window.downloadCurrentReceiptPdf = async function(btn) {
 
 
 /* Handle dynamic 'Others' location input on donation forms */
+window.handleOccasionOtherToggle = function(selectEl) { return window.handleLocationOtherToggle(selectEl); };
 window.handleLocationOtherToggle = function(selectEl) {
   if (!selectEl) return;
   const parent = selectEl.closest('.donation-form-group') || selectEl.parentElement;

@@ -117,7 +117,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261106_1945">
+  <link rel="stylesheet" href="css/style.css?v=20261106_2000">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
@@ -301,17 +301,6 @@
             </p>
           </div>
 
-          <!-- Feature Highlights Box -->
-          <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:var(--radius-md); padding:1.75rem; margin-bottom:2rem;">
-            <h4 style="color:#166534; font-size:1.2rem; margin-bottom:1rem;"><i class="fa-solid fa-circle-check"></i> Highlights of this food initiative:</h4>
-            <ul style="list-style:none; padding:0;">
-              <li style="display:flex; align-items:start; gap:0.75rem; font-size:0.95rem; color:#1F2937; margin-bottom:0.75rem;"><i class="fa-solid fa-leaf" style="color:#16A34A; margin-top:4px;"></i> <span>Dedicated prayer offered in your name at the temple before morning cooking</span></li>
-              <li style="display:flex; align-items:start; gap:0.75rem; font-size:0.95rem; color:#1F2937; margin-bottom:0.75rem;"><i class="fa-solid fa-leaf" style="color:#16A34A; margin-top:4px;"></i> <span>Sponsor 100, 200, or 500 meals dedicated to your loved one</span></li>
-              <li style="display:flex; align-items:start; gap:0.75rem; font-size:0.95rem; color:#1F2937; margin-bottom:0.75rem;"><i class="fa-solid fa-leaf" style="color:#16A34A; margin-top:4px;"></i> <span>Photo memory report sent to your email after the meal drive concludes</span></li>
-              <li style="display:flex; align-items:start; gap:0.75rem; font-size:0.95rem; color:#1F2937; margin-bottom:0.75rem;"><i class="fa-solid fa-leaf" style="color:#16A34A; margin-top:4px;"></i> <span>Official 80G tax exemption receipt for your family</span></li>
-            </ul>
-          </div>
-
           <!-- Trust Badges (Optimized Same-Line Card Row) -->
           <div class="kiosk-trust-badges-row" style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:0.75rem; border-top:1px solid #E2E8F0; padding-top:1.25rem; margin-bottom:1.25rem; align-items:center;">
             <div style="display:flex; align-items:center; gap:0.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:0.6rem 0.75rem;">
@@ -338,14 +327,14 @@
           </div>
 
           <!-- On-Ground Video Showcase in Left Column -->
-          <div class="product-video-card">
-            <div style="margin-bottom:0.85rem;">
+          <div class="product-video-card" style="margin-top:1.5rem; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; padding:1.25rem; box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+            <div style="margin-bottom:0.75rem;">
               <span class="section-tag" style="background:#FEF3C7; color:#B45309; font-size:0.75rem; padding:4px 10px;"><i class="fa-solid fa-video"></i> On-Ground Video</span>
               <h4 style="font-size:1.25rem; color:var(--dark); margin:0.35rem 0 0; font-family:var(--font-body);">Birthday Annadan Food Distribution Video</h4>
               <p style="font-size:0.88rem; color:var(--text-muted); margin:0.25rem 0 0;">Watch moments of joyous milestone meal drives and pure relief brought to patient attendants.</p>
             </div>
-            <div class="product-video-wrapper" style="display:flex; justify-content:center; background:#000; border-radius:12px; overflow:hidden;">
-              <iframe src="https://www.facebook.com/plugins/video.php?height=373&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1072772055330656%2F&show_text=false&width=560&t=0" width="560" height="373" style="border:none;overflow:hidden;max-width:100%;width:100%;aspect-ratio:560/373;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>
+            <div class="product-video-wrapper" style="position:relative; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:#F8FAFC; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+              <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1072772055330656%2F&show_text=false&t=0" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none; display:block;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
             </div>
           </div>
 
@@ -407,50 +396,65 @@
             <!-- Occasion Celebration Details Box -->
             <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:10px; padding:1.25rem; margin-bottom:1.5rem;">
               <h4 style="font-size:0.98rem; color:#166534; margin-bottom:0.85rem; font-weight:700;">
-                <i class="fa-solid fa-cake-candles" style="color:#16A34A; margin-right:5px;"></i> Celebration &amp; Delivery Details
+                <i class="fa-solid fa-cake-candles" style="color:#16A34A; margin-right:5px;"></i> Celebration Details
               </h4>
               
               <div class="donation-form-group" style="margin-bottom:0.9rem;">
                 <label for="occasion-type" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-gift" style="color:#1A8C4E;"></i> Which occasion you want to celebrate? *</label>
-                <select id="occasion-type" name="occasion_type" class="donation-input" style="background:#FFF;" required>
-                  <option value="Birthday">Birthday</option>
-                  <option value="Anniversary">Anniversary</option>
-                  <option value="Special Occasion">Special Occasion</option>
-                  <option value="Sacred Remembrance Day">Sacred Remembrance Day / Memorial</option>
-                  <option value="Child Milestone Ceremony">Child Milestone / Naming Ceremony</option>
+                <select id="occasion-type" name="occasion_type" class="donation-input" style="background:#FFF; font-weight:600; cursor:pointer;" onchange="handleOccasionOtherToggle(this)" required>
+                  <option value="Birthday" selected>Birthday</option>
+                  <option value="Marriage Anniversary">Marriage Anniversary</option>
+                  <option value="Achievements">Achievements</option>
+                  <option value="Others">Others</option>
                 </select>
-              </div>
-
-              <div class="donation-form-grid-2" style="margin-bottom:0.9rem;">
-                <div class="donation-form-group" style="margin-bottom:0;">
-                  <label for="occasion-date" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-calendar-day" style="color:#1A8C4E;"></i> Which date? *</label>
-                  <input type="date" id="occasion-date" name="occasion_date" class="donation-input" required>
-                </div>
-                <div class="donation-form-group" style="margin-bottom:0;">
-                  <label for="occasion-guests" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-users" style="color:#1A8C4E;"></i> Number of Guests? *</label>
-                  <input type="number" id="occasion-guests" name="occasion_guests" min="1" placeholder="e.g. 50" class="donation-input" required>
+                <div id="occasion-type-other-wrap" style="display:none; margin-top:0.75rem;">
+                  <label for="occasion-type-other-input" style="font-size:0.82rem; font-weight:700; color:#166534; display:block; margin-bottom:0.35rem;">
+                    <i class="fa-solid fa-pen-to-square"></i> Specify Occasion: *
+                  </label>
+                  <input type="text" id="occasion-type-other-input" name="other_occasion_detail" class="donation-input" placeholder="e.g. Retirement, Promotion, Milestone, etc." style="background:#F8FAFC; border:1.5px solid #16A34A;">
                 </div>
               </div>
 
+              <div class="donation-form-group" style="margin-bottom:0.9rem;">
+                <label for="occasion-date" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-calendar-day" style="color:#1A8C4E;"></i> Which date? *</label>
+                <input type="date" id="occasion-date" name="occasion_date" class="donation-input" required>
+              </div>
+
+              <!-- Location Dropdown (Replaces Address Box) -->
               <div class="donation-form-group" style="margin-bottom:0;">
-                <label for="occasion-address" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-location-dot" style="color:#1A8C4E;"></i> You want to deliver to which Address? *</label>
-                <textarea id="occasion-address" name="occasion_address" rows="2" class="donation-input" placeholder="e.g. Hospital Kiosk distribution or home/event delivery address in Guwahati" style="resize:vertical;" required></textarea>
+                <label for="occasion-location" style="font-size:0.88rem; font-weight:700; display:flex; align-items:center; gap:0.45rem; margin-bottom:0.45rem;">
+                  <i class="fa-solid fa-location-dot" style="color:#1A8C4E;"></i> Choose Location: *
+                </label>
+                <select id="occasion-location" name="donation_location" class="donation-input" style="background:#FFF; font-weight:600; cursor:pointer;" onchange="handleLocationOtherToggle(this)" required>
+                  <option value="BBCI" selected>BBCI</option>
+                  <option value="GMCH">GMCH</option>
+                  <option value="Old Age Homes">Old Age Homes</option>
+                  <option value="Orphanage">Orphanage</option>
+                  <option value="Others">Others</option>
+                </select>
+                <div id="occasion-location-other-wrap" style="display:none; margin-top:0.75rem;">
+                  <label for="occasion-location-other-input" style="font-size:0.82rem; font-weight:700; color:#166534; display:block; margin-bottom:0.35rem;">
+                    <i class="fa-solid fa-pen-to-square"></i> Specify Location / Cause: *
+                  </label>
+                  <input type="text" id="occasion-location-other-input" name="other_location_detail" class="donation-input" placeholder="e.g. Guwahati Civil Hospital, Old Age Home, etc." style="background:#F8FAFC; border:1.5px solid #16A34A;">
+                </div>
               </div>
             </div>
 
+            <!-- Donor Contact Details (Full Name -> Mobile Number -> Email -> PAN) -->
             <div class="donation-form-group">
               <label for="donor-name"><i class="fa-solid fa-user"></i> Full Name (as per PAN):</label>
               <input type="text" id="donor-name" placeholder="e.g. Ramesh Chandra Sharma" class="donation-input donor-name" required>
             </div>
 
             <div class="donation-form-group">
-              <label for="donor-email"><i class="fa-solid fa-envelope"></i> Email (For Donation Receipt):</label>
-              <input type="email" id="donor-email" placeholder="e.g. ramesh.sharma@gmail.com" class="donation-input donor-email" required>
+              <label for="donor-phone"><i class="fa-solid fa-phone"></i> Mobile Number (+91):</label>
+              <input type="tel" id="donor-phone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10" title="Please enter a valid 10-digit mobile number" class="donation-input donor-phone" required>
             </div>
 
             <div class="donation-form-group">
-              <label for="donor-phone"><i class="fa-solid fa-phone"></i> Mobile Number (+91):</label>
-              <input type="tel" id="donor-phone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10" title="Please enter a valid 10-digit mobile number" class="donation-input donor-phone" required>
+              <label for="donor-email"><i class="fa-solid fa-envelope"></i> Email (For Donation Receipt):</label>
+              <input type="email" id="donor-email" placeholder="e.g. ramesh.sharma@gmail.com" class="donation-input donor-email" required>
             </div>
 
             <div class="donation-form-group">
@@ -493,10 +497,7 @@
     <div class="container" style="max-width:860px;">
       <div class="contributors-header">
         <div class="contributors-divider"></div>
-        <h2 class="contributors-title">Recent Donors for Birthday / anniversary meal distribution</h2>
-        <p style="font-size:0.95rem; color:var(--text-muted); margin-top:0.4rem;">
-          Verified recent contributions processed via Payment Gateway.
-        </p>
+        <h2 class="contributors-title">Recent Donors</h2>
       </div>
 
       <div id="dynamic-recent-contributors" data-cause-key="birthday">
@@ -891,7 +892,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261106_1945"></script>
+  <script src="js/app.js?v=20261106_2000"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 
