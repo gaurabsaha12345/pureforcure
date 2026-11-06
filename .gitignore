@@ -1,15 +1,83 @@
-cloudflared.exe
+# ==============================================================================
+# PURE FOR CURE - PRODUCTION DEPLOYMENT GITIGNORE
+# Optimized for Cloudflare Pages & Vercel Deployments
+# ==============================================================================
+
+# --- Operating System & Editor Files ---
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Deployment Platform Caches & Build Outputs ---
+.vercel
+.wrangler/
+.cloudflare/
+.output/
+dist/
+build/
+
+# --- Environment Variables & Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Dependencies & Package Managers ---
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Python & Local Tooling Artifacts ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.venv/
+venv/
+ENV/
+env/
 scratch/
+.system_generated/
+*.log
+*.tmp
+
+# --- Local Executables, Archives & Backups ---
+*.exe
+cloudflared.exe
 *.zip
+*.tar
+*.gz
+*.rar
+*.7z
 backup_receipts/
 backup_*.json
-*.py
-*.log
+*.bak
+*.backup
 
-# Large media files exceeding Cloudflare 25MB limit
+# --- Heavy Video Files (> 25MB Cloudflare Pages Limit) ---
+# Embed videos via YouTube iframe embeds for fast progressive streaming
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wmv
+*.flv
+*.webm
+
+# Whitelist small on-ground web video clip (< 2MB)
+!videos/flood_relief_gail.mp4
+
+# Explicitly ignore large historical raw files
 images/gallery/aiims_gallery/AIIMS_inauguration.mp4
 images/gallery/bbci_gallery/BBCI_foodvehicle.mp4
 images/gallery/bbci_gallery/bbci_inauguration.mp4
