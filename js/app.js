@@ -4479,27 +4479,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  // Smooth scroll to targeted donation form anchor if present in URL hash
+  // Smooth scroll to targeted donation form anchor if present in URL hash or clicked
+  function smoothScrollToDonationForm(hash) {
+    const targetHash = hash || window.location.hash || '#donation-form';
+    try {
+      const targetEl = document.querySelector(targetHash) ||
+                       document.getElementById('donation-form') ||
+                       document.getElementById('general-donation') ||
+                       document.getElementById('donate-general-form') ||
+                       document.getElementById('product-donation-form') ||
+                       document.getElementById('csr-inquiry-form') ||
+                       document.querySelector('.product-sidebar-card');
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
 
   if (window.location.hash) {
-
-    setTimeout(() => {
-
-      try {
-
-        const hashEl = document.querySelector(window.location.hash);
-
-        if (hashEl) {
-
-          hashEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        }
-
-      } catch (e) {}
-
-    }, 250);
-
+    setTimeout(() => { smoothScrollToDonationForm(window.location.hash); }, 200);
+    setTimeout(() => { smoothScrollToDonationForm(window.location.hash); }, 600);
   }
+
+  // Handle on-click smooth scrolling for all Donate Now and Sponsor (CSR) buttons targeting donation forms
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('a[href*="#donation-form"], .nav-hkm-donate-btn, a[href*="donate.html#donation-form"], .support-card-donate-btn');
+    if (!btn) return;
+
+    const href = btn.getAttribute('href') || '';
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    const targetUrl = href.split('#')[0];
+    const targetHash = href.includes('#') ? '#' + href.split('#')[1] : '#donation-form';
+
+    // If already on the target page (e.g., donate.html or an individual donate-*.html page)
+    if (!targetUrl || targetUrl === currentPath || (currentPath === 'donate.html' && targetUrl.includes('donate.html'))) {
+      const scrolled = smoothScrollToDonationForm(targetHash);
+      if (scrolled) {
+        e.preventDefault();
+        try { history.pushState(null, null, targetHash); } catch(err) {}
+        
+        // Close mobile drawer if active
+        const navMenu = document.querySelector('.nav-menu');
+        const toggle = document.querySelector('.mobile-toggle');
+        if (navMenu && navMenu.classList.contains('active')) {
+          navMenu.classList.remove('active');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+    }
+  });
 
 
 

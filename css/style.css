@@ -33751,3 +33751,275 @@ h1, h2, h3, h4, h5, h6,
   font-family: var(--font-body) !important;
   font-weight: 700 !important;
 }
+
+/* ==========================================================================
+   MOBILE-FIRST & IOS SAFARI RESPONSIVE ARCHITECTURE
+   Comprehensive audit fixes for iPhone SE/13/14/15/16/Pro/Max, Android, iPad & Desktop
+   ========================================================================== */
+
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+/* Global Overflow & Typography Safeguards */
+html {
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Responsive Media Default */
+img, video, canvas, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* iOS Safari: Prevent Auto-Zoom on Form Focus (Requires minimum 16px font-size) */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="date"],
+input[type="search"],
+select,
+textarea,
+.donation-input,
+.newsletter-text-input,
+.pfc-form-control {
+  font-size: 16px !important;
+  -webkit-appearance: none;
+  border-radius: 6px;
+}
+
+/* Apple HIG Touch Targets (min 44px) */
+button,
+.btn,
+.mobile-toggle,
+.dropdown-trigger,
+.amount-btn,
+.tab-btn,
+.pagination-btn {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+/* Safe Area Insets for Sticky Navigation */
+.site-header {
+  padding-top: var(--sat);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Header & Mobile Toggle Responsiveness (< 480px & iPhone SE) */
+@media (max-width: 480px) {
+  .site-header .container.navbar,
+  .navbar {
+    padding-left: max(8px, var(--sal)) !important;
+    padding-right: max(8px, var(--sar)) !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    gap: 6px !important;
+  }
+  .brand-logo-img {
+    height: 44px !important;
+    width: auto !important;
+    max-width: 78px !important;
+  }
+  .brand-title {
+    font-size: clamp(0.95rem, 3.8vw, 1.15rem) !important;
+  }
+  .brand-subtitle {
+    font-size: clamp(0.52rem, 2vw, 0.65rem) !important;
+  }
+  .mobile-toggle {
+    min-width: 40px !important;
+    min-height: 40px !important;
+    padding: 6px !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* Mobile Drawer Safe Area & Dynamic Viewport Height (100dvh) */
+@media (max-width: 991px) {
+  .nav-menu {
+    height: calc(100vh - 70px) !important;
+    height: calc(100dvh - 70px) !important;
+    padding-bottom: calc(3rem + var(--sab)) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .dropdown-menu {
+    max-height: 280px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Tablet & iPad Landscape Menu Optimization (992px to 1160px) */
+@media (min-width: 992px) and (max-width: 1160px) {
+  .site-header .container.navbar,
+  .navbar {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    gap: 0.35rem !important;
+  }
+  .brand-logo-group {
+    gap: 0.35rem !important;
+    flex-shrink: 1 !important;
+  }
+  .brand-logo-img {
+    height: 42px !important;
+    max-width: 75px !important;
+  }
+  .brand-title {
+    font-size: 1.05rem !important;
+  }
+  .brand-subtitle {
+    font-size: 0.58rem !important;
+  }
+  .nav-menu {
+    gap: 0.15rem !important;
+  }
+  .nav-link {
+    padding: 0.4rem 0.38rem !important;
+    font-size: 0.78rem !important;
+  }
+  .nav-hkm-donate-btn {
+    padding: 0.4rem 0.7rem !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* Footer Grid & Cards Overflow Fixes */
+.footer-newsletter-card {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 640px) {
+  .footer-newsletter-card {
+    padding: 1.5rem 1rem !important;
+  }
+  .newsletter-form-modern {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.65rem !important;
+  }
+  .newsletter-form-modern input,
+  .newsletter-form-modern button {
+    width: 100% !important;
+  }
+}
+
+.footer-3col-grid {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+.footer-3col-grid > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+.footer-part-acharya,
+.footer-part-reach,
+.footer-part-contributions,
+.acharya-portrait-wrap,
+.footer-contrib-card {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.acharya-portrait-wrap > div {
+  min-width: 0 !important;
+}
+.footer-contrib-card {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+}
+.footer-contrib-left,
+.footer-contrib-right {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Product & Kiosk & Donate Grid Layouts */
+.product-page-layout,
+.product-layout-grid {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+.product-page-layout > *,
+.product-layout-grid > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+.product-thumbs-strip {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  max-width: 100% !important;
+}
+
+/* Carousels, Sliders & Tables Overflow Containment */
+.volunteer-slider-container,
+.csr-marquee,
+.gp-slider-container,
+.table-responsive-wrap {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  max-width: 100% !important;
+}
+.volunteer-slider-container,
+.csr-marquee,
+.gp-slider-container {
+  overflow: hidden !important;
+}
+
+/* Floating Actions Safe Areas for iPhone Home Indicator */
+.pfc-whatsapp-widget,
+.pfc-wa-floating-btn {
+  bottom: calc(20px + var(--sab)) !important;
+  right: calc(20px + var(--sar)) !important;
+}
+.lightbox-modal,
+.donation-modal,
+.receipt-modal {
+  padding-bottom: max(20px, var(--sab)) !important;
+  padding-left: max(16px, var(--sal)) !important;
+  padding-right: max(16px, var(--sar)) !important;
+}
+
+/* Smooth Scrolling & Anchor Offset for Donation Forms */
+html {
+  scroll-behavior: smooth;
+}
+
+#donation-form,
+.product-sidebar-card,
+#general-donation,
+#donate-general-form,
+#csr-inquiry-form,
+#product-donation-form {
+  scroll-margin-top: 110px !important;
+}
