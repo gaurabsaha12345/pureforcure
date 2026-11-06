@@ -117,7 +117,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261106_1915">
+  <link rel="stylesheet" href="css/style.css?v=20261106_1945">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
@@ -275,8 +275,7 @@
         <div>
           <h1 style="font-size:2.1rem; color:var(--dark); margin-bottom:1rem; font-family:var(--font-heading);">Celebrate Sacred Amavasya / Purnima Annadanam</h1>
           <div class="product-featured-img-wrap" style="max-width:760px; margin:0 auto 2.25rem auto; border-radius:18px; overflow:hidden; box-shadow:0 14px 35px rgba(0,0,0,0.12); background:#0F2318; position:relative;">
-            <span class="product-location-badge" style="background:#15803D; color:#FFF; font-weight:700;"><i class="fa-solid fa-moon"></i> Sacred Amavasya &amp; Pitru Seva</span>
-            <img id="amavasya-feat-img" src="images/amavasya_annadanam_card.jpg" alt="Celebrate Sacred Amavasya / Purnima by Sharing Meals with Unprivileged Children / Orphanages" class="product-featured-img" style="width:100%; height:auto; max-height:460px; aspect-ratio:1024/649; object-fit:contain; display:block; margin:0 auto;" fetchpriority="high" decoding="async">
+<img id="amavasya-feat-img" src="images/amavasya_annadanam_card.jpg" alt="Celebrate Sacred Amavasya / Purnima by Sharing Meals with Unprivileged Children / Orphanages" class="product-featured-img" style="width:100%; height:auto; max-height:460px; aspect-ratio:1024/649; object-fit:contain; display:block; margin:0 auto;" fetchpriority="high" decoding="async">
           </div>
 
           <div style="margin-bottom:2rem;">
@@ -339,7 +338,7 @@
             <input type="hidden" class="selected-gateway-mode" value="UPI">
 
           <div class="donation-form-group">
-              <label><i class="fa-solid fa-bowl-rice" style="color:var(--primary);"></i> Select Donation Option:</label>
+              <label><i class="fa-solid fa-bowl-rice" style="color:var(--primary);"></i> Select Number of Meals:</label>
               <div class="meal-preset-grid">
                 <div class="meal-preset-btn product-preset-btn" data-amount="800">
                   <div class="preset-meals-text">10 Meals</div>
@@ -403,13 +402,19 @@
                 </div>
                 <div class="donation-form-group" style="margin-bottom:0;">
                   <label for="amavasya-location" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-location-dot" style="color:#1A8C4E;"></i> Choose Location: *</label>
-                  <select id="amavasya-location" name="distribution_location" class="donation-input" style="background:#FFF; font-weight:600; cursor:pointer;" required>
+                  <select id="amavasya-location" name="distribution_location" class="donation-input" style="background:#FFF; font-weight:600; cursor:pointer;" onchange="handleLocationOtherToggle(this)" required>
                     <option value="BBCI" selected>BBCI</option>
                     <option value="GMCH">GMCH</option>
                     <option value="Old Age Homes">Old Age Homes</option>
                     <option value="Orphanage">Orphanage</option>
                     <option value="Others">Others</option>
                   </select>
+                  <div id="amavasya-location-other-wrap" style="display:none; margin-top:0.75rem;">
+                    <label for="amavasya-location-other-input" style="font-size:0.82rem; font-weight:700; color:#166534; display:block; margin-bottom:0.35rem;">
+                      <i class="fa-solid fa-pen-to-square"></i> Specify Location / Cause: *
+                    </label>
+                    <input type="text" id="amavasya-location-other-input" name="other_location_detail" class="donation-input" placeholder="e.g. Kamakhya Temple corridor, Civil hospital, etc." style="background:#F8FAFC; border:1.5px solid #16A34A;">
+                  </div>
                 </div>
               </div>
 
@@ -872,7 +877,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261106_1915"></script>
+  <script src="js/app.js?v=20261106_1945"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 

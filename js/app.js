@@ -8327,3 +8327,38 @@ window.downloadCurrentReceiptPdf = async function(btn) {
 
 };
 
+
+/* Handle dynamic 'Others' location input on donation forms */
+window.handleLocationOtherToggle = function(selectEl) {
+  if (!selectEl) return;
+  const parent = selectEl.closest('.donation-form-group') || selectEl.parentElement;
+  if (!parent) return;
+  const otherWrap = parent.querySelector('[id$="other-wrap"], .location-other-wrap');
+  if (!otherWrap) return;
+  const otherInput = otherWrap.querySelector('input, textarea');
+  if (selectEl.value === 'Others' || selectEl.value === 'Other') {
+    otherWrap.style.display = 'block';
+    if (otherInput) {
+      otherInput.required = true;
+      otherInput.focus();
+    }
+  } else {
+    otherWrap.style.display = 'none';
+    if (otherInput) {
+      otherInput.required = false;
+      otherInput.value = '';
+    }
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('select').forEach(function(sel) {
+    const hasOther = Array.from(sel.options).some(function(o) { return o.value === 'Others' || o.value === 'Other'; });
+    if (hasOther) {
+      sel.addEventListener('change', function() {
+        window.handleLocationOtherToggle(this);
+      });
+      window.handleLocationOtherToggle(sel);
+    }
+  });
+});

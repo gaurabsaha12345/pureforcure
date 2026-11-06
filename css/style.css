@@ -25259,14 +25259,16 @@ input[type="submit"] {
 
 
   .metric-card-meal-cost .metric-number {
-
-
-
-    font-size: 1.85rem !important;
-
-
-
-  }
+  color: #16A34A !important;
+  font-weight: 800 !important;
+  font-size: 1.55rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+}
 
 
 
@@ -25431,14 +25433,16 @@ input[type="submit"] {
 
 
   .metric-card-meal-cost .metric-number {
-
-
-
-    font-size: 1.55rem !important;
-
-
-
-  }
+  color: #16A34A !important;
+  font-weight: 800 !important;
+  font-size: 1.55rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+}
 
 
 
@@ -29015,17 +29019,15 @@ input[type="submit"] {
 
 
 .metric-card-meal-cost .metric-number {
-
-
-
   color: #16A34A !important;
-
-
-
-  text-shadow: none !important;
-
-
-
+  font-weight: 800 !important;
+  font-size: 1.55rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
 }
 
 
@@ -34144,20 +34146,19 @@ html {
 .metric-card-meal-cost .metric-number {
   color: #16A34A !important;
   font-weight: 800 !important;
-  font-size: 1.75rem !important;
+  font-size: 1.55rem !important;
   line-height: 1 !important;
   white-space: nowrap !important;
   display: flex !important;
-  align-items: baseline !important;
+  align-items: center !important;
   justify-content: center !important;
-  gap: 3px !important;
+  gap: 4px !important;
 }
 
 .metric-card-meal-cost .metric-number span {
-  font-size: 1.05rem !important;
-  font-weight: 700 !important;
-  color: #15803D !important;
-  letter-spacing: 0.2px !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
 }
 
 /* Complete Prevention of Grid Column Horizontal Blowouts on Mobile */
@@ -34268,10 +34269,24 @@ html {
   }
 
   .metric-card-meal-cost .metric-number {
-    font-size: 1.5rem !important;
-  }
+  color: #16A34A !important;
+  font-weight: 800 !important;
+  font-size: 1.55rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+}
 
   .metric-card-meal-cost .metric-number span {
-    font-size: 0.95rem !important;
-  }
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
 }
+}
+
+
+/* Global Removal of Location Badges Over Featured Photos */
+.product-location-badge { display: none !important; }
