@@ -7144,42 +7144,49 @@ window.swapFeaturedImg = function(thumb, targetId) {
 
 
 
-// Auto rotate gallery/kiosk featured thumbnails on 5 seconds interval if present
-
+// Auto rotate gallery/kiosk featured thumbnails on 5 seconds interval without scrolling the page/window
 setInterval(() => {
-
   const thumbsStrips = document.querySelectorAll('.product-thumbs-strip');
-
   thumbsStrips.forEach(strip => {
-
     const parentContainer = strip.closest('.product-page-layout') || strip.parentElement;
-
     if (parentContainer && parentContainer.matches(':hover')) return;
 
-
-
     const thumbs = Array.from(strip.querySelectorAll('.product-thumb'));
-
     if (thumbs.length > 1) {
-
       const activeIdx = thumbs.findIndex(t => t.classList.contains('active') || t.style.borderColor === 'rgb(22, 163, 74)');
-
       const nextIdx = (activeIdx + 1) % thumbs.length;
+      const targetThumb = thumbs[nextIdx];
 
-      thumbs[nextIdx].click();
+      // Extract targetId from onclick or data attribute and swap directly without focusing or triggering window scroll
+      const onclickAttr = targetThumb.getAttribute('onclick') || '';
+      const match = onclickAttr.match(/swapFeaturedImg\s*\(\s*this\s*,\s*['"]([^'"]+)['"]\)/);
+      const targetId = match ? match[1] : null;
 
-      // Scroll thumb into view
+      if (targetId && typeof window.swapFeaturedImg === 'function') {
+        window.swapFeaturedImg(targetThumb, targetId);
+      } else {
+        thumbs.forEach(t => {
+          t.classList.remove('active');
+          t.style.borderColor = 'transparent';
+          t.style.opacity = '0.65';
+        });
+        targetThumb.classList.add('active');
+        targetThumb.style.borderColor = '#16A34A';
+        targetThumb.style.opacity = '1';
+      }
 
+      // Smoothly scroll ONLY the strip container horizontally. NEVER scroll the page/window vertically!
       try {
-
-        thumbs[nextIdx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-
+        const offsetLeft = targetThumb.offsetLeft;
+        const stripWidth = strip.clientWidth;
+        const thumbWidth = targetThumb.clientWidth;
+        strip.scrollTo({
+          left: offsetLeft - (stripWidth - thumbWidth) / 2,
+          behavior: 'smooth'
+        });
       } catch(e) {}
-
     }
-
   });
-
 }, 5000);
 
 

@@ -34108,3 +34108,157 @@ html {
     margin-bottom: 0 !important;
   }
 }
+
+
+/* ==========================================================================
+   METRIC CARD MEAL COST & MOBILE VIEW OPTIMIZATION (1080x2340 & ALL SCREENS)
+   ========================================================================== */
+
+/* Single Display for Rs 80 / Meal */
+.metric-card-meal-cost {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.75rem 1.25rem !important;
+  border: 2px solid #16A34A !important;
+  background: #F0FDF4 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.12) !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.metric-card-meal-cost .metric-number {
+  color: #16A34A !important;
+  font-weight: 800 !important;
+  font-size: 1.75rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: center !important;
+  gap: 3px !important;
+}
+
+.metric-card-meal-cost .metric-number span {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: #15803D !important;
+  letter-spacing: 0.2px !important;
+}
+
+/* Complete Prevention of Grid Column Horizontal Blowouts on Mobile */
+.grid-2 {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.grid-2 > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 900px) {
+  .grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+}
+
+/* Gallery & Kiosk Mobile Responsiveness (Tested at 360px - 430px / 1080x2340) */
+.product-thumbs-strip {
+  display: flex !important;
+  gap: 0.55rem !important;
+  margin-top: 0.85rem !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding-bottom: 8px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #CBD5E1 transparent !important;
+}
+
+.product-thumbs-strip .product-thumb {
+  flex: 0 0 72px !important;
+  width: 72px !important;
+  height: 52px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  border: 2px solid transparent !important;
+  box-sizing: border-box !important;
+  transition: transform 0.2s ease, border-color 0.2s ease !important;
+}
+
+.product-thumbs-strip .product-thumb.active {
+  border-color: #16A34A !important;
+  opacity: 1 !important;
+}
+
+.product-featured-img-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.product-featured-img {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+/* Home Hero Photo Card Frame Optimization */
+.home-hero-photo-card {
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 14px 38px rgba(15, 35, 24, 0.12) !important;
+  background: #FFFFFF !important;
+  line-height: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.home-hero-photo-card img {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+@media (max-width: 640px) {
+  .home-hero-badge {
+    bottom: 0.85rem !important;
+    left: 0.85rem !important;
+    padding: 0.75rem 1.15rem !important;
+    border-radius: 10px !important;
+  }
+  
+  .home-hero-badge #home-hero-plates-num {
+    font-size: 1.35rem !important;
+  }
+
+  .home-hero-badge div:last-child {
+    font-size: 0.75rem !important;
+  }
+
+  .metric-card-meal-cost {
+    padding: 0.6rem 0.9rem !important;
+  }
+
+  .metric-card-meal-cost .metric-number {
+    font-size: 1.5rem !important;
+  }
+
+  .metric-card-meal-cost .metric-number span {
+    font-size: 0.95rem !important;
+  }
+}
