@@ -117,7 +117,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261106_1845">
+  <link rel="stylesheet" href="css/style.css?v=20261106_1915">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
@@ -312,47 +312,47 @@
             </ul>
           </div>
 
-          <!-- Trust Badges -->
-          <div style="display:flex; gap:1.5rem; flex-wrap:wrap; border-top:1px solid #E2E8F0; padding-top:1.5rem;">
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-              <i class="fa-solid fa-shield-halved" style="font-size:1.8rem; color:#1A8C4E;"></i>
-              <div>
-                <strong style="display:block; font-size:0.9rem; color:var(--dark);">80G Tax Deductible</strong>
-                <span style="font-size:0.78rem; color:var(--text-muted);">50% deduction under IT Act</span>
+          <!-- Trust Badges (Optimized Same-Line Card Row) -->
+          <div class="kiosk-trust-badges-row" style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:0.75rem; border-top:1px solid #E2E8F0; padding-top:1.25rem; margin-bottom:1.5rem; align-items:center;">
+            <div style="display:flex; align-items:center; gap:0.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:0.6rem 0.75rem;">
+              <i class="fa-solid fa-shield-halved" style="font-size:1.35rem; color:#1A8C4E; flex-shrink:0;"></i>
+              <div style="min-width:0;">
+                <strong style="display:block; font-size:0.82rem; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">80G Tax Deductible</strong>
+                <span style="font-size:0.72rem; color:var(--text-muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">50% deduction IT Act</span>
               </div>
             </div>
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-              <i class="fa-solid fa-utensils" style="font-size:1.8rem; color:var(--primary);"></i>
-              <div>
-                <strong style="display:block; font-size:0.9rem; color:var(--dark);">FSSAI Certified</strong>
-                <span style="font-size:0.78rem; color:var(--text-muted);">Highest food safety protocols</span>
+            <div style="display:flex; align-items:center; gap:0.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:0.6rem 0.75rem;">
+              <i class="fa-solid fa-utensils" style="font-size:1.35rem; color:var(--primary); flex-shrink:0;"></i>
+              <div style="min-width:0;">
+                <strong style="display:block; font-size:0.82rem; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">FSSAI Certified</strong>
+                <span style="font-size:0.72rem; color:var(--text-muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Highest safety standards</span>
               </div>
             </div>
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-              <i class="fa-solid fa-receipt" style="font-size:1.8rem; color:var(--secondary);"></i>
-              <div>
-                <strong style="display:block; font-size:0.9rem; color:var(--dark);">Instant e-Receipt</strong>
-                <span style="font-size:0.78rem; color:var(--text-muted);">Sent directly to your email</span>
+            <div style="display:flex; align-items:center; gap:0.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:0.6rem 0.75rem;">
+              <i class="fa-solid fa-receipt" style="font-size:1.35rem; color:var(--secondary); flex-shrink:0;"></i>
+              <div style="min-width:0;">
+                <strong style="display:block; font-size:0.82rem; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Instant e-Receipt</strong>
+                <span style="font-size:0.72rem; color:var(--text-muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Direct to email</span>
               </div>
             </div>
           </div>
 
-                  <!-- On-Ground Video Showcase in Left Column -->
-        <div class="product-video-card">
-          <div style="margin-bottom:0.85rem;">
-            <span class="section-tag" style="background:#FEF3C7; color:#B45309; font-size:0.75rem; padding:4px 10px;"><i class="fa-solid fa-video"></i> On-Ground Video</span>
-            <h4 style="font-size:1.25rem; color:var(--dark); margin:0.35rem 0 0; font-family:var(--font-body);">Hospital Kiosk Inauguration &amp; Food Seva</h4>
-            <p style="font-size:0.88rem; color:var(--text-muted); margin:0.25rem 0 0;">Watch how Pure for Cure hospital food distribution kiosks operate on-ground serving nutritious meals.</p>
-          </div>
-          <div class="kiosk-videos-grid">
-            <div class="product-video-wrapper">
-              <iframe src="https://www.youtube.com/embed/zJRH9fQR6Ms" title="A Sattvik Food Distribution program" style="width:100%; aspect-ratio:16/9; border:none; display:block; border-radius:12px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+          <!-- On-Ground Video Showcase in Left Column -->
+          <div class="product-video-card" style="margin-top:1.25rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:14px; padding:1.25rem;">
+            <div style="margin-bottom:0.85rem;">
+              <span class="section-tag" style="background:#FEF3C7; color:#B45309; font-size:0.75rem; padding:4px 10px;"><i class="fa-solid fa-video"></i> On-Ground Video</span>
+              <h4 style="font-size:1.25rem; color:var(--dark); margin:0.35rem 0 0; font-family:var(--font-body);">Hospital Kiosk Inauguration &amp; Food Seva</h4>
+              <p style="font-size:0.88rem; color:var(--text-muted); margin:0.25rem 0 0;">Watch how Pure for Cure hospital food distribution kiosks operate on-ground serving nutritious meals.</p>
             </div>
-            <div class="product-video-wrapper desktop-only-video">
-              <iframe src="https://www.youtube.com/embed/1Rq_db1ReJw" title="SATTVIK FOOD KIOSK Inauguration in BBCI Guwahati" style="width:100%; aspect-ratio:16/9; border:none; display:block; border-radius:12px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+            <div class="kiosk-videos-grid">
+              <div class="product-video-wrapper">
+                <iframe src="https://www.youtube.com/embed/7Q8xyn5L02Q" title="Pure for Cure collaborates with Airport Authority of India (AAI)" style="width:100%; aspect-ratio:16/9; border:none; display:block; border-radius:12px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="product-video-wrapper">
+                <iframe src="https://www.youtube.com/embed/1Rq_db1ReJw" title="SATTVIK FOOD KIOSK Inauguration in BBCI Guwahati" style="width:100%; aspect-ratio:16/9; border:none; display:block; border-radius:12px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
             </div>
           </div>
-        </div>
 
         </div>
 
@@ -819,7 +819,7 @@
             </div>
           </div>
           <div class="footer-contrib-cta">
-            <a href="donate.html#donation-form" class="footer-contrib-btn"><i class="fa-solid fa-heart"></i> Donate Under 80G Tax Exemption</a>
+            <a href="donate.html#donation-form" class="footer-contrib-btn">Donate Under 80G Tax Exemption</a>
           </div>
         </div>
       </div>
@@ -829,7 +829,7 @@
     <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261106_1845"></script>
+  <script src="js/app.js?v=20261106_1915"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 

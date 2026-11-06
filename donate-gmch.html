@@ -120,7 +120,7 @@
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=20261106_1845">
+  <link rel="stylesheet" href="css/style.css?v=20261106_1915">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
@@ -350,60 +350,33 @@
             </ul>
           </div>
 
-          <!-- Trust Badges -->
-          <div style="display:flex; gap:1.5rem; flex-wrap:wrap; border-top:1px solid #E2E8F0; padding-top:1.5rem;">
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-              <i class="fa-solid fa-shield-halved" style="font-size:1.8rem; color:#1A8C4E;"></i>
-              <div>
-                <strong style="display:block; font-size:0.9rem; color:var(--dark);">80G Tax Deductible</strong>
-                <span style="font-size:0.78rem; color:var(--text-muted);">50% deduction under IT Act</span>
+          <!-- Trust Badges (Optimized Same-Line Card Row) -->
+          <div class="kiosk-trust-badges-row" style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:0.75rem; border-top:1px solid #E2E8F0; padding-top:1.25rem; margin-bottom:1.25rem; align-items:center;">
+            <div style="display:flex; align-items:center; gap:0.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:0.6rem 0.75rem;">
+              <i class="fa-solid fa-shield-halved" style="font-size:1.35rem; color:#1A8C4E; flex-shrink:0;"></i>
+              <div style="min-width:0;">
+                <strong style="display:block; font-size:0.82rem; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">80G Tax Deductible</strong>
+                <span style="font-size:0.72rem; color:var(--text-muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">50% deduction IT Act</span>
               </div>
             </div>
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-              <i class="fa-solid fa-utensils" style="font-size:1.8rem; color:var(--primary);"></i>
-              <div>
-                <strong style="display:block; font-size:0.9rem; color:var(--dark);">FSSAI Certified</strong>
-                <span style="font-size:0.78rem; color:var(--text-muted);">Highest food safety protocols</span>
+            <div style="display:flex; align-items:center; gap:0.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:0.6rem 0.75rem;">
+              <i class="fa-solid fa-utensils" style="font-size:1.35rem; color:var(--primary); flex-shrink:0;"></i>
+              <div style="min-width:0;">
+                <strong style="display:block; font-size:0.82rem; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">FSSAI Certified</strong>
+                <span style="font-size:0.72rem; color:var(--text-muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Highest safety standards</span>
               </div>
             </div>
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-              <i class="fa-solid fa-receipt" style="font-size:1.8rem; color:var(--secondary);"></i>
-              <div>
-                <strong style="display:block; font-size:0.9rem; color:var(--dark);">Instant e-Receipt</strong>
-                <span style="font-size:0.78rem; color:var(--text-muted);">Sent directly to your email</span>
+            <div style="display:flex; align-items:center; gap:0.5rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:0.6rem 0.75rem;">
+              <i class="fa-solid fa-receipt" style="font-size:1.35rem; color:var(--secondary); flex-shrink:0;"></i>
+              <div style="min-width:0;">
+                <strong style="display:block; font-size:0.82rem; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Instant e-Receipt</strong>
+                <span style="font-size:0.72rem; color:var(--text-muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Direct to email</span>
               </div>
             </div>
           </div>
 
-            <!-- Deep Trauma Caregiver Realities Narrative -->
-            <div
-              style="margin-top:2rem; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:14px; padding:1.75rem;">
-              <h3
-                style="font-size:1.35rem; color:#132D1F; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; font-family:var(--font-body);">
-                <i class="fa-solid fa-hospital-user" style="color:#1A8C4E;"></i> The Reality of Guwahati Medical College
-                & Hospital (GMCH) Trauma &amp; Emergency Corridors
-              </h3>
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.25rem;">
-                <div style="background:#F8FAFC; padding:1.2rem; border-radius:10px; border-left:4px solid #16A34A;">
-                  <strong style="color:#166534; display:block; margin-bottom:0.4rem; font-size:0.95rem;"><i
-                      class="fa-solid fa-heart-pulse"></i> High-Stress Trauma Center:</strong>
-                  <p style="font-size:0.88rem; color:#475569; margin:0; line-height:1.6;">
-                    Guwahati Medical College &amp; Hospital handles the heaviest trauma, burn, and pediatric referral
-                    caseload in North East India. Families rushed in from road accidents or sudden organ failure find
-                    themselves sleeping on hospital verandas with zero food or financial safety net.
-                  </p>
-                </div>
-                <div style="background:#F8FAFC; padding:1.2rem; border-radius:10px; border-left:4px solid #D97706;">
-                  <strong style="color:#B45309; display:block; margin-bottom:0.4rem; font-size:0.95rem;"><i
-                      class="fa-solid fa-shield-heart"></i> Reliable Nourishment in Crisis:</strong>
-                  <p style="font-size:0.88rem; color:#475569; margin:0; line-height:1.6;">
-                    When food vans arrive outside casualty, attendants do not need to choose between buying medicine or
-                    eating lunch. Our volunteer network serves 600+ fresh, nutritious meals every single day in eco-friendly
-                    leaf plates with care and deep respect.
-                  </p>
-                </div>
-              </div>
-
+            <!-- Daily Distribution Schedule -->
+            <div style="margin-top:2rem;">
               <div
                 style="display:flex; justify-content:center; align-items:center; text-align:center; background:#ECFDF5; border:1px dashed #10B981; border-radius:10px; padding:1.15rem 1.25rem; width:100%;">
                 <div
@@ -530,7 +503,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg"
-              style="width:100%; justify-content:center; padding:1.1rem; border-radius:10px;"><i class="fa-solid fa-heart"></i> Proceed to Payment</button>
+              style="width:100%; justify-content:center; padding:1.1rem; border-radius:10px;">Proceed to Payment</button>
             <div style="text-align:center; font-size:0.78rem; color:var(--text-muted); margin-top:0.75rem;">
               <i class="fa-solid fa-shield-halved" style="color:#1A8C4E;"></i> 256-Bit SSL Encrypted &amp; 100% Secure
             </div>
@@ -955,7 +928,7 @@
             </div>
           </div>
           <div class="footer-contrib-cta">
-            <a href="donate.html#donation-form" class="footer-contrib-btn"><i class="fa-solid fa-heart"></i> Donate Under 80G Tax Exemption</a>
+            <a href="donate.html#donation-form" class="footer-contrib-btn">Donate Under 80G Tax Exemption</a>
           </div>
         </div>
       </div>
@@ -965,7 +938,7 @@
   <!-- PDF Generation (pdf-lib) & Automated Email Receipts (EmailJS) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/app.js?v=20261106_1845"></script>
+  <script src="js/app.js?v=20261106_1915"></script>
   <!-- Floating WhatsApp Widget (Bottom Left) -->
   <a href="https://api.whatsapp.com/send/?text=Hare%20Krishna!%20I%20came%20here%20from%20Pure%20for%20Cure%20Website.&amp;username=HKMGuwahati&amp;type=username&amp;app_absent=0" 
      target="_blank" 
