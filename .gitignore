@@ -2,7 +2,6 @@ cloudflared.exe
 .DS_Store
 Thumbs.db
 node_modules/
-images/gallery/bbci_gallery/BBCI Inauguration.mp4
 scratch/
 *.zip
 backup_receipts/
@@ -10,3 +9,11 @@ backup_*.json
 *.py
 *.log
 
+# Large media files exceeding Cloudflare 25MB limit
+images/gallery/aiims_gallery/AIIMS_inauguration.mp4
+images/gallery/bbci_gallery/BBCI_foodvehicle.mp4
+images/gallery/bbci_gallery/bbci_inauguration.mp4
+images/gallery/bbci_gallery/BBCI Inauguration.mp4
+images/gallery/gallery_namami/namami.mp4
+images/gallery/Flood_relief.mp4
+images/gallery/Inauguration by MLA.mp4
