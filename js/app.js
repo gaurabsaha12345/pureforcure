@@ -7580,6 +7580,16 @@ window.updateKioskBudget = function(selectEl) {
   }
 };
 
+window.updateVehicleBudget = function(selectEl) {
+  if (!selectEl) return;
+  var opt = selectEl.options[selectEl.selectedIndex];
+  var budget = opt.getAttribute('data-budget') || '₹ 15,00,000';
+  var target = document.getElementById('csr-budget-range');
+  if (target) {
+    target.value = budget;
+  }
+};
+
 window.handleCSRFormSubmit = function(e, form) {
 
   if (e) e.preventDefault();
