@@ -4090,7 +4090,7 @@ img {
 
 
 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
 
 
 
@@ -19702,7 +19702,7 @@ input[type="submit"] {
 
 
 
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: 1fr !important;
 
 
 
@@ -34038,5 +34038,73 @@ html {
 @media (max-width: 899px) {
   .desktop-only-video {
     display: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   MOBILE-FIRST OPTIMIZATION: SATTVIK NUTRITION CARDS
+   Display 3 cards one after another in a clean single-column stack on mobile
+   ========================================================================== */
+@media (max-width: 991px) {
+  .sattvik-grid,
+  .satvik-grid,
+  .sattvic-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 1.5rem !important;
+  }
+
+  .sattvik-card,
+  .satvik-card,
+  .sattvic-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .sattvik-section {
+    padding: 2.25rem 0 !important;
+  }
+
+  .sattvik-grid,
+  .satvik-grid,
+  .sattvic-grid {
+    gap: 1rem !important;
+  }
+
+  .sattvik-card,
+  .satvik-card,
+  .sattvic-card {
+    padding: 1.5rem 1.25rem !important;
+    border-radius: 14px !important;
+    box-shadow: 0 3px 14px rgba(17, 42, 29, 0.06) !important;
+  }
+
+  .sattvik-card h3,
+  .satvik-card h3,
+  .sattvic-card h3 {
+    font-size: 1.15rem !important;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.45rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .sattvik-card p,
+  .satvik-card p,
+  .sattvic-card p {
+    font-size: 0.88rem !important;
+    line-height: 1.55 !important;
+    margin-bottom: 0 !important;
   }
 }
