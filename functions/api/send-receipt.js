@@ -144,82 +144,117 @@ export async function onRequestPost(context) {
 
     const emailSubject = `Official 80G Tax Exemption Donation Receipt (${refNo}) - Pure for Cure [${formattedAmount}]`;
 
-    const htmlEmail = `
-<!DOCTYPE html>
+    const htmlEmail = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${emailSubject}</title>
 </head>
-<body style="margin:0; padding:0; background-color:#F1F5F9; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing:antialiased; color:#1E293B;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F1F5F9; padding:24px 12px;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #F8FAFC; color: #334155;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #F8FAFC; padding: 32px 12px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px; background-color:#FFFFFF; border-radius:12px; overflow:hidden; box-shadow:0 10px 25px rgba(15,23,42,0.08); border:1px solid #E2E8F0;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); border: 1px solid #E2E8F0;">
           <tr>
-            <td style="background: linear-gradient(135deg, #115E2E 0%, #166534 50%, #15803D 100%); padding:28px 24px; text-align:center;">
-              <div style="color:#FEF3C7; font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px;">HARE KRISHNA MOVEMENT, GUWAHATI</div>
-              <h1 style="color:#FFFFFF; font-size:26px; font-weight:800; margin:0 0 4px 0; letter-spacing:0.5px;">PURE FOR CURE</h1>
-              <div style="color:#BBF7D0; font-size:13px; font-weight:500;">Healthcare Humanitarian Food Mission &bull; Section 80G Tax-Exempt Seva</div>
+            <td style="background-color: #166534; padding: 28px 24px; text-align: center;">
+              <h1 style="margin: 0; color: #FFFFFF; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">PURE FOR CURE</h1>
+              <p style="margin: 6px 0 0 0; color: #DCFCE7; font-size: 13px; font-weight: 500;">HARE KRISHNA MOVEMENT, GUWAHATI</p>
+              <p style="margin: 4px 0 0 0; color: #BBF7D0; font-size: 11px; font-style: italic;">Under 80G Tax Exemption | Form 10BD Compliant</p>
             </td>
           </tr>
           <tr>
-            <td style="padding:28px 24px 20px 24px;">
-              <p style="font-size:16px; line-height:1.6; margin:0 0 16px 0; color:#0F172A;">
-                Dear <strong>${donorName}</strong>,
+            <td style="padding: 32px 28px;">
+              <p style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700; color: #0F172A;">
+                Dear ${donorName},
               </p>
-              <p style="font-size:15px; line-height:1.7; margin:0 0 16px 0; color:#15803D; font-weight:700;">
+              
+              <p style="margin: 0 0 16px 0; font-size: 15px; font-weight: 700; color: #166534;">
                 Hare Krishna!
               </p>
-              <p style="font-size:14px; line-height:1.7; margin:0 0 16px 0; color:#334155;">
+
+              <p style="margin: 0 0 18px 0; font-size: 14px; line-height: 1.65; color: #475569;">
                 Thank you for your noble and heartfelt contribution to <strong>Pure For Cure</strong>, a charitable feeding mission dedicated to serving the divine vision and teachings of His Divine Grace Vishwaguru A.C. Bhaktivedanta Swami Prabhupada.
               </p>
-              <p style="font-size:14px; line-height:1.7; margin:0 0 20px 0; color:#334155;">
+
+              <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.65; color: #475569;">
                 Your generous support directly empowers our centralized mechanized kitchen to serve warm, nutritious, piping-hot Sattvik meals to patient caregivers and families facing medical hardships outside government hospitals for patients, Old-Age Homes, Orphanages &amp; places in need across Assam.
               </p>
-              <div style="background-color:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:18px 20px; margin-bottom:24px;">
-                <div style="font-size:13px; font-weight:700; color:#0F172A; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:12px; border-bottom:1px solid #E2E8F0; padding-bottom:8px;">
-                  Official Donation Details
-                </div>
-                <table width="100%" cellpadding="4" cellspacing="0" style="font-size:14px; color:#334155;">
-                  <tr>
-                    <td style="color:#64748B; width:40%;">Receipt Reference:</td>
-                    <td style="font-weight:700; color:#0F172A;">${refNo}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#64748B;">Date of Contribution:</td>
-                    <td>${dateStr}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#64748B;">Donated Amount:</td>
-                    <td style="font-weight:800; color:#15803D; font-size:16px;">${formattedAmount}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#64748B;">Seva / Cause:</td>
-                    <td>${causeName}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#64748B;">Donor PAN:</td>
-                    <td style="font-family:monospace; font-weight:600;">${pan}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#64748B;">Transaction ID:</td>
-                    <td style="font-family:monospace; font-size:12px;">${txnId}</td>
-                  </tr>
-                </table>
-              </div>
-              <div style="background:#FEF3C7; border-left:4px solid #D97706; padding:12px 16px; border-radius:4px; margin-bottom:24px; font-size:13px; color:#92400E; line-height:1.5;">
-                <strong>80G Statutory Exemption Notice:</strong> All monetary donations to Hare Krishna Movement Guwahati are eligible for tax relief under Section 80G of the Income Tax Act, 1961 (Order No. 14/80G/CIT/GHY-II/2011-12/4701-05 &bull; PAN: AAATH8807J). A digitally certified PDF receipt is attached to this email.
+
+              <!-- Itemized Receipt Summary Card -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 16px 20px; background-color: #ECFDF5; border-bottom: 1.5px solid #A7F3D0;">
+                    <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #047857;">Official Receipt Summary</span>
+                    <div style="font-size: 26px; font-weight: 800; color: #065F46; margin-top: 4px;">${formattedAmount}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 18px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">Receipt Number:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 13px; font-weight: 700; text-align: right;">${refNo}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">Donation Date:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 13px; font-weight: 600; text-align: right;">${dateStr}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">Donor Name:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 13px; font-weight: 600; text-align: right;">${donorName}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">Mobile / WhatsApp:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 13px; font-weight: 600; text-align: right;">${phone}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">Donor PAN:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 13px; font-weight: 600; text-align: right;">${pan}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">Cause Supported:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 13px; font-weight: 600; text-align: right;">${causeName}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">Payment Transaction ID:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 13px; font-weight: 600; text-align: right;">${txnId}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">80G Exemption Order:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 12px; font-weight: 700; text-align: right;">14/80G/CIT/GHY-II/2011-12/4701-05</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #64748B; font-size: 13px;">Trust PAN:</td>
+                        <td style="padding: 6px 0; color: #0F172A; font-size: 12px; font-weight: 700; text-align: right;">AAATH8807J</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 0 0 16px 0; font-size: 13.5px; line-height: 1.6; color: #64748B;">
+                <em>Note: Please find your official signed 2-page PDF receipt attached with this email for your tax exemption filing (Form 10BD compliant). Page 1 provides your verified Donor Details Record, and Page 2 provides the Official 80G Tax Exemption Receipt.</em>
+              </p>
+
+              <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #334155;">
+                May Lord Krishna shower you and your family with boundless peace, vibrant health, and spiritual prosperity.
+              </p>
+
+              <!-- Sign-off Block -->
+              <div style="border-top: 1px solid #E2E8F0; padding-top: 18px; font-size: 13.5px; color: #475569; line-height: 1.6;">
+                <strong>With heartfelt gratitude,</strong><br>
+                <span style="color: #166534; font-weight: 700;">Team Pure For Cure</span><br>
+                Hare Krishna Movement, Guwahati<br>
+                NH-31, Amingaon, Guwahati, Assam 781031<br>
+                Email: <a href="mailto:info@pureforcure.org" style="color: #1D4ED8; text-decoration: none;">info@pureforcure.org</a> | 
+                Phone: <a href="tel:+917099039770" style="color: #1D4ED8; text-decoration: none;">+91 70990 39770</a><br>
+                Website: <a href="https://pureforcure.org" target="_blank" rel="noopener noreferrer" style="color: #1D4ED8; text-decoration: none;">www.pureforcure.org</a>
               </div>
             </td>
           </tr>
           <tr>
-            <td style="background-color:#0F172A; padding:20px 24px; text-align:center; color:#94A3B8; font-size:12px; line-height:1.6;">
-              <div style="color:#FFFFFF; font-weight:700; margin-bottom:4px;">HARE KRISHNA MOVEMENT, GUWAHATI</div>
-              <div>Hare Krishna Mandir Marg, Ghorajan, North Guwahati, Assam 781031</div>
-              <div>Phone: +91 7099039770 / +91 9678007302 &bull; Email: info@pureforcure.org</div>
-              <div style="margin-top:10px; color:#64748B; font-size:11px;">Serving the vision of His Divine Grace A.C. Bhaktivedanta Swami Prabhupada</div>
+            <td style="background-color: #0F172A; padding: 18px 24px; text-align: center; color: #94A3B8; font-size: 12px; line-height: 1.5;">
+              This is an automated system confirmation of your donation to Hare Krishna Movement, Guwahati (Pure For Cure). All contributions are 100% transparent and deployed for daily charitable hunger relief.
             </td>
           </tr>
         </table>
@@ -227,8 +262,7 @@ export async function onRequestPost(context) {
     </tr>
   </table>
 </body>
-</html>
-    `;
+</html>`;
 
     const resendApiKey = (env && env.RESEND_API_KEY) ? env.RESEND_API_KEY : DEFAULT_RESEND_API_KEY;
 

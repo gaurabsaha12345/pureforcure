@@ -1550,13 +1550,14 @@ async function generateReceiptPdfBlob(donor, meta) {
 
 
 
-    if (isOfficialTemplate && page) {
+            if (isOfficialTemplate && page) {
       const receiptPage = page;
       const { width, height } = receiptPage.getSize();
+      
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-      // Colors
+      
+      const black = rgb(0.12, 0.12, 0.12);
       const primaryGreen = rgb(0.086, 0.549, 0.306);
       const darkGreen = rgb(0.086, 0.396, 0.204);
       const lightGreenFill = rgb(0.925, 0.992, 0.961);
@@ -1566,7 +1567,6 @@ async function generateReceiptPdfBlob(donor, meta) {
       const lightBorder = rgb(0.886, 0.91, 0.941);
       const cardFill = rgb(0.973, 0.98, 0.988);
       const white = rgb(1, 1, 1);
-      const black = rgb(0.12, 0.12, 0.12);
 
       // ========================================================
       // PAGE 1 OF 2: DONOR DETAILS SCREENSHOT / SUMMARY CARD
@@ -1593,86 +1593,92 @@ async function generateReceiptPdfBlob(donor, meta) {
         color: darkGreen,
       });
 
-      summaryPage.drawText('PURE FOR CURE', {
-        x: 45,
-        y: height - 58,
-        size: 22,
-        font: bold,
-        color: white,
-      });
-
       summaryPage.drawText('HARE KRISHNA MOVEMENT, GUWAHATI', {
-        x: 45,
-        y: height - 76,
-        size: 11,
-        font: bold,
-        color: rgb(0.82, 0.98, 0.898),
-      });
-
-      summaryPage.drawText('Serving the teachings of His Divine Grace A.C. Bhaktivedanta Swami Srila Prabhupada', {
-        x: 45,
-        y: height - 94,
-        size: 8.5,
-        font: font,
-        color: rgb(0.85, 0.95, 0.9),
-      });
-
-      // Header Badge (Right side)
-      summaryPage.drawRectangle({
-        x: width - 215,
-        y: height - 85,
-        width: 170,
-        height: 38,
-        color: rgb(0.12, 0.48, 0.26),
-        borderColor: rgb(0.3, 0.75, 0.45),
-        borderWidth: 1,
-      });
-      summaryPage.drawText('OFFICIAL 80G RECORD', {
-        x: width - 200,
-        y: height - 63,
-        size: 10,
+        x: 42,
+        y: height - 58,
+        size: 16.5,
         font: bold,
         color: white,
       });
-      summaryPage.drawText('PAGE 1 OF 2 : DONOR DETAILS', {
-        x: width - 205,
-        y: height - 77,
-        size: 7.5,
-        font: bold,
-        color: rgb(0.85, 0.95, 0.9),
+
+      summaryPage.drawText('(Serving the mission of His Divine Grace A.C. Bhaktivedanta Swami Prabhupada)', {
+        x: 42,
+        y: height - 74,
+        size: 8,
+        font: font,
+        color: rgb(0.85, 0.95, 0.88),
       });
 
-      // Payment Verification Highlight Box (matches #receipt-highlight-box)
-      let curY = height - 128;
+      summaryPage.drawText('PURE FOR CURE - 80G TAX EXEMPTION DONATION RECEIPT', {
+        x: 42,
+        y: height - 92,
+        size: 9.5,
+        font: bold,
+        color: rgb(0.95, 0.85, 0.45),
+      });
+
+      // Reference and Date Strip
+      let curY = height - 138;
+      summaryPage.drawText(`Receipt Reference: ${meta.refNo || ''}`, {
+        x: 42,
+        y: curY,
+        size: 9.5,
+        font: bold,
+        color: darkText,
+      });
+
+      const dateTxt = `Date: ${meta.dateStr || ''}`;
+      summaryPage.drawText(dateTxt, {
+        x: width - 42 - bold.widthOfTextAtSize(dateTxt, 9.5),
+        y: curY,
+        size: 9.5,
+        font: bold,
+        color: darkText,
+      });
+
+      // Green Hero Amount Box
+      curY -= 76;
       summaryPage.drawRectangle({
         x: 42,
-        y: curY - 55,
+        y: curY,
         width: width - 84,
-        height: 55,
+        height: 64,
         color: lightGreenFill,
         borderColor: lightGreenStroke,
-        borderWidth: 1.5,
+        borderWidth: 1.2,
       });
 
-      summaryPage.drawText('[ VERIFIED ] PAYMENT SUCCESSFUL & 80G RECEIPT ISSUED', {
+      summaryPage.drawText('DONATION ACKNOWLEDGMENT & TAX RECEIPT', {
         x: 56,
-        y: curY - 24,
-        size: 12,
+        y: curY + 42,
+        size: 9.5,
+        font: bold,
+        color: primaryGreen,
+      });
+
+      summaryPage.drawText(`Contribution Received: Rs. ${Number(donor.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, {
+        x: 56,
+        y: curY + 16,
+        size: 18,
         font: bold,
         color: darkGreen,
       });
 
-      summaryPage.drawText(`Official 80G Tax Exemption receipt confirmation dispatched to: ${donor.email || 'donor'}`, {
-        x: 56,
-        y: curY - 42,
-        size: 9.5,
-        font: font,
-        color: darkGreen,
-      });
+      // Donor Details Card Table
+      curY -= 20;
+      const rows = [
+        { label: "Donor's Name", val: donor.name || 'Anonymous', isBold: true },
+        { label: 'WhatsApp / Mobile', val: donor.phone || 'N/A', isBold: false },
+        { label: 'Email Address', val: donor.email || 'N/A', isBold: false },
+        { label: 'PAN Card Number', val: donor.pan || 'NOT_PROVIDED', isBold: false },
+        { label: 'Address / City', val: donor.address || 'Guwahati, Assam, India', isBold: false },
+        { label: 'Cause / Seva Supported', val: donor.causeName || 'Pure for Cure - Sattvik Food Distribution', isBold: true },
+        { label: 'Payment Mode', val: donor.paymentMode || 'Razorpay Online Seva', isBold: false },
+        { label: 'Payment Gateway Txn ID', val: meta.txnId || 'N/A', isBold: false },
+        { label: '80G Tax Exemption Status', val: 'Eligible u/s 80G (100% Tax Deductible in India)', isBold: true, highlight: true },
+      ];
 
-      // Main Donor Details Card Box
-      curY -= 75;
-      const cardHeight = 360;
+      const cardHeight = (rows.length * 25.5) + 38;
       summaryPage.drawRectangle({
         x: 42,
         y: curY - cardHeight,
@@ -1680,66 +1686,41 @@ async function generateReceiptPdfBlob(donor, meta) {
         height: cardHeight,
         color: white,
         borderColor: lightBorder,
-        borderWidth: 1.5,
+        borderWidth: 1,
       });
 
-      // Table Card Header
       summaryPage.drawRectangle({
-        x: 43.5,
-        y: curY - 32,
-        width: width - 87,
-        height: 31,
+        x: 42,
+        y: curY - 30,
+        width: width - 84,
+        height: 30,
         color: cardFill,
       });
 
-      summaryPage.drawText('DONATION PARTICULARS & STATUTORY SUMMARY', {
-        x: 58,
+      summaryPage.drawText('DONOR DETAILS & REGISTRATION SUMMARY', {
+        x: 56,
         y: curY - 20,
-        size: 10.5,
+        size: 10,
         font: bold,
-        color: darkGreen,
+        color: darkText,
       });
 
-      // Key-Value Rows
-      const rows = [
-        { label: 'Receipt Reference No:', val: meta.refNo || 'N/A', isBold: true },
-        { label: 'Receipt Date:', val: meta.dateStr || 'N/A', isBold: false },
-        { label: 'Contributor Full Name:', val: donor.name || 'Kind Contributor', isBold: true },
-        { label: 'Mobile / WhatsApp No:', val: donor.phone || 'N/A', isBold: false },
-        { label: 'Contributor Email:', val: donor.email || 'N/A', isBold: false },
-        { label: 'Contributor PAN (80G):', val: donor.pan || 'NOT_PROVIDED', isBold: true },
-        { label: 'Towards / Seva Cause:', val: donor.causeName || 'Pure for Cure Daily Feeding', isBold: false },
-        { label: 'Payment Mode:', val: donor.paymentMode || 'Razorpay Gateway', isBold: false },
-        { label: 'Transaction ID:', val: meta.txnId || 'N/A', isBold: false },
-        { label: 'Contributed Amount:', val: 'INR ' + Number(donor.amount || 0).toLocaleString('en-IN') + '/-', isBold: true, isAmt: true },
-        { label: '80G Statutory Exemption:', val: '14/80G/CIT/GHY-II/2011-12/4701-05', isBold: true },
-        { label: 'Public Trust PAN:', val: 'AAATH8807J', isBold: true },
-      ];
-
-      let rowY = curY - 54;
+      let rowY = curY - 50;
       for (const r of rows) {
-        summaryPage.drawLine({
-          start: { x: 56, y: rowY - 4 },
-          end: { x: width - 56, y: rowY - 4 },
-          thickness: 0.5,
-          color: lightBorder,
-        });
-
         summaryPage.drawText(r.label, {
-          x: 58,
+          x: 56,
           y: rowY,
           size: 9.5,
           font: font,
           color: slateText,
         });
-
-        if (r.isAmt) {
-          summaryPage.drawText(r.val, {
-            x: width - 58 - bold.widthOfTextAtSize(r.val, 13),
-            y: rowY - 1,
-            size: 13,
+        if (r.highlight) {
+          summaryPage.drawText(String(r.val), {
+            x: width - 58 - bold.widthOfTextAtSize(String(r.val), 9.5),
+            y: rowY,
+            size: 9.5,
             font: bold,
-            color: rgb(0.086, 0.647, 0.29),
+            color: primaryGreen,
           });
         } else {
           const f = r.isBold ? bold : font;
@@ -1785,8 +1766,9 @@ async function generateReceiptPdfBlob(donor, meta) {
 
       // Bottom Notice
       curY -= 75;
-      summaryPage.drawText('Notice: Please see Page 2 for the Official Signed 80G Donation Receipt created in your name.', {
-        x: (width - bold.widthOfTextAtSize('Notice: Please see Page 2 for the Official Signed 80G Donation Receipt created in your name.', 9.5)) / 2,
+      const noticeTxt = 'Notice: Please see Page 2 for the Official Signed 80G Donation Receipt created in your name.';
+      summaryPage.drawText(noticeTxt, {
+        x: (width - bold.widthOfTextAtSize(noticeTxt, 9.5)) / 2,
         y: curY,
         size: 9.5,
         font: bold,
@@ -1794,15 +1776,16 @@ async function generateReceiptPdfBlob(donor, meta) {
       });
 
       // Footer
-      summaryPage.drawText('Hare Krishna Movement, Guwahati  *  NH-31, Amingaon, Guwahati, Assam 781031  *  www.pureforcure.org', {
-        x: (width - font.widthOfTextAtSize('Hare Krishna Movement, Guwahati  *  NH-31, Amingaon, Guwahati, Assam 781031  *  www.pureforcure.org', 8)) / 2,
+      const footerTxt = 'Hare Krishna Movement, Guwahati  *  NH-31, Amingaon, Guwahati, Assam 781031  *  www.pureforcure.org';
+      summaryPage.drawText(footerTxt, {
+        x: (width - font.widthOfTextAtSize(footerTxt, 8)) / 2,
         y: 38,
         size: 8,
         font: font,
         color: rgb(0.4, 0.45, 0.5),
       });
 
-            // ========================================================
+      // ========================================================
       // PAGE 2 OF 2: OFFICIAL CANVA 80G DONATION RECEIPT
       // ========================================================
       // 1. Reference No & Date (next to Reference No: and Date: at baseline y=722)
@@ -1862,8 +1845,7 @@ async function generateReceiptPdfBlob(donor, meta) {
         });
       });
 
-      const causeText = String(donor.causeName || 'Pure for Cure - Sattvik Food Distribution');
-      const causeLines = wrapCleanText(causeText, font, 9.5, 175).slice(0, 2);
+      const causeLines = wrapCleanText(donor.causeName || 'Pure for Cure - Sattvik Food Distribution', font, 9.5, 175).slice(0, 2);
       causeLines.forEach((line, i) => {
         receiptPage.drawText(line, {
           x: 402.0,
@@ -1905,8 +1887,6 @@ async function generateReceiptPdfBlob(donor, meta) {
       const pdfBytes = await pdfDoc.save();
       return new Blob([pdfBytes], { type: 'application/pdf' });
     }
-
-
 
     // Programmatic vector fallback if template PDF fetch failed
 
