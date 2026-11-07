@@ -19682,7 +19682,7 @@ input[type="submit"] {
 
 
 
-    min-height: 200px;
+    min-height: 0 !important;
 
 
 
@@ -19734,7 +19734,7 @@ input[type="submit"] {
 
 
 
-    min-height: 170px;
+    min-height: 0 !important;
 
 
 
