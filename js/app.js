@@ -7735,8 +7735,30 @@ window.handleCSRFormSubmit = function(e, form) {
 
 
 
-  // Dispatch instant CSR email alert to info@pureforcure.org and harekrishnamandir.dm@gmail.com
+  // 1. Dispatch instant CSR inquiry email alert via Resend Serverless API
+  try {
+    fetch('/api/send-inquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        company_name: companyName,
+        contact_person: contactPerson,
+        email: email,
+        phone: phone,
+        partnership_type: initiative,
+        budget_range: budget,
+        message: message,
+        count_details: countDetails,
+        source_url: window.location.href
+      })
+    }).catch(function(err) {
+      console.warn('Resend inquiry dispatch notice:', err);
+    });
+  } catch (resendInqErr) {
+    console.warn('Resend inquiry trigger notice:', resendInqErr);
+  }
 
+  // 2. Dispatch backup notification via EmailJS
   try {
 
     if (typeof window.emailjs !== 'undefined' && window.emailjs.send) {
