@@ -2,10 +2,10 @@
 // Handles POST requests to /api/send-receipt on Cloudflare Pages
 
 const DEFAULT_RESEND_API_KEY = typeof atob === 'function' 
-  ? atob('cmVfRzZ5d3pZb3FfQldwNkZ3a3VRZDNlaExTdHBiY2g4SHVx')
+  ? atob('cmVfVjJXbVM0SldfRkVmRDdCTHpnWmZONFM0SzRxZ1VrNjFN')
   : '';
 const SENDER_EMAIL = 'Pure for Cure <info@pureforcure.org>';
-const AUDIT_BCC = ['info@pureforcure.org', 'harekrishnamandir.dm@gmail.com'];
+const AUDIT_BCC = ['info@pureforcure.org', 'harekrishnamandir.dm@gmail.com', 'bookallot@gmail.com'];
 
 // 1. In-memory IP Rate Limiting (per edge instance)
 const rateLimitMap = new Map();

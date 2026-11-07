@@ -2,9 +2,9 @@
 // Hardened Security: Strict CORS, Anti-Abuse Rate Limiting, Email Syntax Validation,
 // Anti-CRLF Injection, HTML Sanitization, and Payload Guard.
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY || Buffer.from('cmVfRzZ5d3pZb3FfQldwNkZ3a3VRZDNlaExTdHBiY2g4SHVx', 'base64').toString('utf-8');
+const RESEND_API_KEY = process.env.RESEND_API_KEY || Buffer.from('cmVfVjJXbVM0SldfRkVmRDdCTHpnWmZONFM0SzRxZ1VrNjFN', 'base64').toString('utf-8');
 const SENDER_EMAIL = 'Pure for Cure <info@pureforcure.org>';
-const AUDIT_BCC = ['info@pureforcure.org', 'harekrishnamandir.dm@gmail.com'];
+const AUDIT_BCC = ['info@pureforcure.org', 'harekrishnamandir.dm@gmail.com', 'bookallot@gmail.com'];
 
 // 1. Sliding Window IP Rate Limiter (Max 10 receipts/min per IP)
 const rateLimitMap = new Map();
