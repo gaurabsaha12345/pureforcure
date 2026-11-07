@@ -290,6 +290,7 @@ export async function onRequestPost(context) {
       headers: {
         'Authorization': `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json',
+        'User-Agent': 'PureForCure/1.0',
       },
       body: JSON.stringify(resendPayload)
     });

@@ -296,6 +296,7 @@ export default async function handler(req, res) {
       headers: {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
         'Content-Type': 'application/json',
+        'User-Agent': 'PureForCure/1.0',
       },
       body: JSON.stringify(resendPayload)
     });

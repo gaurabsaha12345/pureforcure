@@ -822,7 +822,23 @@ function initFooterNewsletter() {
 
 
 
-      // 3. Automated Welcome Email via EmailJS
+      // 3. Automated Newsletter Dispatch via Resend API
+      try {
+        fetch('/api/send-inquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'newsletter',
+            name: subscriberRecord.name,
+            email: subscriberRecord.email,
+            source_page: subscriberRecord.source_page
+          })
+        }).catch(function(e) { console.warn('Resend newsletter notice:', e); });
+      } catch (e) {
+        console.warn('Resend newsletter trigger notice:', e);
+      }
+
+      // 4. Automated Welcome Email via EmailJS (Backup)
 
       if (typeof window !== 'undefined' && window.emailjs && EMAILJS_CONFIG.serviceId) {
 
@@ -6687,7 +6703,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-      // Dispatch instant Volunteer application alert to info@pureforcure.org and harekrishnamandir.dm@gmail.com
+      // 1. Dispatch Volunteer Application via Resend API
+      try {
+        fetch('/api/send-inquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'volunteer',
+            full_name: vName,
+            email: vEmail,
+            phone: volPhone,
+            city: volCity,
+            volunteer_type: volType,
+            preferred_role: vRole,
+            organization: volOrg,
+            notes: volNotes
+          })
+        }).catch(function(e) { console.warn('Resend volunteer notice:', e); });
+      } catch (e) {
+        console.warn('Resend volunteer trigger notice:', e);
+      }
+
+      // 2. Dispatch backup notification via EmailJS
 
       try {
 
@@ -7002,7 +7039,26 @@ window.handleContactFormSubmit = async function(e, form) {
 
 
 
-  // Notify administration immediately via email (info@pureforcure.org and harekrishnamandir.dm@gmail.com)
+  // 1. Dispatch Contact Inquiry via Resend API
+  try {
+    fetch('/api/send-inquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'contact',
+        first_name: firstName,
+        last_name: lastName,
+        full_name: `${firstName} ${lastName}`.trim(),
+        email: email,
+        subject: subject,
+        message: message
+      })
+    }).catch(function(e) { console.warn('Resend contact notice:', e); });
+  } catch (e) {
+    console.warn('Resend contact trigger notice:', e);
+  }
+
+  // 2. Notify administration backup via EmailJS
 
   try {
 
