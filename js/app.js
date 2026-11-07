@@ -3457,36 +3457,49 @@ function getStoredDonations(causeKey, mode = 'latest') {
 
 
 
-  // Base list is exclusively real records from Supabase
-
-  let allRealDonations = [...VERIFIED_SUPABASE_DONATIONS];
-
-
-
-  if (window._liveSupabaseDonations && Array.isArray(window._liveSupabaseDonations)) {
-
-    allRealDonations = [...window._liveSupabaseDonations, ...allRealDonations];
-
+  // Read deleted donations list
+  let deletedKeys = [];
+  try {
+    deletedKeys = JSON.parse(localStorage.getItem('pfc_deleted_donations') || '[]');
+    if (!Array.isArray(deletedKeys)) deletedKeys = [];
+  } catch (e) {
+    deletedKeys = [];
   }
 
+  // Authoritative base list: When live Supabase data is loaded, use it EXCLUSIVELY!
+  // Fallback to static VERIFIED_SUPABASE_DONATIONS ONLY when Supabase is offline or not yet loaded
+  let allRealDonations;
+  if (window._liveSupabaseDonations && Array.isArray(window._liveSupabaseDonations)) {
+    allRealDonations = [...window._liveSupabaseDonations];
+  } else {
+    allRealDonations = [...VERIFIED_SUPABASE_DONATIONS];
+  }
 
+  // Filter stored local items: ignore old entries if live data is available
+  const activeStored = stored.filter(d => {
+    if (window._liveSupabaseDonations && window._liveSupabaseDonations.length > 0) {
+      const timeVal = getDonationTimeValue(d);
+      if (Date.now() - timeVal > 5 * 60 * 1000) return false;
+    }
+    return true;
+  });
 
-  // Prioritize live verified Supabase records
+  const combined = [...allRealDonations, ...activeStored];
 
-  const combined = [...allRealDonations, ...stored];
-
-
-
-  // Filter out any test amounts (< 10) or test names
-
+  // Filter out any test amounts (< 10), test names, or DELETED records
   const validOnly = combined.filter(d => {
-
     const amt = parseInt(d.amount) || 0;
-
     const nm = (d.name || '').toUpperCase();
+    if (amt < 10 || nm.includes('TEST') || nm.includes('MAYANK')) return false;
 
-    return amt >= 10 && !nm.includes('TEST') && !nm.includes('MAYANK');
+    // Strict check against deleted donations
+    if (d.id && deletedKeys.includes(d.id)) return false;
+    if (d.txn_id && deletedKeys.includes(d.txn_id)) return false;
+    if (d.paymentId && deletedKeys.includes(d.paymentId)) return false;
+    const nameKey = `${(d.name || '').trim().toLowerCase()}_${amt}`;
+    if (deletedKeys.includes(nameKey)) return false;
 
+    return true;
   });
 
 
@@ -3940,6 +3953,10 @@ async function initAllRecentDonations() {
           const dateStr = formatSupabaseDateTime(r.created_at || r.date);
 
           return {
+
+            id: r.id,
+
+            txn_id: r.txn_id,
 
             name: r.name,
 

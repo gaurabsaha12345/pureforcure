@@ -927,6 +927,9 @@ function renderDonationsTable() {
           <button class="btn-action-icon" onclick="viewDonationModal('${d.id}')" title="View Full Payment Record">
             <i class="fa-solid fa-eye"></i>
           </button>
+          <button class="btn-action-icon" style="color:#DC2626;" onclick="deleteDonationRecord('${d.id}')" title="Delete Donation Record">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
         </td>
       </tr>
     `;
@@ -2313,7 +2316,10 @@ function viewDonationModal(donationId) {
         <p style="background:#F8FAFC; padding:10px; border-radius:6px; border:1px solid #E2E8F0; white-space:pre-wrap;">${escapeHtml(cleanAddress(d.notes))}</p>
       </div>
     </div>
-    <div style="margin-top:20px; text-align:right; display:flex; justify-content:flex-end; gap:10px;">
+    <div style="margin-top:20px; text-align:right; display:flex; justify-content:flex-end; gap:10px; align-items:center;">
+      <button class="btn btn-outline" style="color:#DC2626; border-color:#DC2626;" onclick="deleteDonationRecord('${d.id}')">
+        <i class="fa-solid fa-trash-can"></i> Delete Record
+      </button>
       ${isSuccess ? `
         <button class="btn-action-primary" onclick="downloadReceiptForDonation('${d.id}')">
           <i class="fa-solid fa-file-pdf"></i> Download Official 80G Receipt
