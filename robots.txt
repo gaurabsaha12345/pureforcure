@@ -1,15 +1,21 @@
 User-agent: *
 Allow: /
+Disallow: /pfc-secure-admin-portal.html
+Disallow: /api/
 
 # Direct Googlebot, Bingbot and all web crawlers
 User-agent: Googlebot
 Allow: /
+Disallow: /pfc-secure-admin-portal.html
+Disallow: /api/
 
 User-agent: Googlebot-Image
 Allow: /
 
 User-agent: Bingbot
 Allow: /
+Disallow: /pfc-secure-admin-portal.html
+Disallow: /api/
 
 # Sitemap
 Sitemap: https://pureforcure.org/sitemap.xml

@@ -159,12 +159,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
-  <url>
-    <loc>https://pureforcure.org/gallery-other.html</loc>
-    <lastmod>2026-10-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
 
   <!-- Policy & Legal Pages -->
   <url>
