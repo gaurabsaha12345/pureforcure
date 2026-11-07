@@ -294,9 +294,20 @@
             <p style="font-size:1.02rem; color:var(--text); line-height:1.8; margin-bottom:1.5rem;">
               Under the <strong>Pradhan Mantri TB Mukt Bharat Abhiyaan (Ni-kshay Mitra)</strong> and community relief initiatives, <strong>Pure for Cure</strong> partners with leading corporate CSR bodies to provide monthly protein-rich nutritional food baskets to tuberculosis patients and wholesome dry ration kits to economically vulnerable families across Assam.
             </p>
-            <p style="font-size:1.02rem; color:var(--text); line-height:1.8; margin-bottom:1.5rem;">
-              Nutritional deficiency significantly hampers treatment recovery for TB patients. Each subsidized nutritional food kit contains vital protein supplements, pulses (toor and moong dal), high-grade cereals, roasted gram, milk powder, cold-pressed cooking oil, and immunity-strengthening essentials recommended by health authorities to accelerate clinical recovery and combat undernutrition.
-            </p>
+            <div style="background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:12px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+              <div style="font-size:1.15rem; font-weight:800; color:#166534; margin-bottom:0.75rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+                <span><i class="fa-solid fa-basket-shopping" style="color:#16A34A; margin-right:8px;"></i> Nutritional Kit Contents</span>
+                <span style="background:#DCFCE7; color:#166534; font-size:0.95rem; font-weight:800; padding:4px 12px; border-radius:20px; border:1px solid #86EFAC;">&#8377;700 per Nutritional Kit</span>
+              </div>
+              <ul style="list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.6rem; font-size:0.98rem; color:#334155; font-weight:600;">
+                <li style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-check" style="color:#16A34A; font-size:0.9rem;"></i> Rice 3 Kg</li>
+                <li style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-check" style="color:#16A34A; font-size:0.9rem;"></i> Atta 1 kg</li>
+                <li style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-check" style="color:#16A34A; font-size:0.9rem;"></i> Dal 1 kg</li>
+                <li style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-check" style="color:#16A34A; font-size:0.9rem;"></i> Soyabean 500 gm</li>
+                <li style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-check" style="color:#16A34A; font-size:0.9rem;"></i> Mustard Oil 1 litre</li>
+                <li style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-check" style="color:#16A34A; font-size:0.9rem;"></i> Horlicks 120 gm</li>
+              </ul>
+            </div>
           </div>
 
           <!-- Trust Badges (Optimized Same-Line Card Row) -->
@@ -354,17 +365,17 @@
             <div class="donation-form-group">
               <label for="csr-kit-count" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-box-open" style="color:#1A8C4E;"></i> Nutritional Food Basket *</label>
               <select id="csr-kit-count" name="kit_count" class="donation-input" style="background:#FFF;" onchange="updateKitBudget(this)" required>
-                <option value="100 Kits (₹ 10 lacs)" data-budget="₹ 10,00,000" selected>100 Kits (₹ 10 lacs)</option>
-                <option value="200 Kits (₹ 20 lacs)" data-budget="₹ 20,00,000">200 Kits (₹ 20 lacs)</option>
-                <option value="500 Kits (₹ 50 lacs)" data-budget="₹ 50,00,000">500 Kits (₹ 50 lacs)</option>
-                <option value="1000 Kits (₹ 100 lacs)" data-budget="₹ 1,00,00,000">1000 Kits (₹ 100 lacs)</option>
-                <option value="2000 Kits (₹ 200 lacs)" data-budget="₹ 2,00,00,000">2000 Kits (₹ 200 lacs)</option>
+                <option value="100 Kits (₹ 70,000)" data-budget="₹ 70,000" selected>100 Kits (₹ 70,000)</option>
+                <option value="200 Kits (₹ 1,40,000)" data-budget="₹ 1,40,000">200 Kits (₹ 1,40,000)</option>
+                <option value="500 Kits (₹ 3,50,000)" data-budget="₹ 3,50,000">500 Kits (₹ 3,50,000)</option>
+                <option value="1000 Kits (₹ 7,00,000)" data-budget="₹ 7,00,000">1000 Kits (₹ 7,00,000)</option>
+                <option value="2000 Kits (₹ 14,00,000)" data-budget="₹ 14,00,000">2000 Kits (₹ 14,00,000)</option>
               </select>
             </div>
 
             <div class="donation-form-group">
               <label for="csr-budget-range" style="font-size:0.88rem; font-weight:700;"><i class="fa-solid fa-coins" style="color:#1A8C4E;"></i> Estimated CSR Grant Budget</label>
-              <input type="text" id="csr-budget-range" name="budget_range" class="donation-input" value="₹ 10,00,000" readonly style="background:#F1F5F9; font-weight:700; color:#1A8C4E; cursor:default;">
+              <input type="text" id="csr-budget-range" name="budget_range" class="donation-input" value="₹ 70,000" readonly style="background:#F1F5F9; font-weight:700; color:#1A8C4E; cursor:default;">
             </div>
 
             <div class="donation-form-group">
@@ -700,7 +711,7 @@
     function updateKitBudget(selectEl) {
       if (!selectEl) return;
       var opt = selectEl.options[selectEl.selectedIndex];
-      var budget = opt.getAttribute('data-budget') || '₹ 10,00,000';
+      var budget = opt.getAttribute('data-budget') || '₹ 70,000';
       var target = document.getElementById('csr-budget-range');
       if (target) {
         target.value = budget;
