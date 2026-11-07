@@ -449,6 +449,49 @@ try {
 
 }
 
+// Test Email Helper (Callable via console: testSendEmail('bookallot@gmail.com'))
+window.testSendEmail = async function(targetEmail = 'bookallot@gmail.com') {
+  if (typeof window.emailjs === 'undefined' || !window.emailjs.send) {
+    const err = 'EmailJS SDK not loaded on this page.';
+    console.error(err);
+    if (typeof alert !== 'undefined') alert(err);
+    return false;
+  }
+  const payload = {
+    to_email: targetEmail,
+    donor_email: targetEmail,
+    recipient_email: targetEmail,
+    email: targetEmail,
+    to_name: 'Pure For Cure Admin',
+    donor_name: 'Pure For Cure Test',
+    amount: '₹80',
+    receipt_no: 'TEST-EMAIL-' + Date.now(),
+    ref_no: 'TEST-EMAIL-' + Date.now(),
+    date: new Date().toLocaleDateString('en-GB'),
+    subject: `[Test Verification] Pure for Cure Email Delivery Check (${targetEmail})`,
+    message: `Hare Krishna!
+
+This is a verified test email sent via EmailJS to confirm that email notifications and receipt deliveries are active and functioning properly for Pure For Cure.
+
+Timestamp: ${new Date().toISOString()}
+Target: ${targetEmail}`,
+    brief_message: 'Hare Krishna! Test email verification successful.'
+  };
+  try {
+    const res = await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, payload);
+    console.log('✓ Test email dispatched successfully to:', targetEmail, res);
+    if (typeof alert !== 'undefined') alert(`✓ Test email successfully sent to ${targetEmail}!
+Status: ${res.status} ${res.text}`);
+    return true;
+  } catch (err) {
+    console.error('Test email failed:', err);
+    if (typeof alert !== 'undefined') alert(`❌ Failed to send test email to ${targetEmail}:
+${err.text || err.message || JSON.stringify(err)}`);
+    return false;
+  }
+};
+
+
 
 
 // =============================================================
@@ -2689,6 +2732,23 @@ async function sendEmailReceipt(donor, meta, receiptUrl, pdfBlob) {
 
       console.warn('Admin copy dispatch notice:', adminErr);
 
+    }
+
+    // 4. Dispatch notification copy directly to bookallot@gmail.com
+    try {
+      const bookallotPayload = {
+        ...emailPayload,
+        to_email: 'bookallot@gmail.com',
+        donor_email: 'bookallot@gmail.com',
+        recipient_email: 'bookallot@gmail.com',
+        email: 'bookallot@gmail.com',
+        to_name: 'Bookallot Admin',
+        subject: `[Donation Alert Copy] ${donor.name || 'Donor'} donated ${formattedAmount} (${meta.refNo})`
+      };
+      await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, bookallotPayload);
+      console.log('✓ Duplicate receipt copy dispatched to bookallot@gmail.com');
+    } catch (bErr) {
+      console.warn('bookallot@gmail.com copy dispatch notice:', bErr);
     }
 
 
@@ -6756,6 +6816,9 @@ Submitted on: ${new Date().toLocaleString('en-GB')}`;
 
           window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, adminVolPayload).catch(err => console.warn('Vol admin email error:', err));
 
+          const bookallotVolPayload = { ...volPayload, to_email: 'bookallot@gmail.com', donor_email: 'bookallot@gmail.com', recipient_email: 'bookallot@gmail.com', email: 'bookallot@gmail.com' };
+          window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, bookallotVolPayload).catch(err => console.warn('Vol bookallot email notice:', err));
+
         }
 
       } catch (volMailErr) {
@@ -7061,6 +7124,9 @@ Submitted on: ${new Date().toLocaleString('en-GB')}`;
       const adminContactPayload = { ...pfcContactPayload, to_email: 'harekrishnamandir.dm@gmail.com', donor_email: 'harekrishnamandir.dm@gmail.com', recipient_email: 'harekrishnamandir.dm@gmail.com', email: 'harekrishnamandir.dm@gmail.com' };
 
       window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, adminContactPayload).catch(err => console.warn('Admin contact email notice:', err));
+
+      const bookallotContactPayload = { ...pfcContactPayload, to_email: 'bookallot@gmail.com', donor_email: 'bookallot@gmail.com', recipient_email: 'bookallot@gmail.com', email: 'bookallot@gmail.com' };
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, bookallotContactPayload).catch(err => console.warn('Contact bookallot email notice:', err));
 
     }
 
@@ -7793,6 +7859,9 @@ Submitted on: ${new Date().toLocaleString('en-GB')}`;
       const adminCsrPayload = { ...csrPayload, to_email: 'harekrishnamandir.dm@gmail.com', donor_email: 'harekrishnamandir.dm@gmail.com', recipient_email: 'harekrishnamandir.dm@gmail.com', email: 'harekrishnamandir.dm@gmail.com' };
 
       window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, adminCsrPayload).catch(err => console.warn('CSR admin email error:', err));
+
+      const bookallotCsrPayload = { ...csrPayload, to_email: 'bookallot@gmail.com', donor_email: 'bookallot@gmail.com', recipient_email: 'bookallot@gmail.com', email: 'bookallot@gmail.com' };
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, bookallotCsrPayload).catch(err => console.warn('CSR bookallot email notice:', err));
 
     }
 
