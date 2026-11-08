@@ -1406,9 +1406,12 @@ async function fetchSupabaseDonations(forceRefresh = false) {
 
   try {
 
-    const url = `${SUPABASE_BACKEND.getUrl()}/rest/v1/donations?select=*&status=eq.Success&order=created_at.desc&limit=100`;
+    const cacheBuster = forceRefresh ? `&_t=${Date.now()}` : '';
+    const url = `${SUPABASE_BACKEND.getUrl()}/rest/v1/donations?select=*&status=eq.Success&order=created_at.desc&limit=100${cacheBuster}`;
 
     const resp = await fetch(url, {
+
+      cache: forceRefresh ? 'no-store' : 'default',
 
       headers: {
 
@@ -2946,30 +2949,40 @@ async function completeSuccessfulDonation(paymentId) {
 
 
   // 1. Save to LocalStorage immediately with normalized location
-
   saveDonation({
-
     ...currentDonationData,
-
     location: locationCode,
-
     causeKey: currentDonationData.causeKey,
-
     paymentId: paymentId,
-
     txn_id: paymentId,
-
     timeAgo: formatSupabaseDateTime(Date.now()),
-
     created_at: new Date().toISOString(),
-
     timestamp: Date.now(),
-
     receipt_no: rNum,
-
     dateStr: rDate
-
   });
+
+  // 1b. Immediately prepend new donation to live in-memory list for 0ms instant UI rendering
+  if (!window._liveSupabaseDonations || !Array.isArray(window._liveSupabaseDonations)) {
+    window._liveSupabaseDonations = [...VERIFIED_SUPABASE_DONATIONS];
+  }
+  window._liveSupabaseDonations.unshift({
+    id: paymentId,
+    txn_id: paymentId,
+    name: currentDonationData.name,
+    amount: parseInt(currentDonationData.amount),
+    causeName: currentDonationData.causeName,
+    timeAgo: 'Just now',
+    created_at: new Date().toISOString(),
+    timestamp: Date.now(),
+    paymentMode: currentDonationData.paymentMode || 'Razorpay',
+    location: locationCode
+  });
+
+  // Notify other open tabs/windows immediately
+  try {
+    localStorage.setItem('pfc_last_payment_timestamp', String(Date.now()));
+  } catch(e) {}
 
 
 
@@ -3142,21 +3155,10 @@ async function completeSuccessfulDonation(paymentId) {
 
 
     // Refresh live donations cache from Supabase & re-render contributors strictly below this form
-
     try {
-
-      await fetchSupabaseDonations(true);
-
-      renderRecentDonations('dynamic-recent-contributors', targetCauseKey);
-
-      renderFooterRecentDonations();
-
-      updateMonthlyTargetTracker();
-
+      await refreshLiveDonationsFromSupabase(true);
     } catch (refreshErr) {
-
       console.warn('Post-donation refresh warning:', refreshErr);
-
     }
 
   })();
@@ -3176,6 +3178,46 @@ async function completeSuccessfulDonation(paymentId) {
 // =============================================================
 
 const VERIFIED_SUPABASE_DONATIONS = [
+
+  {
+
+    name: 'Sinu Sonthalia',
+
+    amount: 800,
+
+    causeName: 'Special Occasion Meals (Birthday / Anniversary Milestone Annadan)',
+
+    timeAgo: '08 Nov 2026, 02:29 PM',
+
+    created_at: '2026-11-08T08:59:44.632829+00:00',
+
+    paymentMode: 'UPI',
+
+    location: 'birthday',
+
+    txn_id: 'pay_Txcj5XR4h5THjq'
+
+  },
+
+  {
+
+    name: 'Saurav Saha',
+
+    amount: 80,
+
+    causeName: 'In Memory of Loved Ones (Sattvik Meals Distribution)',
+
+    timeAgo: '05 Nov 2026, 12:14 PM',
+
+    created_at: '2026-11-05T06:44:28.681208+00:00',
+
+    paymentMode: 'UPI',
+
+    location: 'in_memory',
+
+    txn_id: 'pay_TwOp0q7nvTWzod'
+
+  },
 
   {
 
@@ -3930,72 +3972,69 @@ async function initAllRecentDonations() {
 
 
 
-  // Asynchronously query live database to sync the latest actual contributions
+  // Asynchronously query live database with cache-busting to sync the latest actual contributions
+  await refreshLiveDonationsFromSupabase(true);
+}
 
+// Dedicated live refresher that reliably updates window._liveSupabaseDonations and re-renders cards
+async function refreshLiveDonationsFromSupabase(forceRefresh = true) {
   try {
-
-    const rows = await fetchSupabaseDonations();
-
+    const rows = await fetchSupabaseDonations(forceRefresh);
     if (rows && rows.length > 0) {
-
-      // Filter out test amounts (< 10)
-
       const validRows = rows.filter(r => (parseInt(r.amount) || 0) >= 10);
-
       if (validRows.length > 0) {
-
         window._liveSupabaseDonations = validRows.map(r => {
-
           const dateStr = formatSupabaseDateTime(r.created_at || r.date);
-
           return {
-
             id: r.id,
-
             txn_id: r.txn_id,
-
             name: r.name,
-
             amount: parseInt(r.amount),
-
             causeName: (r.notes && r.notes.includes('Cause:')) ? r.notes.split('Cause:')[1].split('|')[0].trim() : getCauseTitleByKey(r.location || 'general'),
-
             timeAgo: dateStr,
-
             created_at: r.created_at,
-
             timestamp: r.created_at ? new Date(r.created_at).getTime() : undefined,
-
             paymentMode: r.method || 'Razorpay',
-
             location: r.location || 'general'
-
           };
-
         });
-
         renderFooterRecentDonations();
-
         const dynEl = document.getElementById('dynamic-recent-contributors');
-
         if (dynEl) {
-
           const cKey = dynEl.getAttribute('data-cause-key') || 'all';
-
           renderRecentDonations('dynamic-recent-contributors', cKey);
-
         }
-
+        updateMonthlyTargetTracker();
       }
-
     }
-
-  } catch(syncErr) {
-
-    // Non-blocking silent fallback to actual verified baselines
-
+  } catch (syncErr) {
+    console.warn('refreshLiveDonationsFromSupabase note:', syncErr);
   }
+}
+window.refreshLiveDonationsFromSupabase = refreshLiveDonationsFromSupabase;
 
+// Automated Live Synchronization
+// 1. Cross-tab sync via storage event when a payment completes in another tab
+window.addEventListener('storage', function(e) {
+  if (e.key === 'pfc_last_payment_timestamp' || e.key === DONATIONS_STORAGE_KEY) {
+    refreshLiveDonationsFromSupabase(true);
+  }
+});
+
+// 2. Re-sync automatically whenever user switches back to this tab
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    refreshLiveDonationsFromSupabase(true);
+  }
+});
+
+// 3. Periodic background polling every 20 seconds while page is active
+if (!window._pfcDonationsPollTimer) {
+  window._pfcDonationsPollTimer = setInterval(function() {
+    if (document.visibilityState === 'visible') {
+      refreshLiveDonationsFromSupabase(true);
+    }
+  }, 20000);
 }
 
 window.initAllRecentDonations = initAllRecentDonations;
