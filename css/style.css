@@ -32325,11 +32325,11 @@ input[type="submit"] {
   z-index: 2;
 }
 
-/* Tier 1 special accent */
+/* Tier 1: Clean white background removing golden overlay */
 .csr-pyramid-tier-1 .csr-pyramid-card {
-  border-color: #FBBF24;
-  background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 100%);
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.12);
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
 }
 
 .csr-pyramid-card img {
@@ -32361,8 +32361,8 @@ input[type="submit"] {
 }
 
 .csr-pyramid-tier-1 .csr-pyramid-card-name {
-  color: #92400E;
-  font-weight: 800;
+  color: #334155;
+  font-weight: 700;
 }
 
 /* Pyramid Step Badge */
