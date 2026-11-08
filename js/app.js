@@ -8526,3 +8526,27 @@ window.updateKitBudget = function(selectEl) {
     target.value = budget;
   }
 };
+
+
+// Global Infinite loop slideshow for CSR partnership cards (5s interval)
+window.initCsrCardSliders = function() {
+  var sliders = document.querySelectorAll('.csr-card-slider');
+  sliders.forEach(function(slider) {
+    var slides = Array.from(slider.querySelectorAll('.csr-card-slide'));
+    if (slides.length <= 1) return;
+    var curIdx = 0;
+    setInterval(function() {
+      slides[curIdx].classList.remove('active');
+      slides[curIdx].style.opacity = '0';
+      curIdx = (curIdx + 1) % slides.length;
+      slides[curIdx].classList.add('active');
+      slides[curIdx].style.opacity = '1';
+    }, 5000);
+  });
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', window.initCsrCardSliders);
+} else {
+  window.initCsrCardSliders();
+}
