@@ -27255,11 +27255,11 @@ input[type="submit"] {
 
 
 
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: 1.05fr 0.95fr;
 
 
 
-  gap: 2.5rem;
+  gap: 2.25rem;
 
 
 
@@ -31916,344 +31916,89 @@ input[type="submit"] {
 
 
 
+/* Pyramid Showcase Container */
 .csr-pyramid-showcase {
-
-
-
   background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%);
-
-
-
   border: 1.5px solid #E2E8F0;
-
-
-
   border-radius: 20px;
-
-
-
-  padding: 2.25rem 1.75rem;
-
-
-
+  padding: 1.85rem 1.25rem;
   box-shadow: 0 10px 32px rgba(15, 35, 24, 0.07);
-
-
-
   display: flex;
-
-
-
   flex-direction: column;
-
-
-
   align-items: center;
-
-
-
   position: relative;
-
-
-
   overflow: hidden;
-
-
-
+  width: 100%;
 }
-
-
-
-
-
-
 
 .csr-pyramid-showcase::before {
-
-
-
   content: '';
-
-
-
   position: absolute;
-
-
-
   top: -60px;
-
-
-
   right: -60px;
-
-
-
   width: 160px;
-
-
-
   height: 160px;
-
-
-
   background: radial-gradient(circle, rgba(26, 140, 78, 0.08) 0%, transparent 70%);
-
-
-
   border-radius: 50%;
-
-
-
   pointer-events: none;
-
-
-
 }
-
-
-
-
-
-
 
 .csr-pyramid-header {
-
-
-
   text-align: center;
-
-
-
-  margin-bottom: 1.35rem;
-
-
-
+  margin-bottom: 1.25rem;
   width: 100%;
-
-
-
 }
-
-
-
-
-
-
 
 .csr-pyramid-tag {
-
-
-
   background: #FEF3C7;
-
-
-
   color: #92400E;
-
-
-
-  font-size: 0.76rem;
-
-
-
+  font-size: 0.74rem;
   font-weight: 800;
-
-
-
-  padding: 5px 14px;
-
-
-
+  padding: 4px 13px;
   border-radius: 20px;
-
-
-
   display: inline-flex;
-
-
-
   align-items: center;
-
-
-
-  gap: 0.45rem;
-
-
-
+  gap: 0.4rem;
   text-transform: uppercase;
-
-
-
   letter-spacing: 0.05em;
-
-
-
   border: 1px solid #FDE68A;
-
-
-
-  margin-bottom: 0.5rem;
-
-
-
+  margin-bottom: 0.35rem;
 }
-
-
-
-
-
-
 
 .csr-pyramid-title {
-
-
-
-  font-size: 1.5rem;
-
-
-
+  font-size: 1.45rem;
   color: #0F172A;
-
-
-
-  margin: 0.25rem 0 0.35rem 0;
-
-
-
+  margin: 0.2rem 0;
   font-family: 'Playfair Display', serif;
-
-
-
   font-weight: 800;
-
-
-
 }
-
-
-
-
-
-
-
-.csr-pyramid-desc {
-
-
-
-  font-size: 0.88rem;
-
-
-
-  color: #64748B;
-
-
-
-  margin: 0 auto;
-
-
-
-  max-width: 380px;
-
-
-
-  line-height: 1.5;
-
-
-
-}
-
-
-
-
-
-
 
 /* Pyramid Wrapper with visual triangular perspective */
-
-
-
 .csr-pyramid-wrap {
-
-
-
   display: flex;
-
-
-
   flex-direction: column;
-
-
-
   align-items: center;
-
-
-
-  gap: 0.85rem;
-
-
-
+  gap: 0.75rem;
   width: 100%;
-
-
-
   position: relative;
-
-
-
 }
-
-
-
-
-
-
 
 /* Base Tier Styling */
-
-
-
 .csr-pyramid-tier {
-
-
-
   display: flex;
-
-
-
   justify-content: center;
-
-
-
   align-items: stretch;
-
-
-
-  gap: 0.75rem;
-
-
-
+  gap: 0.6rem;
   width: 100%;
-
-
-
   transition: transform 0.3s ease;
-
-
-
 }
-
-
-
-
-
-
 
 /* Authentic Step Pyramid Silhouette Widths */
 .csr-pyramid-tier-0 {
   width: 22%;
-  max-width: 140px;
+  max-width: 135px;
   min-width: 95px;
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.1rem;
 }
 
 .csr-pyramid-tier-0 .csr-pyramid-card {
@@ -32263,38 +32008,39 @@ input[type="submit"] {
 }
 
 .csr-pyramid-tier-0 .csr-pyramid-card img {
-  max-height: 48px;
+  height: 44px;
+  max-height: 44px;
   filter: drop-shadow(0 4px 8px rgba(217, 119, 6, 0.25));
 }
 
 .csr-pyramid-tier-0 .csr-pyramid-card-name {
   color: #B45309;
   font-weight: 800;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   letter-spacing: 0.02em;
 }
 
 .csr-pyramid-tier-1 {
   width: 42%;
-  max-width: 270px; /* Step 1: 2 cards */
+  max-width: 260px; /* Step 1: 2 cards */
   min-width: 175px;
 }
 
 .csr-pyramid-tier-2 {
   width: 62%;
-  max-width: 395px; /* Step 2: 3 cards */
+  max-width: 380px; /* Step 2: 3 cards */
   min-width: 245px;
 }
 
 .csr-pyramid-tier-3 {
   width: 82%;
-  max-width: 520px; /* Step 3: 4 cards */
+  max-width: 500px; /* Step 3: 4 cards */
   min-width: 295px;
 }
 
 .csr-pyramid-tier-4 {
   width: 100%;
-  max-width: 640px; /* Step 4 Base: 5 cards */
+  max-width: 620px; /* Step 4 Base: 5 cards */
 }
 
 /* Individual Brand Card Inside Tier */
@@ -32304,7 +32050,7 @@ input[type="submit"] {
   background: #FFFFFF;
   border: 1.5px solid #E2E8F0;
   border-radius: 12px;
-  padding: 0.65rem 0.45rem;
+  padding: 0.65rem 0.35rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32312,7 +32058,7 @@ input[type="submit"] {
   gap: 0.35rem;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  min-height: 74px;
+  min-height: 78px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -32333,17 +32079,18 @@ input[type="submit"] {
 }
 
 .csr-pyramid-card img {
-  max-height: 38px;
-  max-width: 90%;
+  height: 36px;
+  max-height: 36px;
+  max-width: 86%;
   width: auto;
-  height: auto;
   object-fit: contain;
   display: block;
   transition: transform 0.25s ease;
 }
 
 .csr-pyramid-tier-1 .csr-pyramid-card img {
-  max-height: 42px;
+  height: 38px;
+  max-height: 38px;
 }
 
 .csr-pyramid-card:hover img {
@@ -32351,38 +32098,21 @@ input[type="submit"] {
 }
 
 .csr-pyramid-card-name {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #334155;
   line-height: 1.2;
   margin: 0;
   white-space: normal;
-  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .csr-pyramid-tier-1 .csr-pyramid-card-name {
   color: #334155;
   font-weight: 700;
-}
-
-/* Pyramid Step Badge */
-.csr-pyramid-step-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding-top: 1.25rem;
-  margin-top: 0.75rem;
-  border-top: 1px dashed #CBD5E1;
-  font-size: 0.8rem;
-  color: #64748B;
-  font-weight: 600;
-}
-
-.csr-pyramid-step-label span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
 }
 
 @media (max-width: 640px) {
@@ -32391,56 +32121,58 @@ input[type="submit"] {
     border-radius: 14px;
   }
   .csr-pyramid-header {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
   }
   .csr-pyramid-wrap {
-    gap: 0.5rem;
+    gap: 0.45rem;
   }
   .csr-pyramid-tier {
-    gap: 0.3rem;
+    gap: 0.25rem;
   }
   .csr-pyramid-tier-0 {
     width: 26%;
-    min-width: 80px;
+    min-width: 78px;
   }
   .csr-pyramid-tier-1 {
-    width: 46%;
-    min-width: 140px;
+    width: 48%;
+    min-width: 135px;
   }
   .csr-pyramid-tier-2 {
-    width: 65%;
-    min-width: 200px;
+    width: 68%;
+    min-width: 195px;
   }
   .csr-pyramid-tier-3 {
-    width: 84%;
-    min-width: 255px;
+    width: 86%;
+    min-width: 250px;
   }
   .csr-pyramid-tier-4 {
     width: 100%;
   }
   .csr-pyramid-card {
-    padding: 0.4rem 0.2rem;
-    min-height: 60px;
+    padding: 0.4rem 0.15rem;
+    min-height: 62px;
     border-radius: 8px;
     gap: 0.25rem;
   }
   .csr-pyramid-card img {
+    height: 24px;
     max-height: 24px;
+    max-width: 86%;
+  }
+  .csr-pyramid-tier-0 .csr-pyramid-card {
+    min-height: 66px;
   }
   .csr-pyramid-tier-0 .csr-pyramid-card img {
-    max-height: 32px;
+    height: 30px;
+    max-height: 30px;
   }
   .csr-pyramid-tier-1 .csr-pyramid-card img {
-    max-height: 26px;
+    height: 25px;
+    max-height: 25px;
   }
   .csr-pyramid-card-name {
-    font-size: 0.58rem;
+    font-size: 0.56rem;
     line-height: 1.15;
-  }
-  .csr-pyramid-step-label {
-    padding-top: 0.85rem;
-    margin-top: 0.5rem;
-    font-size: 0.72rem;
   }
 }
 
