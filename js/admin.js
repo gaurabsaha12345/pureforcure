@@ -2663,3 +2663,64 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+
+// Delete donation record handler (called from table button and modal)
+async function deleteDonationRecord(id) {
+  if (!id) return;
+  const d = AdminState.data.donations.find(item => item.id === id);
+  const donorName = d ? (d.name || 'Anonymous') : 'this donation';
+  const amt = d ? `₹${Number(d.amount).toLocaleString('en-IN')}` : '';
+
+  if (!confirm(`Are you sure you want to permanently delete the donation record for ${donorName} (${amt})?\n\nThis will remove it from the admin dashboard and public donor cards.`)) {
+    return;
+  }
+
+  try {
+    showToast(`Deleting donation for ${donorName}...`, 'info');
+
+    // 1. Delete from Supabase database
+    if (AdminState.supabase) {
+      const { error } = await AdminState.supabase.from('donations').delete().eq('id', id);
+      if (error) {
+        showToast('Error deleting from database: ' + error.message, 'error');
+        return;
+      }
+    }
+
+    // 2. Remove locally from AdminState
+    AdminState.data.donations = AdminState.data.donations.filter(item => item.id !== id);
+    if (AdminState.selectedDonationIds) {
+      AdminState.selectedDonationIds.delete(id);
+    }
+    buildCustomersData();
+    buildRazorpayReconciliationData();
+    updateKPIs();
+    renderActiveTab();
+
+    // 3. Track deleted donation in localStorage and broadcast to public tabs
+    try {
+      const deleted = JSON.parse(localStorage.getItem('pfc_deleted_donations') || '[]');
+      if (!deleted.includes(id)) deleted.push(id);
+      if (d && d.txn_id && !deleted.includes(d.txn_id)) deleted.push(d.txn_id);
+      if (d && d.name && d.amount) {
+        const nameKey = `${d.name.trim().toLowerCase()}_${d.amount}`;
+        if (!deleted.includes(nameKey)) deleted.push(nameKey);
+      }
+      localStorage.setItem('pfc_deleted_donations', JSON.stringify(deleted));
+      localStorage.setItem('pfc_last_payment_timestamp', String(Date.now()));
+    } catch (e) {}
+
+    showToast(`✓ Donation record for ${donorName} deleted successfully.`, 'success');
+
+    // Close customer history modal if open
+    const modal = document.getElementById('customer-history-modal');
+    if (modal && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+    }
+  } catch (err) {
+    console.error('Delete error:', err);
+    showToast('Failed to delete donation: ' + (err.message || err), 'error');
+  }
+}
+window.deleteDonationRecord = deleteDonationRecord;

@@ -1406,8 +1406,7 @@ async function fetchSupabaseDonations(forceRefresh = false) {
 
   try {
 
-    const cacheBuster = forceRefresh ? `&_t=${Date.now()}` : '';
-    const url = `${SUPABASE_BACKEND.getUrl()}/rest/v1/donations?select=*&status=eq.Success&order=created_at.desc&limit=100${cacheBuster}`;
+    const url = `${SUPABASE_BACKEND.getUrl()}/rest/v1/donations?select=*&status=eq.Success&order=created_at.desc&limit=100`;
 
     const resp = await fetch(url, {
 
@@ -3178,9 +3177,19 @@ async function completeSuccessfulDonation(paymentId) {
 // =============================================================
 
 const VERIFIED_SUPABASE_DONATIONS = [
-
   {
-
+    id: '107b6dce-a07e-4c74-bda3-d33a9de029d3',
+    name: 'ABINASH SAHA',
+    amount: 800,
+    causeName: 'GMCH Hospital (Guwahati Medical College & Hospital Caregiver Meals)',
+    timeAgo: '08 Nov 2026, 03:13 PM',
+    created_at: '2026-11-08T09:43:09.463437+00:00',
+    paymentMode: 'UPI',
+    location: 'gmch',
+    txn_id: 'pay_TxdSoAXo3SNuTl'
+  },
+  {
+    id: '1cb9b28e-0039-4352-a0f4-926ef5e2c0d8',
     name: 'Sinu Sonthalia',
 
     amount: 800,
@@ -3890,7 +3899,7 @@ async function renderFooterRecentDonations() {
 
 
 
-  let html = '<div class="footer-recent-contributions-feed">';
+  let html = '';
 
   donations.forEach((d) => {
 
@@ -4034,7 +4043,7 @@ if (!window._pfcDonationsPollTimer) {
     if (document.visibilityState === 'visible') {
       refreshLiveDonationsFromSupabase(true);
     }
-  }, 20000);
+  }, 10000);
 }
 
 window.initAllRecentDonations = initAllRecentDonations;
